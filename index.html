@@ -1,17 +1,758 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Mi primera página</title>
-</head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>José Manuel Velazco Ochoa — Ingeniero Topógrafo Geomático</title>
+<meta name="description" content="Portafolio de José Manuel Velazco Ochoa, Ingeniero Topógrafo Geomático. GIS, cartografía temática, geodesia, teledetección y análisis espacial.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#101B24;
+    --ink-2:#16232E;
+    --panel:#1B2C39;
+    --paper:#ECE6D6;
+    --paper-dim:#B9C2C9;
+    --accent:#E8590C;
+    --accent-soft:#F2874D;
+    --teal:#6FA88F;
+    --muted:#7E8FA0;
+    --line:rgba(236,230,214,0.14);
+    --line-strong:rgba(236,230,214,0.28);
+    --radius:2px;
+    --display:'Space Grotesk',sans-serif;
+    --body:'Inter',sans-serif;
+    --mono:'IBM Plex Mono',monospace;
+  }
 
+  *{margin:0;padding:0;box-sizing:border-box;}
+
+  html{scroll-behavior:smooth;}
+
+  body{
+    background:var(--ink);
+    color:var(--paper);
+    font-family:var(--body);
+    line-height:1.6;
+    font-size:16px;
+    overflow-x:hidden;
+  }
+
+  a{color:inherit;text-decoration:none;}
+
+  ::selection{background:var(--accent);color:var(--ink);}
+
+  :focus-visible{outline:2px solid var(--accent-soft);outline-offset:3px;}
+
+  .wrap{
+    max-width:1140px;
+    margin:0 auto;
+    padding:0 32px;
+  }
+
+  /* ---------- corner registration marks ---------- */
+  .reg-mark{
+    position:fixed;
+    width:22px;height:22px;
+    z-index:40;
+    pointer-events:none;
+    opacity:.5;
+  }
+  .reg-mark::before,.reg-mark::after{content:'';position:absolute;background:var(--paper-dim);}
+  .reg-mark::before{width:100%;height:1px;top:50%;}
+  .reg-mark::after{height:100%;width:1px;left:50%;}
+  .reg-tl{top:16px;left:16px;}
+  .reg-tr{top:16px;right:16px;}
+  .reg-bl{bottom:16px;left:16px;}
+  .reg-br{bottom:16px;right:16px;}
+  @media (max-width:720px){.reg-mark{display:none;}}
+
+  /* ---------- nav ---------- */
+  header{
+    position:fixed;
+    top:0;left:0;right:0;
+    z-index:50;
+    background:rgba(16,27,36,0.86);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  nav.wrap{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    height:64px;
+  }
+  .logo{
+    font-family:var(--mono);
+    font-size:14px;
+    letter-spacing:0.06em;
+    color:var(--paper);
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .logo .dot{width:7px;height:7px;background:var(--accent);border-radius:50%;display:inline-block;}
+  .nav-links{
+    display:flex;
+    gap:28px;
+    list-style:none;
+    font-family:var(--mono);
+    font-size:12px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--paper-dim);
+  }
+  .nav-links a{transition:color .2s;position:relative;}
+  .nav-links a:hover{color:var(--accent-soft);}
+  .nav-toggle{display:none;background:none;border:1px solid var(--line-strong);color:var(--paper);width:38px;height:38px;font-family:var(--mono);}
+  @media (max-width:760px){
+    .nav-links{display:none;}
+    .nav-toggle{display:block;}
+  }
+
+  /* ---------- hero ---------- */
+  .hero{
+    position:relative;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    padding-top:64px;
+    overflow:hidden;
+  }
+  .contours{
+    position:absolute;
+    inset:0;
+    z-index:0;
+    opacity:0.55;
+  }
+  .contours path{
+    fill:none;
+    stroke:var(--line);
+    stroke-width:1;
+  }
+  .contours path.acc{stroke:rgba(232,89,12,0.22);}
+  @keyframes drift{
+    0%{transform:translate(0,0);}
+    50%{transform:translate(-14px,10px);}
+    100%{transform:translate(0,0);}
+  }
+  @media (prefers-reduced-motion:no-preference){
+    .contours{animation:drift 34s ease-in-out infinite;}
+  }
+  .hero-inner{position:relative;z-index:1;}
+  .eyebrow{
+    font-family:var(--mono);
+    font-size:12.5px;
+    letter-spacing:0.12em;
+    color:var(--teal);
+    text-transform:uppercase;
+    margin-bottom:22px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .eyebrow::before{content:'';width:26px;height:1px;background:var(--teal);}
+  h1.name{
+    font-family:var(--display);
+    font-weight:700;
+    font-size:clamp(2.4rem,6vw,4.6rem);
+    line-height:1.02;
+    letter-spacing:-0.01em;
+    max-width:900px;
+  }
+  .role{
+    font-family:var(--display);
+    font-weight:500;
+    font-size:clamp(1.1rem,2.2vw,1.5rem);
+    color:var(--accent-soft);
+    margin-top:14px;
+  }
+  .bio{
+    max-width:560px;
+    color:var(--paper-dim);
+    margin-top:24px;
+    font-size:15.5px;
+  }
+  .hero-cta{
+    display:flex;
+    gap:16px;
+    margin-top:36px;
+    flex-wrap:wrap;
+  }
+  .btn{
+    font-family:var(--mono);
+    font-size:12.5px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    padding:13px 22px;
+    border:1px solid var(--line-strong);
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    transition:all .2s;
+  }
+  .btn-primary{background:var(--accent);border-color:var(--accent);color:var(--ink);font-weight:500;}
+  .btn-primary:hover{background:var(--accent-soft);border-color:var(--accent-soft);}
+  .btn-ghost:hover{border-color:var(--paper-dim);background:rgba(255,255,255,0.04);}
+
+  .scroll-cue{
+    position:absolute;
+    bottom:36px;left:32px;
+    font-family:var(--mono);
+    font-size:11px;
+    color:var(--muted);
+    display:flex;
+    align-items:center;
+    gap:10px;
+    z-index:1;
+  }
+  .scroll-cue .bar{width:1px;height:34px;background:linear-gradient(var(--muted),transparent);}
+  @media (max-width:600px){.scroll-cue{display:none;}}
+
+  /* ---------- section shell ---------- */
+  section{
+    padding:120px 0;
+    border-top:1px solid var(--line);
+    position:relative;
+  }
+  .sec-head{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    margin-bottom:56px;
+    gap:20px;
+    flex-wrap:wrap;
+  }
+  .sec-num{
+    font-family:var(--mono);
+    font-size:12px;
+    color:var(--accent-soft);
+    letter-spacing:.1em;
+  }
+  h2{
+    font-family:var(--display);
+    font-weight:600;
+    font-size:clamp(1.6rem,3.4vw,2.4rem);
+    letter-spacing:-0.01em;
+  }
+  .sec-sub{
+    font-family:var(--mono);
+    font-size:12px;
+    color:var(--muted);
+    text-align:right;
+    max-width:260px;
+  }
+
+  /* ---------- perfil ---------- */
+  .perfil-grid{
+    display:grid;
+    grid-template-columns:1.3fr 1fr;
+    gap:64px;
+  }
+  @media (max-width:800px){.perfil-grid{grid-template-columns:1fr;}}
+  .perfil-text p{color:var(--paper-dim);font-size:16px;max-width:56ch;}
+  .badges{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    margin-top:32px;
+  }
+  .badge{
+    font-family:var(--mono);
+    font-size:11.5px;
+    padding:7px 12px;
+    border:1px solid var(--line-strong);
+    color:var(--paper-dim);
+    letter-spacing:.02em;
+  }
+  .info-card{
+    border:1px solid var(--line);
+    padding:26px;
+    background:var(--panel);
+  }
+  .info-card dl{display:grid;grid-template-columns:auto 1fr;gap:10px 16px;font-size:13.5px;}
+  .info-card dt{font-family:var(--mono);color:var(--muted);text-transform:uppercase;font-size:11px;letter-spacing:.06em;padding-top:2px;}
+  .info-card dd{color:var(--paper);}
+
+  /* ---------- experiencia: elevation timeline ---------- */
+  .timeline{
+    position:relative;
+    padding-left:36px;
+  }
+  .timeline::before{
+    content:'';
+    position:absolute;
+    left:5px;top:6px;bottom:6px;
+    width:1px;
+    background:repeating-linear-gradient(var(--line-strong) 0 6px, transparent 6px 12px);
+  }
+  .station{
+    position:relative;
+    padding-bottom:52px;
+  }
+  .station:last-child{padding-bottom:0;}
+  .station::before{
+    content:'';
+    position:absolute;
+    left:-36px;top:4px;
+    width:11px;height:11px;
+    border-radius:50%;
+    background:var(--ink);
+    border:2px solid var(--accent);
+  }
+  .station-head{
+    display:flex;
+    align-items:baseline;
+    gap:14px;
+    flex-wrap:wrap;
+    margin-bottom:6px;
+  }
+  .station-code{font-family:var(--mono);font-size:11px;color:var(--accent-soft);letter-spacing:.08em;}
+  .station-role{font-family:var(--display);font-weight:600;font-size:19px;}
+  .station-org{color:var(--teal);font-size:13.5px;font-family:var(--mono);}
+  .station-meta{
+    font-family:var(--mono);
+    font-size:11.5px;
+    color:var(--muted);
+    margin-bottom:12px;
+    display:flex;
+    gap:16px;
+    flex-wrap:wrap;
+  }
+  .station ul{list-style:none;color:var(--paper-dim);font-size:14.5px;max-width:64ch;}
+  .station ul li{position:relative;padding-left:16px;margin-bottom:6px;}
+  .station ul li::before{content:'—';position:absolute;left:0;color:var(--muted);}
+
+  /* ---------- habilidades ---------- */
+  .skills-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:1px;
+    background:var(--line);
+    border:1px solid var(--line);
+  }
+  @media (max-width:860px){.skills-grid{grid-template-columns:repeat(2,1fr);}}
+  @media (max-width:560px){.skills-grid{grid-template-columns:1fr;}}
+  .skill-card{
+    background:var(--ink);
+    padding:28px 24px;
+  }
+  .skill-card h3{
+    font-family:var(--display);
+    font-size:15px;
+    font-weight:600;
+    margin-bottom:12px;
+    color:var(--accent-soft);
+  }
+  .skill-card p{color:var(--paper-dim);font-size:13.5px;}
+
+  .lang-block{margin-top:56px;}
+  .lang-title{font-family:var(--mono);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:18px;}
+  .lang-row{display:flex;align-items:center;gap:18px;margin-bottom:14px;font-family:var(--mono);font-size:13px;}
+  .lang-name{width:110px;color:var(--paper);}
+  .signal{display:flex;gap:4px;}
+  .signal span{width:6px;height:14px;background:var(--line-strong);}
+  .signal span.on{background:var(--teal);}
+  .signal span:nth-child(2){height:18px;}
+  .signal span:nth-child(3){height:22px;}
+  .signal span:nth-child(4){height:26px;}
+  .lang-level{color:var(--muted);font-size:11.5px;}
+
+  /* ---------- educacion ---------- */
+  .edu-card{
+    border:1px solid var(--line);
+    padding:32px;
+    background:var(--panel);
+  }
+  .edu-top{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:16px;}
+  .edu-degree{font-family:var(--display);font-weight:600;font-size:20px;}
+  .edu-school{color:var(--teal);font-family:var(--mono);font-size:13px;margin-top:4px;}
+  .edu-years{font-family:var(--mono);font-size:12px;color:var(--muted);}
+  .edu-card p{color:var(--paper-dim);font-size:14.5px;max-width:70ch;}
+  .cedula{font-family:var(--mono);font-size:11.5px;color:var(--muted);margin-top:14px;}
+
+  /* ---------- certificados / premios ---------- */
+  .cert-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:0;
+  }
+  @media (max-width:700px){.cert-grid{grid-template-columns:1fr;}}
+  .cert-row{
+    display:flex;
+    justify-content:space-between;
+    gap:16px;
+    padding:16px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .cert-name{font-size:14px;color:var(--paper);max-width:30ch;}
+  .cert-meta{font-family:var(--mono);font-size:11px;color:var(--muted);text-align:right;white-space:nowrap;}
+
+  .award-box{
+    margin-top:48px;
+    border-left:2px solid var(--accent);
+    padding:20px 28px;
+    background:var(--panel);
+  }
+  .award-box .tag{font-family:var(--mono);font-size:11px;color:var(--accent-soft);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;display:block;}
+  .award-box p{color:var(--paper-dim);font-size:14px;max-width:70ch;}
+
+  /* ---------- contacto ---------- */
+  .contact-sec{
+    border-top:1px solid var(--line);
+    padding:120px 0 70px;
+  }
+  .contact-grid{
+    display:grid;
+    grid-template-columns:1.2fr 1fr;
+    gap:60px;
+    align-items:end;
+  }
+  @media (max-width:800px){.contact-grid{grid-template-columns:1fr;gap:40px;}}
+  .contact-title{
+    font-family:var(--display);
+    font-weight:700;
+    font-size:clamp(1.8rem,4.4vw,3rem);
+    line-height:1.1;
+    letter-spacing:-0.01em;
+  }
+  .contact-title span{color:var(--accent-soft);}
+  .contact-list{list-style:none;font-family:var(--mono);font-size:14px;}
+  .contact-list li{padding:12px 0;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;}
+  .contact-list li a:hover{color:var(--accent-soft);}
+  .contact-list .k{color:var(--muted);text-transform:uppercase;font-size:11px;letter-spacing:.06em;}
+  footer{
+    font-family:var(--mono);
+    font-size:11px;
+    color:var(--muted);
+    text-align:center;
+    padding:28px 0 40px;
+  }
+
+  .reveal{opacity:0;transform:translateY(18px);transition:opacity .6s ease, transform .6s ease;}
+  .reveal.in{opacity:1;transform:none;}
+</style>
+</head>
 <body>
 
-<h1>Hola Mundo</h1>
+<div class="reg-mark reg-tl"></div>
+<div class="reg-mark reg-tr"></div>
+<div class="reg-mark reg-bl"></div>
+<div class="reg-mark reg-br"></div>
 
-<p>Mi nombre es José Manuel.</p>
+<header>
+  <nav class="wrap">
+    <a class="logo" href="#top"><span class="dot"></span>JMVO / GEOMÁTICA</a>
+    <ul class="nav-links">
+      <li><a href="#perfil">Perfil</a></li>
+      <li><a href="#experiencia">Experiencia</a></li>
+      <li><a href="#habilidades">Habilidades</a></li>
+      <li><a href="#educacion">Educación</a></li>
+      <li><a href="#certificados">Certificados</a></li>
+      <li><a href="#contacto">Contacto</a></li>
+    </ul>
+  </nav>
+</header>
 
-<p>Esta página está alojada gratuitamente en GitHub Pages.</p>
+<main id="top">
+
+  <!-- HERO -->
+  <section class="hero" style="border-top:none;padding:0;">
+    <svg class="contours" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice">
+      <path d="M -50 620 C 150 560, 300 680, 500 600 C 700 520, 850 640, 1000 580 C 1150 530, 1250 600, 1300 560" />
+      <path d="M -50 660 C 180 600, 320 700, 520 640 C 720 580, 860 680, 1020 620 C 1160 570, 1260 630, 1300 600" />
+      <path d="M -50 580 C 200 500, 340 620, 540 540 C 720 470, 880 580, 1040 500 C 1160 450, 1250 520, 1300 480" class="acc"/>
+      <path d="M -50 500 C 160 420, 340 540, 540 460 C 740 380, 880 500, 1060 420 C 1180 370, 1250 440, 1300 400" />
+      <path d="M -50 720 C 200 680, 380 760, 560 700 C 760 640, 900 740, 1080 680 C 1180 650, 1250 700, 1300 680" />
+      <circle cx="220" cy="180" r="2.5" fill="rgba(232,89,12,0.5)"/>
+      <circle cx="980" cy="140" r="2.5" fill="rgba(111,168,143,0.5)"/>
+    </svg>
+    <div class="wrap hero-inner">
+      <div class="eyebrow">19.2452° N, 103.7241° W — Colima, México</div>
+      <h1 class="name">José Manuel<br>Velazco Ochoa</h1>
+      <div class="role">Ingeniero Topógrafo Geomático</div>
+      <p class="bio">Formación en análisis geoespacial, Sistemas de Información Geográfica y procesamiento de datos territoriales. Genero cartografía temática, ejecuto análisis espacial y aplico herramientas GIS para apoyar decisiones territoriales y ambientales.</p>
+      <div class="hero-cta">
+        <a class="btn btn-primary" href="#experiencia">Ver experiencia</a>
+        <a class="btn btn-ghost" href="#contacto">Contacto</a>
+      </div>
+    </div>
+    <div class="scroll-cue"><div class="bar"></div>DESPLAZAR</div>
+  </section>
+
+  <!-- PERFIL -->
+  <section id="perfil">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <div class="sec-num">01 — PERFIL</div>
+          <h2>Sobre mí</h2>
+        </div>
+        <div class="sec-sub">Levantamiento, análisis y cartografía del territorio</div>
+      </div>
+      <div class="perfil-grid reveal">
+        <div class="perfil-text">
+          <p>Ingeniero Topógrafo Geomático en etapa inicial, con formación en análisis geoespacial, Sistemas de Información Geográfica (SIG) y procesamiento de datos territoriales. Cuento con experiencia académica y práctica en generación de cartografía temática, análisis espacial y uso de herramientas GIS para interpretar información geográfica y apoyar procesos de análisis territorial y ambiental.</p>
+          <div class="badges">
+            <span class="badge">GIS</span>
+            <span class="badge">Teledetección</span>
+            <span class="badge">Cartografía temática</span>
+            <span class="badge">ArcGIS Pro</span>
+            <span class="badge">AutoCAD Civil 3D</span>
+            <span class="badge">GNSS</span>
+            <span class="badge">Análisis espacial</span>
+            <span class="badge">Geodesia</span>
+            <span class="badge">Topografía</span>
+            <span class="badge">Fotogrametría</span>
+            <span class="badge">Monitoreo ambiental</span>
+            <span class="badge">Python</span>
+          </div>
+        </div>
+        <div class="info-card">
+          <dl>
+            <dt>Ubicación</dt><dd>Colima, México</dd>
+            <dt>Cédula</dt><dd>15282631</dd>
+            <dt>Título</dt><dd>Ing. Topógrafo Geomático — Universidad de Colima</dd>
+            <dt>Idiomas</dt><dd>Español (nativo), Inglés A2, Portugués A2</dd>
+            <dt>Email</dt><dd>velazcoochoajosémanuel@gmail.com</dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EXPERIENCIA -->
+  <section id="experiencia">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <div class="sec-num">02 — EXPERIENCIA</div>
+          <h2>Estaciones de trabajo</h2>
+        </div>
+        <div class="sec-sub">Orden cronológico, como un perfil de elevación de carrera</div>
+      </div>
+
+      <div class="timeline reveal">
+
+        <div class="station">
+          <div class="station-code">EST-01 · ENE 2021 – JUL 2021 · 7 MESES</div>
+          <div class="station-head">
+            <div class="station-role">Auxiliar de topógrafo</div>
+            <div class="station-org">Meridiano Topografía</div>
+          </div>
+          <div class="station-meta"><span>Colima, México</span></div>
+          <ul>
+            <li>Ejecuté levantamientos planimétricos y altimétricos.</li>
+            <li>Operé equipos topográficos para captura y análisis de información georreferenciada.</li>
+          </ul>
+        </div>
+
+        <div class="station">
+          <div class="station-code">EST-02 · DIC 2021 – NOV 2024 · 3 AÑOS</div>
+          <div class="station-head">
+            <div class="station-role">Becario de Investigación</div>
+            <div class="station-org">Sistema Nacional de Investigadores (CONAHCYT)</div>
+          </div>
+          <div class="station-meta"><span>Colima, México</span><span>Proyecto No. 321542</span></div>
+          <ul>
+            <li>Propuse y validé una metodología estatal para la ubicación óptima de estaciones de monitoreo de calidad del aire.</li>
+            <li>Realicé levantamiento de datos geográficos en campo.</li>
+            <li>Desarrollé cartografía temática y bases de datos geoespaciales.</li>
+            <li>Colaboré en análisis geoambientales e informes técnicos que contribuyeron al perfil epidemio-toxicológico del estado de Colima.</li>
+          </ul>
+        </div>
+
+        <div class="station">
+          <div class="station-code">EST-03 · ENE 2023 – SEPT 2023 · 9 MESES</div>
+          <div class="station-head">
+            <div class="station-role">Supervisor de Obras</div>
+            <div class="station-org">CRETEC S.A. de C.V.</div>
+          </div>
+          <div class="station-meta"><span>Colima, México</span><span>Hasta 44.5 ha</span><span>Equipo de 15 personas</span></div>
+          <ul>
+            <li>Supervisé movimientos de tierra y cálculo de volúmenes en proyectos de hasta 44.5 hectáreas.</li>
+            <li>Generé planos técnicos y modelos de superficie para documentación y control de obra.</li>
+            <li>Coordiné equipos de hasta 15 personas en campo en el Aeropuerto Internacional de Colima.</li>
+          </ul>
+        </div>
+
+        <div class="station">
+          <div class="station-code">EST-04 · OCT 2025 – NOV 2025 · 1 MES</div>
+          <div class="station-head">
+            <div class="station-role">Cadista / Dibujante CAD</div>
+            <div class="station-org">Secretaría de la Defensa Nacional (SEDENA)</div>
+          </div>
+          <div class="station-meta"><span>Guadalajara, México</span></div>
+          <ul>
+            <li>Generé planos técnicos y modelos de superficie para proyectos de infraestructura.</li>
+            <li>Realicé cálculos volumétricos y análisis de nivelación, apoyando la interpretación geométrica del terreno.</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- HABILIDADES -->
+  <section id="habilidades">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <div class="sec-num">03 — HABILIDADES</div>
+          <h2>Capas técnicas</h2>
+        </div>
+        <div class="sec-sub">Software, análisis, geodesia y diseño CAD</div>
+      </div>
+
+      <div class="skills-grid reveal">
+        <div class="skill-card">
+          <h3>Software GIS</h3>
+          <p>Dominio de ArcGIS Pro y ArcMap; manejo funcional de QGIS y Global Mapper. Python aplicado a automatización de procesos GIS y análisis geoespacial.</p>
+        </div>
+        <div class="skill-card">
+          <h3>Análisis espacial</h3>
+          <p>Análisis multicriterio, detección de cambios de uso de suelo y análisis de islas de calor (heat maps).</p>
+        </div>
+        <div class="skill-card">
+          <h3>Gestión de datos</h3>
+          <p>Estructuración de geodatabases, archivos Shapefile y nociones de bases de datos SQL.</p>
+        </div>
+        <div class="skill-card">
+          <h3>Cartografía</h3>
+          <p>Diseño de mapas temáticos digitales bajo estándares de precisión: proyecciones, datums y elementos de salida gráfica.</p>
+        </div>
+        <div class="skill-card">
+          <h3>Operación de equipo</h3>
+          <p>Manejo de GPS, Estación Total y Nivel Fijo. Métodos de levantamiento y precisión posicional.</p>
+        </div>
+        <div class="skill-card">
+          <h3>Geodesia y GNSS</h3>
+          <p>Ajuste de redes geodésicas y postproceso en Leica Infinity. Procesamiento de archivos RINEX, efemérides y calibración de antenas (.atx).</p>
+        </div>
+        <div class="skill-card">
+          <h3>Topografía y CAD</h3>
+          <p>Modelado en AutoCAD Civil 3D para cálculo de volúmenes y generación de planos.</p>
+        </div>
+        <div class="skill-card">
+          <h3>Modelado digital</h3>
+          <p>Generación y edición de Modelos Digitales de Elevación (MDE) y extracción de curvas de nivel.</p>
+        </div>
+        <div class="skill-card">
+          <h3>Comunicación técnica</h3>
+          <p>Redacción de informes de metodología y exposición de resultados técnicos ante audiencias diversas.</p>
+        </div>
+      </div>
+
+      <div class="lang-block reveal">
+        <div class="lang-title">Señal de idiomas</div>
+        <div class="lang-row">
+          <span class="lang-name">Español</span>
+          <span class="signal"><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span></span>
+          <span class="lang-level">Nativo</span>
+        </div>
+        <div class="lang-row">
+          <span class="lang-name">Inglés</span>
+          <span class="signal"><span class="on"></span><span class="on"></span><span></span><span></span></span>
+          <span class="lang-level">A2 · en formación</span>
+        </div>
+        <div class="lang-row">
+          <span class="lang-name">Portugués</span>
+          <span class="signal"><span class="on"></span><span class="on"></span><span></span><span></span></span>
+          <span class="lang-level">A2 · en formación</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EDUCACION -->
+  <section id="educacion">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <div class="sec-num">04 — EDUCACIÓN</div>
+          <h2>Formación</h2>
+        </div>
+      </div>
+      <div class="edu-card reveal">
+        <div class="edu-top">
+          <div>
+            <div class="edu-degree">Ingeniero Topógrafo Geomático</div>
+            <div class="edu-school">Universidad de Colima</div>
+          </div>
+          <div class="edu-years">2020 — 2025 · Titulado</div>
+        </div>
+        <p>Prácticas profesionales: análisis geoespacial para la identificación de sitios óptimos para estaciones de monitoreo de calidad del aire en el estado de Colima, con aplicación directa en políticas ambientales estatales. Trabajo derivado del Proyecto CONAHCYT No. 321542.</p>
+        <div class="cedula">Cédula Profesional No. 15282631</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CERTIFICADOS -->
+  <section id="certificados">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <div class="sec-num">05 — CERTIFICADOS</div>
+          <h2>Formación continua</h2>
+        </div>
+        <div class="sec-sub">Cursos y certificaciones recientes</div>
+      </div>
+
+      <div class="cert-grid reveal">
+        <div>
+          <div class="cert-row"><span class="cert-name">How to Manage a Remote Team</span><span class="cert-meta">GitLab · Mar 2026</span></div>
+          <div class="cert-row"><span class="cert-name">Cartography</span><span class="cert-meta">Esri · Oct 2025</span></div>
+          <div class="cert-row"><span class="cert-name">Desarrollo inteligente con IA (Cursor + Python)</span><span class="cert-meta">Santander Open Academy · Ago 2025</span></div>
+          <div class="cert-row"><span class="cert-name">Taller Internacional de Geointeligencia Fitosanitaria</span><span class="cert-meta">UASLP · Jul 2025</span></div>
+        </div>
+        <div>
+          <div class="cert-row"><span class="cert-name">Python for Everyone</span><span class="cert-meta">Esri · May 2025</span></div>
+          <div class="cert-row"><span class="cert-name">Monitoring Global Terrestrial Surface Water Height</span><span class="cert-meta">NASA · May 2025</span></div>
+          <div class="cert-row"><span class="cert-name">Fundamentals of Remote Sensing</span><span class="cert-meta">NASA · Mar 2025</span></div>
+          <div class="cert-row"><span class="cert-name">Fotogrametría con DJI Matrice 300 RTK</span><span class="cert-meta">Estok Soluciones Topográficas · May 2023</span></div>
+          <div class="cert-row"><span class="cert-name">SIG con software libre y código abierto</span><span class="cert-meta">Geoestrategias · Ago 2022</span></div>
+        </div>
+      </div>
+
+      <div class="award-box reveal">
+        <span class="tag">Presentación académica</span>
+        <p>"Análisis espacial para identificar sitios óptimos del territorio para la instalación de estaciones de medición de la calidad del aire" — Universidad de Colima, mayo 2023. Presentación de resultados derivados de la investigación aplicada con CONAHCYT ante audiencia académica y técnica.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACTO -->
+  <section id="contacto" class="contact-sec" style="border-top:1px solid var(--line);">
+    <div class="wrap">
+      <div class="contact-grid reveal">
+        <div>
+          <div class="contact-title">Levantemos el<br>siguiente <span>proyecto.</span></div>
+        </div>
+        <ul class="contact-list">
+          <li><span class="k">Email</span><a href="mailto:velazcoochoajosémanuel@gmail.com">velazcoochoajosémanuel@gmail.com</a></li>
+          <li><span class="k">Teléfono</span><a href="tel:+528143597851">+52 814 359 7851</a></li>
+          <li><span class="k">LinkedIn</span><a href="https://www.linkedin.com/in/josemanuelvelazcoochoa/" target="_blank" rel="noopener">josemanuelvelazcoochoa</a></li>
+          <li><span class="k">Ubicación</span><span>Colima, México</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>© 2026 José Manuel Velazco Ochoa — Ingeniero Topógrafo Geomático</footer>
+
+<script>
+  // reveal on scroll
+  const items = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} });
+  },{threshold:0.12});
+  items.forEach(i=>io.observe(i));
+</script>
 
 </body>
 </html>
