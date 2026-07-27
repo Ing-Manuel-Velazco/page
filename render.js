@@ -20,7 +20,14 @@ const ICONS = Object.freeze({
   dron: '<circle cx="12" cy="12" r="2"/><path d="M12 10V6M12 14v4M10 12H6M14 12h4"/><circle cx="6" cy="6" r="1.6"/><circle cx="18" cy="6" r="1.6"/><circle cx="6" cy="18" r="1.6"/><circle cx="18" cy="18" r="1.6"/>',
   hoja: '<path d="M5 21c0-9 6-16 15-16 0 9-6 16-15 16z"/><path d="M5 21c2.5-5 6-8.5 11-11"/>',
   infraestructura: '<path d="M10 3L4 21M14 3l6 18M9 14h6"/>',
-  pin: '<path d="M12 21s7-7.5 7-12a7 7 0 1 0-14 0c0 4.5 7 12 7 12z"/><circle cx="12" cy="9" r="2.4"/>'
+  pin: '<path d="M12 21s7-7.5 7-12a7 7 0 1 0-14 0c0 4.5 7 12 7 12z"/><circle cx="12" cy="9" r="2.4"/>',
+  carpeta: '<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/>',
+  reloj: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/>',
+  monitor: '<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/>',
+  check: '<circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5L16 9"/>',
+  graduacion: '<path d="M12 3l10 5-10 5L2 8l10-5z"/><path d="M6 10.5V16c0 1.5 2.7 3 6 3s6-1.5 6-3v-5.5"/>',
+  satelite: '<rect x="9" y="9" width="6" height="6" rx="1"/><path d="M9 9L4 4M15 9l5-5M9 15l-5 5M15 15l5 5"/>',
+  codigo: '<path d="M8 8l-4 4 4 4M16 8l4 4-4 4M14 4l-4 16"/>'
 });
 window.__portafolioIcons = ICONS;
 
@@ -139,18 +146,52 @@ function renderAcerca(data){
   const a = data.acerca;
   setText('acercaLead', a.lead);
 
-  setHTML('acercaBadges', a.badges.map(b => `<span class="badge">${esc(b)}</span>`).join(''));
+  // Tarjetas de estadísticas (el conteo se anima al entrar al viewport, ver script principal)
+  setHTML('statsGrid', a.estadisticas.map(s => `
+    <div class="stat-card">
+      <div class="stat-icon"><svg viewBox="0 0 24 24" aria-hidden="true">${ICONS[s.icono] || ICONS.grid}</svg></div>
+      <div class="stat-number" data-count-to="${s.numero}"><span class="num">0</span><span class="suffix">${esc(s.sufijo || '')}</span></div>
+      <div class="stat-label">${esc(s.etiqueta)}</div>
+    </div>
+  `).join(''));
 
-  setHTML('quickCard', '<dl>' + a.datos_rapidos.map(d =>
-    `<dt>${esc(d.etiqueta)}</dt><dd>${esc(d.valor)}</dd>`
-  ).join('') + '</dl>');
+  // Carrusel horizontal de tecnologías
+  setHTML('techCarousel', a.tecnologias.map(t => `
+    <div class="tech-card">
+      <div class="tech-icon"><svg viewBox="0 0 24 24" aria-hidden="true">${ICONS[t.icono] || ICONS.grid}</svg></div>
+      <div class="tech-name">${esc(t.nombre)}</div>
+    </div>
+  `).join(''));
 
-  setHTML('langBlock', a.idiomas.map(l => {
-    const bars = [1,2,3,4].map(i => `<span class="${i <= l.nivel ? 'on' : ''}"></span>`).join('');
-    return `<div class="lang-row"><span class="lang-name">${esc(l.nombre)}</span>` +
-      `<span class="signal" role="img" aria-label="Nivel ${l.nivel} de 4">${bars}</span>` +
-      `<span class="lang-level">${esc(l.etiqueta)}</span></div>`;
-  }).join(''));
+  // Información personal como tarjetas
+  setHTML('infoGrid', a.info_personal.map(i => `
+    <div class="info-card">
+      <div class="info-icon"><svg viewBox="0 0 24 24" aria-hidden="true">${ICONS[i.icono] || ICONS.grid}</svg></div>
+      <div>
+        <div class="info-label">${esc(i.etiqueta)}</div>
+        <div class="info-value">${esc(i.valor)}</div>
+      </div>
+    </div>
+  `).join(''));
+
+  // Especialidades
+  setHTML('specGrid', a.especialidades.map(e => `
+    <div class="spec-card">
+      <div class="spec-icon"><svg viewBox="0 0 24 24" aria-hidden="true">${ICONS[e.icono] || ICONS.grid}</svg></div>
+      <div class="spec-name">${esc(e.nombre)}</div>
+    </div>
+  `).join(''));
+
+  // Idiomas: barra moderna animada al entrar al viewport (ver script principal)
+  setHTML('langBlock', a.idiomas.map(l => `
+    <div class="lang-item">
+      <div class="lang-item-head">
+        <span class="lang-item-name">${esc(l.nombre)}</span>
+        <span class="lang-item-level">${esc(l.nivel)}</span>
+      </div>
+      <div class="lang-track"><div class="lang-fill" data-fill-to="${l.porcentaje}"></div></div>
+    </div>
+  `).join(''));
 }
 
 function renderEducacion(data){

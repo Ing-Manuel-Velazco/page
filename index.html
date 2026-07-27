@@ -279,33 +279,129 @@
   }
   .eyebrow::before{content:'';width:22px;height:1px;background:var(--accent);}
   .panel h2{font-size:clamp(1.6rem,3vw,2.2rem);font-weight:700;letter-spacing:-0.01em;margin-bottom:22px;}
-  .panel > p.lead{color:var(--text-dim);font-size:16px;max-width:none;width:100%;margin-bottom:32px;text-align:justify;hyphens:auto;box-sizing:border-box;}
+  .lead{color:var(--text-dim);font-size:16px;max-width:none;width:100%;margin-bottom:32px;text-align:justify;hyphens:auto;box-sizing:border-box;}
 
-  .badges{display:flex;flex-wrap:wrap;gap:9px;margin:26px 0;}
-  .badge{
-    font-family:var(--mono);font-size:11.5px;padding:7px 12px;border-radius:20px;
-    border:1px solid var(--border);color:var(--text-dim);background:var(--surface);
+  /* ================= ACERCA DE MÍ: dashboard geoespacial ================= */
+  #acerca{position:relative;}
+  #acerca::before{
+    content:'';position:absolute;inset:0;z-index:0;pointer-events:none;
+    opacity:.02;
+    background-image:
+      radial-gradient(circle, var(--text) 1px, transparent 1px),
+      repeating-linear-gradient(0deg, var(--text) 0 1px, transparent 1px 48px),
+      repeating-linear-gradient(90deg, var(--text) 0 1px, transparent 1px 48px);
+    background-size:24px 24px, 48px 48px, 48px 48px;
   }
+  .acerca-inner{position:relative;z-index:1;}
+  .acerca-block{margin:0 0 40px;}
 
-  .quick-card{
-    border:1px solid var(--border);border-radius:14px;padding:24px;background:var(--surface);
-    box-shadow:var(--shadow);margin-top:24px;
+  .hero-row{display:flex;align-items:flex-start;justify-content:space-between;gap:36px;}
+  .hero-text{flex:1;min-width:0;}
+  .hero-text .lead{margin-bottom:0;}
+  .hero-visual{
+    width:220px;height:220px;flex-shrink:0;opacity:.55;
+    transition:transform .2s ease;will-change:transform;
   }
-  .quick-card dl{display:grid;grid-template-columns:auto 1fr;gap:10px 18px;font-size:13.5px;}
-  .quick-card dt{font-family:var(--mono);color:var(--text-dim);text-transform:uppercase;font-size:11px;letter-spacing:.05em;padding-top:2px;}
+  .hero-visual svg{width:100%;height:100%;display:block;}
 
-  .lang-block{margin-top:34px;}
+  .stats-grid{display:grid;grid-template-columns:repeat(auto-fit, minmax(150px,1fr));gap:16px;margin:36px 0 40px;}
+  .stat-card{
+    border:1px solid var(--border);border-radius:14px;padding:22px 20px;
+    background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0));
+    backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+    box-shadow:var(--shadow);transition:transform .3s ease, border-color .3s ease;
+  }
+  .stat-card:hover{transform:translateY(-4px);border-color:var(--accent-2);}
+  .stat-icon{
+    width:36px;height:36px;border-radius:10px;margin-bottom:14px;
+    background:var(--accent-soft);display:flex;align-items:center;justify-content:center;
+  }
+  .stat-icon svg{width:18px;height:18px;stroke:var(--accent);fill:none;stroke-width:1.6;}
+  .stat-number{font-family:var(--display);font-weight:700;font-size:30px;line-height:1;margin-bottom:6px;}
+  .stat-number .suffix{color:var(--accent);}
+  .stat-label{font-size:12px;color:var(--text-dim);}
+
   .lang-title{font-family:var(--mono);font-size:11px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.08em;margin-bottom:16px;}
-  .lang-row{display:flex;align-items:center;gap:16px;margin-bottom:12px;font-family:var(--mono);font-size:13px;}
-  .lang-name{width:100px;}
-  .signal{display:flex;gap:4px;align-items:flex-end;}
-  .signal span{width:6px;background:var(--border);border-radius:1px;}
-  .signal span:nth-child(1){height:10px;}
-  .signal span:nth-child(2){height:14px;}
-  .signal span:nth-child(3){height:18px;}
-  .signal span:nth-child(4){height:22px;}
-  .signal span.on{background:var(--accent);}
-  .lang-level{color:var(--text-dim);font-size:11.5px;}
+
+  .tech-carousel-wrap{position:relative;}
+  .tech-carousel{
+    display:flex;gap:14px;overflow-x:auto;padding:4px 2px 14px;
+    scroll-snap-type:x proximity;scrollbar-width:none;-ms-overflow-style:none;
+  }
+  .tech-carousel::-webkit-scrollbar{display:none;}
+  .tech-carousel-wrap::after{
+    content:'';position:absolute;top:0;right:0;bottom:14px;width:48px;
+    background:linear-gradient(to right, transparent, var(--bg));
+    pointer-events:none;
+  }
+  .tech-card{
+    flex:0 0 auto;width:138px;scroll-snap-align:start;text-align:center;
+    border:1px solid var(--border);border-radius:14px;padding:20px 14px;
+    background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0));
+    backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+    position:relative;overflow:hidden;
+    transition:transform .3s ease, border-color .3s ease, box-shadow .3s ease;
+  }
+  .tech-card::before{
+    content:'';position:absolute;inset:0;opacity:0;
+    background:radial-gradient(circle at 50% 0%, var(--accent-soft), transparent 70%);
+    transition:opacity .3s ease;
+  }
+  .tech-card:hover{transform:translateY(-4px);border-color:var(--accent-2);box-shadow:var(--shadow);}
+  .tech-card:hover::before{opacity:1;}
+  .tech-icon{
+    width:40px;height:40px;margin:0 auto 12px;border-radius:11px;position:relative;z-index:1;
+    background:var(--accent-soft);display:flex;align-items:center;justify-content:center;
+  }
+  .tech-icon svg{width:20px;height:20px;stroke:var(--accent);fill:none;stroke-width:1.6;}
+  .tech-name{font-family:var(--display);font-weight:600;font-size:12.5px;position:relative;z-index:1;}
+
+  .info-grid{display:grid;grid-template-columns:repeat(auto-fit, minmax(220px,1fr));gap:16px;margin-bottom:40px;}
+  .info-card{
+    display:flex;align-items:center;gap:14px;border:1px solid var(--border);border-radius:14px;
+    padding:18px 20px;background:var(--surface);transition:transform .25s ease, border-color .25s ease;
+  }
+  .info-card:hover{transform:translateY(-3px);border-color:var(--accent-2);}
+  .info-icon{
+    width:40px;height:40px;flex-shrink:0;border-radius:11px;
+    background:var(--accent-soft);display:flex;align-items:center;justify-content:center;
+  }
+  .info-icon svg{width:19px;height:19px;stroke:var(--accent);fill:none;stroke-width:1.6;}
+  .info-label{font-family:var(--mono);font-size:10.5px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.05em;}
+  .info-value{font-family:var(--display);font-weight:600;font-size:14.5px;margin-top:3px;}
+
+  .spec-grid{display:grid;grid-template-columns:repeat(auto-fill, minmax(155px,1fr));gap:12px;}
+  .spec-card{
+    display:flex;align-items:center;gap:10px;border:1px solid var(--border);border-radius:12px;
+    padding:14px 16px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0));
+    transition:transform .25s ease, border-color .25s ease, background .25s ease;
+  }
+  .spec-card:hover{transform:translateY(-2px);border-color:var(--accent-2);background:var(--accent-soft);}
+  .spec-icon{
+    width:30px;height:30px;flex-shrink:0;border-radius:8px;
+    background:var(--accent-soft);display:flex;align-items:center;justify-content:center;
+  }
+  .spec-icon svg{width:15px;height:15px;stroke:var(--accent);fill:none;stroke-width:1.7;}
+  .spec-name{font-family:var(--display);font-weight:600;font-size:13px;}
+
+  .lang-item{margin-bottom:18px;}
+  .lang-item:last-child{margin-bottom:0;}
+  .lang-item-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;}
+  .lang-item-name{font-family:var(--display);font-weight:600;font-size:14px;}
+  .lang-item-level{font-family:var(--mono);font-size:11px;color:var(--accent);}
+  .lang-track{height:8px;border-radius:6px;background:var(--border);overflow:hidden;}
+  .lang-fill{
+    height:100%;border-radius:6px;width:0%;
+    background:linear-gradient(90deg, var(--accent), var(--accent-2));
+    transition:width 1s cubic-bezier(.2,.8,.2,1);
+  }
+
+  @media (max-width:860px){
+    .hero-row{flex-direction:column;gap:20px;}
+    .hero-visual{width:140px;height:140px;align-self:center;opacity:.4;}
+    .stats-grid{grid-template-columns:repeat(2,1fr);}
+    .info-grid{grid-template-columns:1fr;}
+  }
 
   /* educacion */
   .edu-card{border:1px solid var(--border);border-radius:14px;padding:36px;background:var(--surface);box-shadow:var(--shadow);}
@@ -375,7 +471,9 @@
   .folder-list{
     position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;
     display:flex;flex-direction:column;gap:10px;
-    padding-right:6px;
+    /* Colchón interno: le da espacio a la fila para crecer/sobreponerse en
+       hover sin tocar jamás el borde donde el contenedor recorta. */
+    padding:10px 20px;
     transition:opacity .35s ease, transform .35s ease;
   }
   .folder-wrap.is-expanded .folder-list{
@@ -396,7 +494,7 @@
   }
   .folder-row.push-away-up{transform:translateY(-6px);}
   .folder-row.push-away-down{transform:translateY(6px);}
-  .folder-row.is-hovering{transform:scale(1.015);z-index:1;}
+  .folder-row.is-hovering{transform:scale(1.02) translateY(-2px);z-index:2;}
 
   .folder-main{display:flex;align-items:center;gap:16px;min-width:0;flex:1 1 auto;}
   .folder-icon{
@@ -429,7 +527,7 @@
   /* vista expandida */
   .folder-detail{
     position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;
-    padding-right:6px;
+    padding:10px 20px;
     opacity:0;transform:translateX(16px);pointer-events:none;
     transition:opacity .35s ease, transform .35s ease;
   }
@@ -437,11 +535,9 @@
     opacity:1;transform:none;pointer-events:auto;
   }
 
-  /* scrollbar discreto, estilo "app" */
-  .folder-list, .folder-detail{scrollbar-width:thin;scrollbar-color:var(--border) transparent;}
-  .folder-list::-webkit-scrollbar, .folder-detail::-webkit-scrollbar{width:8px;}
-  .folder-list::-webkit-scrollbar-thumb, .folder-detail::-webkit-scrollbar-thumb{background:var(--border);border-radius:8px;}
-  .folder-list::-webkit-scrollbar-thumb:hover, .folder-detail::-webkit-scrollbar-thumb:hover{background:var(--accent-2);}
+  /* Scroll interno funcional, pero sin barra visible (sin "botón" de desplazamiento) */
+  .folder-list, .folder-detail{scrollbar-width:none;-ms-overflow-style:none;}
+  .folder-list::-webkit-scrollbar, .folder-detail::-webkit-scrollbar{display:none;width:0;height:0;}
 
   .detail-card{
     border:1px solid var(--border);border-radius:16px;padding:30px 32px;
@@ -622,17 +718,73 @@
   <main class="content" id="main-content" tabindex="-1">
 
     <section id="acerca" class="panel active">
-      <div class="eyebrow">Perfil</div>
-      <h2>Acerca de mí</h2>
-      <p class="lead" id="acercaLead">Cargando…</p>
+      <div class="acerca-inner">
+        <div class="eyebrow">Perfil</div>
+        <h2>Acerca de mí</h2>
 
-      <div class="badges" id="acercaBadges"></div>
+        <div class="hero-row">
+          <div class="hero-text">
+            <p class="lead" id="acercaLead">Cargando…</p>
+          </div>
+          <div class="hero-visual" id="heroVisual" aria-hidden="true">
+            <svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <radialGradient id="hvGlow" cx="50%" cy="45%" r="60%">
+                  <stop offset="0%" stop-color="var(--accent)" stop-opacity="0.5"/>
+                  <stop offset="100%" stop-color="var(--accent)" stop-opacity="0"/>
+                </radialGradient>
+              </defs>
+              <circle cx="120" cy="115" r="95" fill="url(#hvGlow)"/>
+              <!-- curvas de nivel -->
+              <g fill="none" stroke="var(--accent)" stroke-width="1">
+                <ellipse cx="120" cy="120" rx="40" ry="26" opacity=".55"/>
+                <ellipse cx="120" cy="120" rx="60" ry="40" opacity=".4"/>
+                <ellipse cx="120" cy="120" rx="80" ry="55" opacity=".28"/>
+                <ellipse cx="120" cy="120" rx="100" ry="70" opacity=".16"/>
+              </g>
+              <!-- malla UTM -->
+              <g stroke="var(--accent-2)" stroke-width=".6" opacity=".35">
+                <path d="M10 60h220M10 100h220M10 140h220M10 180h220"/>
+                <path d="M50 20v200M90 20v200M130 20v200M170 20v200M210 20v200"/>
+              </g>
+              <!-- capas GIS flotando -->
+              <g stroke="var(--accent)" stroke-width="1.3" fill="var(--accent)">
+                <rect x="55" y="150" width="80" height="52" rx="6" fill-opacity=".05" opacity=".8"/>
+                <rect x="75" y="120" width="80" height="52" rx="6" fill-opacity=".08" opacity=".9"/>
+                <rect x="95" y="90" width="80" height="52" rx="6" fill-opacity=".12"/>
+              </g>
+              <!-- puntos GNSS -->
+              <g fill="var(--accent-2)">
+                <circle cx="70" cy="70" r="2.6"/>
+                <circle cx="175" cy="60" r="2.2"/>
+                <circle cx="185" cy="150" r="2.4"/>
+                <circle cx="60" cy="170" r="2"/>
+                <circle cx="150" cy="185" r="2.3"/>
+              </g>
+            </svg>
+          </div>
+        </div>
 
-      <div class="quick-card" id="quickCard"></div>
+        <div class="stats-grid" id="statsGrid"></div>
 
-      <div class="lang-block">
-        <div class="lang-title">Señal de idiomas</div>
-        <div id="langBlock"></div>
+        <div class="acerca-block">
+          <div class="lang-title">Tecnologías</div>
+          <div class="tech-carousel-wrap">
+            <div class="tech-carousel" id="techCarousel"></div>
+          </div>
+        </div>
+
+        <div class="info-grid" id="infoGrid"></div>
+
+        <div class="acerca-block">
+          <div class="lang-title">Especialidades</div>
+          <div class="spec-grid" id="specGrid"></div>
+        </div>
+
+        <div class="acerca-block">
+          <div class="lang-title">Idiomas</div>
+          <div id="langBlock"></div>
+        </div>
       </div>
     </section>
 
@@ -726,17 +878,48 @@
 
   "acerca": {
     "lead": "Ingeniero Topógrafo Geomático en etapa inicial, con formación en análisis geoespacial, Sistemas de Información Geográfica (SIG) y procesamiento de datos territoriales. Genero cartografía temática, ejecuto análisis espacial y aplico herramientas GIS para interpretar información geográfica y apoyar procesos de análisis territorial y ambiental.",
-    "badges": ["GIS", "Teledetección", "Cartografía temática", "ArcGIS Pro", "AutoCAD Civil 3D", "GNSS", "Análisis espacial", "Geodesia", "Topografía", "Fotogrametría", "Monitoreo ambiental", "Python"],
-    "datos_rapidos": [
-      { "etiqueta": "Ubicación", "valor": "Colima, México" },
-      { "etiqueta": "Cédula", "valor": "15282631" },
-      { "etiqueta": "Título", "valor": "Ing. Topógrafo Geomático — Universidad de Colima" },
-      { "etiqueta": "Software", "valor": "ArcGIS Pro, ArcMap, QGIS, Global Mapper, AutoCAD Civil 3D, Leica Infinity, Python" }
+
+    "estadisticas": [
+      { "icono": "carpeta", "numero": 12, "sufijo": "+", "etiqueta": "Proyectos realizados" },
+      { "icono": "reloj", "numero": 4, "sufijo": "+", "etiqueta": "Años de experiencia" },
+      { "icono": "monitor", "numero": 8, "sufijo": "", "etiqueta": "Software dominados" },
+      { "icono": "mapa", "numero": 30, "sufijo": "+", "etiqueta": "Mapas elaborados" },
+      { "icono": "check", "numero": 100, "sufijo": "%", "etiqueta": "Disponibilidad" }
     ],
+
+    "tecnologias": [
+      { "nombre": "ArcGIS Pro", "icono": "grid" },
+      { "nombre": "QGIS", "icono": "mapa" },
+      { "nombre": "Python", "icono": "codigo" },
+      { "nombre": "Civil 3D", "icono": "terreno" },
+      { "nombre": "Global Mapper", "icono": "globo" },
+      { "nombre": "Leica Infinity", "icono": "satelite" },
+      { "nombre": "Metashape", "icono": "dron" },
+      { "nombre": "GNSS", "icono": "pin" }
+    ],
+
+    "info_personal": [
+      { "icono": "pin", "etiqueta": "Ubicación", "valor": "Colima, México" },
+      { "icono": "graduacion", "etiqueta": "Formación", "valor": "Universidad de Colima" },
+      { "icono": "monitor", "etiqueta": "Software", "valor": "8 herramientas" },
+      { "icono": "check", "etiqueta": "Disponibilidad", "valor": "Disponible para trabajar" }
+    ],
+
+    "especialidades": [
+      { "nombre": "Cartografía", "icono": "mapa" },
+      { "nombre": "SIG", "icono": "grid" },
+      { "nombre": "Fotogrametría", "icono": "dron" },
+      { "nombre": "Análisis Espacial", "icono": "capas" },
+      { "nombre": "Geodesia", "icono": "globo" },
+      { "nombre": "Teledetección", "icono": "satelite" },
+      { "nombre": "Monitoreo Ambiental", "icono": "hoja" },
+      { "nombre": "Python", "icono": "codigo" }
+    ],
+
     "idiomas": [
-      { "nombre": "Español", "nivel": 4, "etiqueta": "Nativo" },
-      { "nombre": "Inglés", "nivel": 2, "etiqueta": "A2 · en formación" },
-      { "nombre": "Portugués", "nivel": 2, "etiqueta": "A2 · en formación" }
+      { "nombre": "Español", "porcentaje": 100, "nivel": "C2 · Nativo" },
+      { "nombre": "Inglés", "porcentaje": 35, "nivel": "A2 · en formación" },
+      { "nombre": "Portugués", "porcentaje": 25, "nivel": "A1 · en formación" }
     ]
   },
 
@@ -1173,6 +1356,75 @@
   document.addEventListener('content-ready', initPortfolioExplorer);
   // por si content-ready ya se disparó antes de llegar a esta línea
   if(document.getElementById('folderList')?.children.length) initPortfolioExplorer();
+
+  // ---------- Acerca de mí: parallax del visual, contadores y barras de idioma ----------
+  function initHeroParallax(){
+    const row = document.querySelector('.hero-row');
+    const visual = document.getElementById('heroVisual');
+    if(!row || !visual || reducedMotion) return;
+    row.addEventListener('mousemove', (e)=>{
+      const rect = row.getBoundingClientRect();
+      const px = (e.clientX - rect.left) / rect.width - 0.5;
+      const py = (e.clientY - rect.top) / rect.height - 0.5;
+      visual.style.transform = `translate(${px*14}px, ${py*10}px) rotate(${px*3}deg)`;
+    });
+    row.addEventListener('mouseleave', ()=>{ visual.style.transform = 'none'; });
+  }
+
+  function animateCount(el){
+    const target = Number(el.dataset.countTo || 0);
+    const numEl = el.querySelector('.num') || el;
+    const duration = 900;
+    const start = performance.now();
+    function step(now){
+      const t = Math.min(1, (now - start) / duration);
+      const eased = 1 - Math.pow(1 - t, 3); // ease-out cúbico, sin rebote
+      numEl.textContent = Math.round(target * eased);
+      if(t < 1) requestAnimationFrame(step);
+    }
+    if(reducedMotion){ numEl.textContent = target; return; }
+    requestAnimationFrame(step);
+  }
+
+  function initStatCounters(){
+    const nums = document.querySelectorAll('.stat-number[data-count-to]');
+    if(!nums.length) return;
+    const obs = new IntersectionObserver((entries)=>{
+      entries.forEach(entry=>{
+        if(entry.isIntersecting && !entry.target.dataset.counted){
+          entry.target.dataset.counted = 'true';
+          animateCount(entry.target);
+          obs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.4 });
+    nums.forEach(el => obs.observe(el));
+  }
+
+  function initLangBars(){
+    const bars = document.querySelectorAll('.lang-fill[data-fill-to]');
+    if(!bars.length) return;
+    const obs = new IntersectionObserver((entries)=>{
+      entries.forEach(entry=>{
+        if(entry.isIntersecting && !entry.target.dataset.filled){
+          entry.target.dataset.filled = 'true';
+          const target = entry.target;
+          requestAnimationFrame(()=>{ target.style.width = `${target.dataset.fillTo}%`; });
+          obs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.4 });
+    bars.forEach(el => obs.observe(el));
+  }
+
+  function initAcercaDashboard(){
+    initHeroParallax();
+    initStatCounters();
+    initLangBars();
+  }
+
+  document.addEventListener('content-ready', initAcercaDashboard, { once: true });
+  if(document.getElementById('statsGrid')?.children.length) initAcercaDashboard();
 
   // ---------- Theme toggle (Claro / Oscuro, siempre inicia en Oscuro) ----------
   const themeOpts = document.querySelectorAll('.theme-opt');
