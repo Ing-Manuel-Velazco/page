@@ -31,6 +31,44 @@ const ICONS = Object.freeze({
 });
 window.__portafolioIcons = ICONS;
 
+/** Paleta de tintes para íconos de estadísticas/especialidades (estilo dashboard). */
+const TINTS = Object.freeze({
+  blue:'#3B82F6', violet:'#8B5CF6', teal:'#14B8A6', pink:'#EC4899', cyan:'#22D3EE',
+  green:'#22C55E', red:'#EF4444', yellow:'#EAB308', orange:'#F97316', purple:'#A855F7', slate:'#94A3B8'
+});
+
+function hexToRgba(hex, alpha){
+  const h = hex.replace('#','');
+  const r = parseInt(h.substring(0,2),16), g = parseInt(h.substring(2,4),16), b = parseInt(h.substring(4,6),16);
+  return `rgba(${r},${g},${b},${alpha})`;
+}
+
+/** Devuelve los estilos inline (fondo tenue + trazo de color) para un ícono con tinte. */
+function tintStyles(colorName){
+  const hex = TINTS[colorName] || TINTS.blue;
+  return {
+    wrap: `background:${hexToRgba(hex, 0.16)};`,
+    icon: `stroke:${hex};`
+  };
+}
+
+/**
+ * Glifos originales (no son los logotipos reales de cada marca, son abstracciones
+ * propias inspiradas en cada herramienta) para el carrusel de tecnologías. Cada
+ * uno trae su propio color de marca de referencia, mostrado sobre una placa clara
+ * a modo de "badge", como en cualquier sección de stack tecnológico.
+ */
+const TECH_LOGOS = Object.freeze({
+  arcgis:       { color:'#2C7FE0', svg:'<circle cx="12" cy="12" r="8"/><path d="M4 12h16M12 4c2.2 2.2 3.4 5 3.4 8s-1.2 5.8-3.4 8c-2.2-2.2-3.4-5-3.4-8s1.2-5.8 3.4-8z"/>' },
+  qgis:         { color:'#3FA23F', svg:'<circle cx="11" cy="11" r="7.5"/><path d="M16 16l4.5 4.5"/>' },
+  python:       { color:'#3776AB', svg:'<path d="M12 2c-3 0-3.4 1.3-3.4 2.9v2h6.8v1H6.4C4.6 7.9 3 9 3 12.4c0 3.4 1.4 4.5 3.4 4.5h1.9v-2.6c0-2.2 1.9-4.1 4.1-4.1h3.9c1.6 0 2.9-1.3 2.9-2.9V4.9C19.2 3.3 17.8 2 15.6 2H12z" fill="#3776AB" stroke="none"/><path d="M12 22c3 0 3.4-1.3 3.4-2.9v-2H8.6v-1h9c1.8 0 3.4-1.1 3.4-4.5 0-3.4-1.4-4.5-3.4-4.5h-1.9v2.6c0 2.2-1.9 4.1-4.1 4.1H7.7c-1.6 0-2.9 1.3-2.9 2.9v2.2C4.8 20.7 6.2 22 8.4 22H12z" fill="#FFD43B" stroke="none"/>' },
+  civil3d:      { color:'#E4342B', svg:'<rect x="3" y="3" width="18" height="18" rx="4" fill="#E4342B" stroke="none"/><path d="M8 17V7l4 10V7l4 10" stroke="#fff" fill="none" stroke-width="1.6"/>' },
+  leica:        { color:'#D8232A', svg:'<circle cx="12" cy="12" r="9" fill="#D8232A" stroke="none"/><path d="M8.5 9.5a3.5 5 0 1 1 0 5M15.5 9.5a3.5 5 0 1 0 0 5" stroke="#fff" fill="none" stroke-width="1.4"/>' },
+  globalmapper: { color:'#2E8B57', svg:'<circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2 2 3 5.3 3 8.5s-1 6.5-3 8.5c-2-2-3-5.3-3-8.5s1-6.5 3-8.5z"/><path d="M12 12l6-6" stroke-width="1.2"/>' },
+  gnss:         { color:'#64748B', svg:'<rect x="9" y="9" width="6" height="6" rx="1"/><path d="M9 9L4 4M15 9l5-5M9 15l-5 5M15 15l5 5"/><circle cx="12" cy="12" r="10" stroke-dasharray="2 3" stroke-width="1"/>' },
+  metashape:    { color:'#0EA5A5', svg:'<path d="M12 4l7 4v8l-7 4-7-4V8l7-4z"/><circle cx="12" cy="12" r="2.2" fill="currentColor" stroke="none"/><path d="M12 4v8M5 8l7 4M19 8l-7 4"/>' }
+});
+
 /* ------------------------------------------------------------------ */
 /* Utilidades                                                          */
 /* ------------------------------------------------------------------ */
@@ -122,9 +160,39 @@ function renderPerfil(data){
     img.decoding = 'async';
   });
 
-  setHTML('sideName', `${esc(p.nombre)}<br>${esc(p.apellidos)}`);
-  setText('sideRole', p.rol);
+  setText('sideNombre', p.nombre);
+  setText('sideApellidos', p.apellidos);
+  setText('sideRolEtiqueta', p.rol_etiqueta || '');
+  setText('sideRolTitulo', p.rol_titulo || p.rol);
   setText('footerName', `${p.nombre} ${p.apellidos}`);
+
+  if(p.tagline) setText('sideTagline', p.tagline);
+
+  const availEl = byId('sideAvailability');
+  if(availEl){
+    availEl.classList.toggle('is-on', !!p.disponible);
+    const label = availEl.querySelector('.availability-label');
+    if(label) label.textContent = p.disponibilidad_texto || (p.disponible ? 'Disponible' : 'No disponible');
+  }
+
+  // Botones sociales (íconos): LinkedIn siempre visible; GitHub y CV solo si hay dato.
+  const liBtn = byId('socialLinkedin');
+  if(liBtn) liBtn.href = p.linkedin;
+
+  const ghBtn = byId('socialGithub');
+  if(ghBtn){
+    if(p.github){ ghBtn.href = p.github; ghBtn.hidden = false; }
+    else{ ghBtn.hidden = true; }
+  }
+
+  const cvBtn = byId('socialCv');
+  if(cvBtn){
+    if(p.cv){ cvBtn.href = p.cv; cvBtn.hidden = false; }
+    else{ cvBtn.hidden = true; }
+  }
+
+  const mailBtn = byId('socialEmail');
+  if(mailBtn) mailBtn.href = `mailto:${p.email}`;
 
   setText('footerEmailText', p.email);
   const emailBtn = byId('footerEmail');
@@ -147,21 +215,25 @@ function renderAcerca(data){
   setText('acercaLead', a.lead);
 
   // Tarjetas de estadísticas (el conteo se anima al entrar al viewport, ver script principal)
-  setHTML('statsGrid', a.estadisticas.map(s => `
+  setHTML('statsGrid', a.estadisticas.map(s => {
+    const t = tintStyles(s.color);
+    return `
     <div class="stat-card">
-      <div class="stat-icon"><svg viewBox="0 0 24 24" aria-hidden="true">${ICONS[s.icono] || ICONS.grid}</svg></div>
+      <div class="stat-icon" style="${t.wrap}"><svg viewBox="0 0 24 24" style="${t.icon}" aria-hidden="true">${ICONS[s.icono] || ICONS.grid}</svg></div>
       <div class="stat-number" data-count-to="${s.numero}"><span class="num">0</span><span class="suffix">${esc(s.sufijo || '')}</span></div>
       <div class="stat-label">${esc(s.etiqueta)}</div>
-    </div>
-  `).join(''));
+    </div>`;
+  }).join(''));
 
-  // Carrusel horizontal de tecnologías
-  setHTML('techCarousel', a.tecnologias.map(t => `
+  // Carrusel horizontal de tecnologías (badges tipo "stack" con color de marca de referencia)
+  setHTML('techCarousel', a.tecnologias.map(t => {
+    const logo = TECH_LOGOS[t.logo] || { color:'#3B82F6', svg: ICONS.grid };
+    return `
     <div class="tech-card">
-      <div class="tech-icon"><svg viewBox="0 0 24 24" aria-hidden="true">${ICONS[t.icono] || ICONS.grid}</svg></div>
+      <div class="tech-icon"><svg viewBox="0 0 24 24" style="stroke:${logo.color};color:${logo.color};" aria-hidden="true">${logo.svg}</svg></div>
       <div class="tech-name">${esc(t.nombre)}</div>
-    </div>
-  `).join(''));
+    </div>`;
+  }).join(''));
 
   // Información personal como tarjetas
   setHTML('infoGrid', a.info_personal.map(i => `
@@ -175,12 +247,14 @@ function renderAcerca(data){
   `).join(''));
 
   // Especialidades
-  setHTML('specGrid', a.especialidades.map(e => `
+  setHTML('specGrid', a.especialidades.map(e => {
+    const t = tintStyles(e.color);
+    return `
     <div class="spec-card">
-      <div class="spec-icon"><svg viewBox="0 0 24 24" aria-hidden="true">${ICONS[e.icono] || ICONS.grid}</svg></div>
+      <div class="spec-icon" style="${t.wrap}"><svg viewBox="0 0 24 24" style="${t.icon}" aria-hidden="true">${ICONS[e.icono] || ICONS.grid}</svg></div>
       <div class="spec-name">${esc(e.nombre)}</div>
-    </div>
-  `).join(''));
+    </div>`;
+  }).join(''));
 
   // Idiomas: barra moderna animada al entrar al viewport (ver script principal)
   setHTML('langBlock', a.idiomas.map(l => `
@@ -192,6 +266,9 @@ function renderAcerca(data){
       <div class="lang-track"><div class="lang-fill" data-fill-to="${l.porcentaje}"></div></div>
     </div>
   `).join(''));
+
+  // Frase de cierre
+  if(a.frase) setText('acercaFrase', a.frase);
 }
 
 function renderEducacion(data){

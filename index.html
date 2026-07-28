@@ -184,17 +184,59 @@
     padding:40px 26px;
     position:sticky;top:0;height:100vh;
   }
-  .side-top{display:flex;flex-direction:column;align-items:center;text-align:center;gap:14px;}
-  .side-name{font-family:var(--display);font-weight:600;font-size:17px;line-height:1.25;}
-  .side-role{font-family:var(--mono);font-size:11px;color:var(--text-dim);letter-spacing:.04em;}
+  .side-top{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;}
+  .side-info{display:flex;flex-direction:column;align-items:center;text-align:center;width:100%;}
+
+  .side-name{display:flex;flex-direction:column;align-items:center;line-height:1.22;margin:2px 0;}
+  .name-line1, .name-line2{
+    font-family:var(--display);font-weight:700;letter-spacing:-0.01em;
+    background-size:220% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;
+    will-change:background-position;
+  }
+  .name-line1{
+    font-size:17.5px;
+    background-image:linear-gradient(100deg, var(--text) 35%, var(--accent-2) 50%, var(--text) 65%);
+    animation:nameShine 4.5s linear infinite;
+  }
+  .name-line2{
+    font-size:19px;margin-top:1px;background-size:300% 100%;
+    background-image:linear-gradient(90deg, var(--accent), #A855F7, var(--accent-2), var(--accent));
+    animation:nameGradient 3.2s linear infinite;
+  }
+  @keyframes nameShine{0%{background-position:180% 0;}100%{background-position:-60% 0;}}
+  @keyframes nameGradient{0%{background-position:0% 50%;}100%{background-position:300% 50%;}}
+  @media (prefers-reduced-motion: reduce){
+    .name-line1, .name-line2{animation:none;}
+  }
+
+  .side-divider{display:flex;align-items:center;gap:8px;width:100%;margin:8px 0 6px;}
+  .divider-line{flex:1;height:1px;background:linear-gradient(90deg, transparent, var(--border), transparent);}
+  .divider-icon{width:15px;height:15px;stroke:var(--accent);fill:none;stroke-width:1.6;flex-shrink:0;}
+
+  .side-role-block{display:flex;flex-direction:column;align-items:center;gap:2px;}
+  .role-label{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--text-dim);}
+  .role-title{font-family:var(--display);font-weight:700;font-size:13.5px;letter-spacing:.02em;text-transform:uppercase;color:var(--text);}
+
+  .side-tagline{font-size:11px;color:var(--accent-2);margin-top:6px;}
+
+  .side-availability{
+    display:inline-flex;align-items:center;gap:6px;margin-bottom:2px;
+    font-family:var(--mono);font-size:10.5px;color:var(--text-dim);
+    text-transform:uppercase;letter-spacing:.05em;
+  }
+  .side-availability .dot{width:7px;height:7px;border-radius:50%;background:var(--text-dim);flex-shrink:0;}
+  .side-availability.is-on .dot{background:#22C55E;box-shadow:0 0 0 3px rgba(34,197,94,0.18);}
+  .side-availability.is-on{color:#22C55E;}
 
   .side-nav{display:flex;flex-direction:column;gap:8px;margin-top:36px;}
   .nav-btn{
+    display:flex;align-items:center;gap:12px;
     text-align:left;padding:13px 16px;border-radius:10px;
     font-size:14px;font-weight:500;color:var(--text-dim);
     border:1px solid transparent;
     transition:transform .25s ease, background .25s ease, color .25s ease, border-color .25s ease;
   }
+  .nav-icon{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.7;flex-shrink:0;}
   .nav-btn:hover{
     transform:translateX(4px) scale(1.03);
     background:var(--surface);
@@ -209,6 +251,16 @@
   }
 
   .side-bottom{display:flex;flex-direction:column;gap:14px;align-items:center;}
+
+  .social-row{display:flex;gap:8px;}
+  .social-btn{
+    width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;
+    border:1px solid var(--border);color:var(--text-dim);
+    transition:transform .2s ease, color .2s ease, border-color .2s ease, background .2s ease;
+  }
+  .social-btn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.7;}
+  .social-btn:hover{transform:translateY(-2px);color:var(--accent);border-color:var(--accent-2);background:var(--accent-soft);}
+  .social-btn[hidden]{display:none;}
 
   .theme-switch{
     display:flex;gap:4px;padding:4px;
@@ -277,7 +329,7 @@
     font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;
     color:var(--accent);margin-bottom:14px;display:flex;align-items:center;gap:10px;
   }
-  .eyebrow::before{content:'';width:22px;height:1px;background:var(--accent);}
+  .eyebrow::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--accent);flex-shrink:0;}
   .panel h2{font-size:clamp(1.6rem,3vw,2.2rem);font-weight:700;letter-spacing:-0.01em;margin-bottom:22px;}
   .lead{color:var(--text-dim);font-size:16px;max-width:none;width:100%;margin-bottom:32px;text-align:justify;hyphens:auto;box-sizing:border-box;}
 
@@ -293,7 +345,40 @@
     background-size:24px 24px, 48px 48px, 48px 48px;
   }
   .acerca-inner{position:relative;z-index:1;}
-  .acerca-block{margin:0 0 40px;}
+  .accent-word{
+    background:linear-gradient(90deg, var(--accent), var(--accent-2));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+
+  .dash-card{
+    border:1px solid var(--border);border-radius:16px;padding:26px 28px;margin-bottom:28px;
+    background:linear-gradient(180deg, rgba(255,255,255,0.025), rgba(255,255,255,0));
+    box-shadow:var(--shadow);
+  }
+  .card-title{
+    font-family:var(--mono);font-size:11px;color:var(--accent);text-transform:uppercase;letter-spacing:.08em;
+    margin-bottom:20px;display:flex;align-items:center;gap:9px;
+  }
+  .card-title::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--accent);flex-shrink:0;}
+
+  .dash-row{display:grid;grid-template-columns:repeat(3, 1fr);gap:20px;align-items:start;}
+  .dash-row .dash-card{margin-bottom:0;height:100%;}
+
+  .quote-card{
+    position:relative;overflow:hidden;border-radius:16px;padding:30px 34px;margin-top:4px;
+    border:1px solid var(--border);
+    background:linear-gradient(120deg, var(--accent-soft), transparent 70%);
+  }
+  .quote-mark{width:30px;height:22px;fill:var(--accent);opacity:.5;margin-bottom:10px;}
+  .quote-card p{font-family:var(--display);font-weight:500;font-size:16px;line-height:1.5;max-width:70ch;position:relative;z-index:1;}
+  .quote-terrain{
+    position:absolute;right:0;bottom:0;width:280px;height:74px;
+    fill:var(--accent);opacity:.06;pointer-events:none;
+  }
+
+  @media (max-width:1024px){
+    .dash-row{grid-template-columns:1fr 1fr;}
+  }
 
   .hero-row{display:flex;align-items:flex-start;justify-content:space-between;gap:36px;}
   .hero-text{flex:1;min-width:0;}
@@ -401,6 +486,8 @@
     .hero-visual{width:140px;height:140px;align-self:center;opacity:.4;}
     .stats-grid{grid-template-columns:repeat(2,1fr);}
     .info-grid{grid-template-columns:1fr;}
+    .dash-row{grid-template-columns:1fr;}
+    .quote-terrain{display:none;}
   }
 
   /* educacion */
@@ -628,6 +715,8 @@
       padding:18px 20px;
     }
     .side-top{flex-direction:row;text-align:left;gap:12px;}
+    .side-info, .side-name, .side-role-block{align-items:flex-start;text-align:left;}
+    .side-divider{margin:6px 0;}
     .side-nav{
       flex-direction:row;flex-wrap:wrap;margin-top:0;gap:6px;
       order:3;width:100%;margin-top:14px;
@@ -671,7 +760,7 @@
 <div class="app">
   <aside class="sidebar">
     <div class="side-top">
-      <div class="cube-scene" id="sideScene" style="--s:92px">
+      <div class="cube-scene" id="sideScene" style="--s:80px">
         <div class="cube" id="sideCube">
           <div class="face face-front">
             <img class="js-photo" alt="Foto de perfil de José Manuel Velazco Ochoa" loading="eager" decoding="async" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
@@ -686,19 +775,52 @@
           </div>
         </div>
       </div>
-      <div>
-        <div class="side-name" id="sideName">…</div>
-        <div class="side-role" id="sideRole">…</div>
+      <div class="side-info">
+        <div class="side-availability" id="sideAvailability">
+          <span class="dot"></span><span class="availability-label">Disponibilidad</span>
+        </div>
+        <div class="side-name" id="sideName">
+          <span class="name-line1" id="sideNombre">…</span>
+          <span class="name-line2" id="sideApellidos">…</span>
+        </div>
+        <div class="side-divider" aria-hidden="true">
+          <span class="divider-line"></span>
+          <svg class="divider-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg>
+          <span class="divider-line"></span>
+        </div>
+        <div class="side-role-block">
+          <span class="role-label" id="sideRolEtiqueta">…</span>
+          <span class="role-title" id="sideRolTitulo">…</span>
+        </div>
+        <div class="side-tagline" id="sideTagline"></div>
       </div>
     </div>
 
     <nav class="side-nav">
-      <button class="nav-btn active" data-target="acerca">Acerca de mí</button>
-      <button class="nav-btn" data-target="educacion">Educación</button>
-      <button class="nav-btn" data-target="experiencia">Experiencia</button>
-      <button class="nav-btn" data-target="habilidades">Habilidades</button>
-      <button class="nav-btn" data-target="certificados">Certificados</button>
-      <button class="nav-btn" data-target="portafolio">Portafolio</button>
+      <button class="nav-btn active" data-target="acerca">
+        <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11l8-7 8 7"/><path d="M6 10v9a1 1 0 0 0 1 1h4v-6h2v6h4a1 1 0 0 0 1-1v-9"/></svg>
+        Acerca de mí
+      </button>
+      <button class="nav-btn" data-target="educacion">
+        <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l10 5-10 5L2 8l10-5z"/><path d="M6 10.5V16c0 1.5 2.7 3 6 3s6-1.5 6-3v-5.5"/></svg>
+        Educación
+      </button>
+      <button class="nav-btn" data-target="experiencia">
+        <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="8" width="18" height="12" rx="2"/><path d="M8 8V6a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+        Experiencia
+      </button>
+      <button class="nav-btn" data-target="habilidades">
+        <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M14.7 6.3a4 4 0 1 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.8 2.8-2-2 2.8-2.8z"/></svg>
+        Habilidades
+      </button>
+      <button class="nav-btn" data-target="certificados">
+        <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.5 2h3.5v3.5L20 10l-2 2.5v3.5h-3.5L12 18l-2.5-2H6v-3.5L4 10l2-2.5V4h3.5z"/><path d="M9 10l2 2 4-4"/></svg>
+        Certificados
+      </button>
+      <button class="nav-btn" data-target="portafolio">
+        <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/></svg>
+        Portafolio
+      </button>
     </nav>
 
     <div class="side-bottom">
@@ -712,6 +834,21 @@
           Oscuro
         </button>
       </div>
+
+      <div class="social-row">
+        <a class="social-btn" id="socialLinkedin" href="#" target="_blank" rel="noopener" aria-label="LinkedIn">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.94 8.5H3.56V20.4h3.38V8.5zM5.25 3.6a1.96 1.96 0 1 0 0 3.92 1.96 1.96 0 0 0 0-3.92zM20.4 20.4h-3.38v-6.06c0-1.44-.03-3.3-2.01-3.3-2.02 0-2.33 1.58-2.33 3.2v6.16H9.3V8.5h3.24v1.62h.05c.45-.86 1.56-1.77 3.2-1.77 3.43 0 4.06 2.26 4.06 5.2v6.85z"/></svg>
+        </a>
+        <a class="social-btn" id="socialGithub" href="#" target="_blank" rel="noopener" aria-label="GitHub" hidden>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-3.16 19.5c.5.1.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.46-1.16-1.11-1.47-1.11-1.47-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.9 1.53 2.34 1.09 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02a9.6 9.6 0 0 1 5 0c1.9-1.29 2.75-1.02 2.75-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85v2.74c0 .26.18.58.69.48A10 10 0 0 0 12 2z"/></svg>
+        </a>
+        <a class="social-btn" id="socialEmail" href="#" aria-label="Correo electrónico">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z"/><path d="M3.5 6.2l8.5 6.6 8.5-6.6"/></svg>
+        </a>
+        <a class="social-btn" id="socialCv" href="#" download aria-label="Descargar CV" hidden>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0l-4-4m4 4l4-4"/><path d="M4 17v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg>
+        </a>
+      </div>
     </div>
   </aside>
 
@@ -719,47 +856,75 @@
 
     <section id="acerca" class="panel active">
       <div class="acerca-inner">
-        <div class="eyebrow">Perfil</div>
-        <h2>Acerca de mí</h2>
+        <div class="eyebrow">Perfil profesional</div>
+        <h2>Acerca de <span class="accent-word">mí</span></h2>
 
         <div class="hero-row">
           <div class="hero-text">
             <p class="lead" id="acercaLead">Cargando…</p>
           </div>
           <div class="hero-visual" id="heroVisual" aria-hidden="true">
-            <svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
+            <svg viewBox="0 0 260 220" xmlns="http://www.w3.org/2000/svg">
               <defs>
-                <radialGradient id="hvGlow" cx="50%" cy="45%" r="60%">
-                  <stop offset="0%" stop-color="var(--accent)" stop-opacity="0.5"/>
+                <radialGradient id="hvGlow" cx="55%" cy="45%" r="60%">
+                  <stop offset="0%" stop-color="var(--accent)" stop-opacity="0.45"/>
                   <stop offset="100%" stop-color="var(--accent)" stop-opacity="0"/>
                 </radialGradient>
+                <linearGradient id="hvLayer1" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stop-color="#3B6E4F"/><stop offset="100%" stop-color="#1F3D2C"/>
+                </linearGradient>
+                <linearGradient id="hvLayer2" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stop-color="var(--accent-2)"/><stop offset="100%" stop-color="var(--accent)"/>
+                </linearGradient>
+                <linearGradient id="hvLayer3" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stop-color="#E85D75"/><stop offset="100%" stop-color="#7B4CC7"/>
+                </linearGradient>
               </defs>
-              <circle cx="120" cy="115" r="95" fill="url(#hvGlow)"/>
-              <!-- curvas de nivel -->
-              <g fill="none" stroke="var(--accent)" stroke-width="1">
-                <ellipse cx="120" cy="120" rx="40" ry="26" opacity=".55"/>
-                <ellipse cx="120" cy="120" rx="60" ry="40" opacity=".4"/>
-                <ellipse cx="120" cy="120" rx="80" ry="55" opacity=".28"/>
-                <ellipse cx="120" cy="120" rx="100" ry="70" opacity=".16"/>
+
+              <circle cx="140" cy="110" r="100" fill="url(#hvGlow)"/>
+
+              <!-- estrellas / puntos distantes -->
+              <g fill="var(--accent-2)" opacity=".5">
+                <circle cx="30" cy="30" r="1.4"/><circle cx="60" cy="18" r="1"/>
+                <circle cx="230" cy="40" r="1.3"/><circle cx="245" cy="70" r="1"/>
+                <circle cx="20" cy="120" r="1.1"/><circle cx="15" cy="170" r="1.4"/>
               </g>
-              <!-- malla UTM -->
-              <g stroke="var(--accent-2)" stroke-width=".6" opacity=".35">
-                <path d="M10 60h220M10 100h220M10 140h220M10 180h220"/>
-                <path d="M50 20v200M90 20v200M130 20v200M170 20v200M210 20v200"/>
+
+              <!-- capas GIS isométricas flotando -->
+              <g transform="translate(130 118) rotate(-18)" opacity=".95">
+                <ellipse cx="0" cy="34" rx="72" ry="26" fill="url(#hvLayer1)" opacity=".9"/>
+                <ellipse cx="0" cy="34" rx="72" ry="26" fill="none" stroke="var(--accent-2)" stroke-width=".6" opacity=".5"/>
+                <ellipse cx="0" cy="0" rx="72" ry="26" fill="url(#hvLayer2)" opacity=".85"/>
+                <ellipse cx="0" cy="0" rx="72" ry="26" fill="none" stroke="var(--accent-2)" stroke-width=".6" opacity=".6"/>
+                <ellipse cx="0" cy="-34" rx="72" ry="26" fill="url(#hvLayer3)" opacity=".85"/>
+                <ellipse cx="0" cy="-34" rx="72" ry="26" fill="none" stroke="var(--accent-2)" stroke-width=".6" opacity=".7"/>
+                <!-- malla sobre la capa superior -->
+                <g stroke="rgba(255,255,255,.35)" stroke-width=".5">
+                  <path d="M-60 -34h120M-72 -22h144M-72 -46h144"/>
+                  <path d="M-36 -55v42M0 -60v52M36 -55v42"/>
+                </g>
               </g>
-              <!-- capas GIS flotando -->
-              <g stroke="var(--accent)" stroke-width="1.3" fill="var(--accent)">
-                <rect x="55" y="150" width="80" height="52" rx="6" fill-opacity=".05" opacity=".8"/>
-                <rect x="75" y="120" width="80" height="52" rx="6" fill-opacity=".08" opacity=".9"/>
-                <rect x="95" y="90" width="80" height="52" rx="6" fill-opacity=".12"/>
+
+              <!-- líneas de conexión GNSS -->
+              <g stroke="var(--accent-2)" stroke-width=".8" opacity=".5" stroke-dasharray="2 3">
+                <path d="M198 55L165 84"/>
+                <path d="M198 55L225 95"/>
               </g>
-              <!-- puntos GNSS -->
               <g fill="var(--accent-2)">
-                <circle cx="70" cy="70" r="2.6"/>
-                <circle cx="175" cy="60" r="2.2"/>
-                <circle cx="185" cy="150" r="2.4"/>
-                <circle cx="60" cy="170" r="2"/>
-                <circle cx="150" cy="185" r="2.3"/>
+                <circle cx="198" cy="55" r="2.6"/>
+                <circle cx="165" cy="84" r="2"/>
+                <circle cx="225" cy="95" r="2"/>
+              </g>
+
+              <!-- satélite -->
+              <g transform="translate(202 46) rotate(24)" stroke="var(--accent)" stroke-width="1.4" fill="none">
+                <rect x="-5" y="-3" width="10" height="8" rx="1.5" fill="var(--accent)" fill-opacity=".25"/>
+                <path d="M-13 -8l-6-6M-13 5l-6 6M13 -8l6-6M13 5l6 6"/>
+                <path d="M-13 -8h-4v4M-13 5h-4v-4M13 -8h4v4M13 5h4v-4"/>
+              </g>
+              <g stroke="var(--accent)" stroke-width=".6" opacity=".4" fill="none">
+                <circle cx="202" cy="46" r="14"/>
+                <circle cx="202" cy="46" r="22"/>
               </g>
             </svg>
           </div>
@@ -767,23 +932,36 @@
 
         <div class="stats-grid" id="statsGrid"></div>
 
-        <div class="acerca-block">
-          <div class="lang-title">Tecnologías</div>
+        <div class="dash-card">
+          <div class="card-title">Tecnologías y herramientas</div>
           <div class="tech-carousel-wrap">
             <div class="tech-carousel" id="techCarousel"></div>
           </div>
         </div>
 
-        <div class="info-grid" id="infoGrid"></div>
+        <div class="dash-row">
+          <div class="dash-card">
+            <div class="card-title">Información</div>
+            <div class="info-grid" id="infoGrid"></div>
+          </div>
 
-        <div class="acerca-block">
-          <div class="lang-title">Especialidades</div>
-          <div class="spec-grid" id="specGrid"></div>
+          <div class="dash-card">
+            <div class="card-title">Especialidades</div>
+            <div class="spec-grid" id="specGrid"></div>
+          </div>
+
+          <div class="dash-card">
+            <div class="card-title">Señal de idiomas</div>
+            <div id="langBlock"></div>
+          </div>
         </div>
 
-        <div class="acerca-block">
-          <div class="lang-title">Idiomas</div>
-          <div id="langBlock"></div>
+        <div class="quote-card">
+          <svg class="quote-mark" viewBox="0 0 32 24" aria-hidden="true"><path d="M0 24V13.6C0 5.8 4.9.9 12.6 0l1 3.6C8.4 4.7 6 7.4 6 11h6v13H0zm18 0V13.6C18 5.8 22.9.9 30.6 0l1 3.6c-5.2 1.1-7.6 3.8-7.6 7.4h6v13H18z"/></svg>
+          <p id="acercaFrase">Transformo datos geoespaciales en información útil para la toma de decisiones y el desarrollo sostenible.</p>
+          <svg class="quote-terrain" viewBox="0 0 300 80" preserveAspectRatio="none" aria-hidden="true">
+            <path d="M0 80L40 40 70 62 110 20 150 55 190 30 230 60 260 38 300 80z"/>
+          </svg>
         </div>
       </div>
     </section>
@@ -869,57 +1047,63 @@
     "nombre": "José Manuel",
     "apellidos": "Velazco Ochoa",
     "rol": "Ing. Topógrafo Geomático",
+    "rol_etiqueta": "Ingeniero",
+    "rol_titulo": "Topógrafo Geomático",
+    "tagline": "Especialista en SIG y Análisis Espacial",
+    "disponible": true,
+    "disponibilidad_texto": "Disponible para trabajar",
     "foto": "assets/profile.jpg",
     "email": "velazcoochoajosémanuel@gmail.com",
     "telefono_display": "+52 814 359 7851",
     "telefono_link": "+528143597851",
-    "linkedin": "https://www.linkedin.com/in/josemanuelvelazcoochoa/"
+    "linkedin": "https://www.linkedin.com/in/josemanuelvelazcoochoa/",
+    "github": "",
+    "cv": "assets/CV_Jose_Manuel_Velazco_Ochoa.pdf"
   },
 
   "acerca": {
     "lead": "Ingeniero Topógrafo Geomático en etapa inicial, con formación en análisis geoespacial, Sistemas de Información Geográfica (SIG) y procesamiento de datos territoriales. Genero cartografía temática, ejecuto análisis espacial y aplico herramientas GIS para interpretar información geográfica y apoyar procesos de análisis territorial y ambiental.",
+    "frase": "Transformo datos geoespaciales en información útil para la toma de decisiones y el desarrollo sostenible.",
 
     "estadisticas": [
-      { "icono": "carpeta", "numero": 12, "sufijo": "+", "etiqueta": "Proyectos realizados" },
-      { "icono": "reloj", "numero": 4, "sufijo": "+", "etiqueta": "Años de experiencia" },
-      { "icono": "monitor", "numero": 8, "sufijo": "", "etiqueta": "Software dominados" },
-      { "icono": "mapa", "numero": 30, "sufijo": "+", "etiqueta": "Mapas elaborados" },
-      { "icono": "check", "numero": 100, "sufijo": "%", "etiqueta": "Disponibilidad" }
+      { "icono": "carpeta", "color": "blue", "numero": 12, "sufijo": "+", "etiqueta": "Proyectos realizados" },
+      { "icono": "reloj", "color": "violet", "numero": 4, "sufijo": "+", "etiqueta": "Años de experiencia" },
+      { "icono": "monitor", "color": "teal", "numero": 8, "sufijo": "", "etiqueta": "Software dominados" },
+      { "icono": "mapa", "color": "pink", "numero": 30, "sufijo": "+", "etiqueta": "Mapas elaborados" },
+      { "icono": "check", "color": "cyan", "numero": 100, "sufijo": "%", "etiqueta": "Disponibilidad" }
     ],
 
     "tecnologias": [
-      { "nombre": "ArcGIS Pro", "icono": "grid" },
-      { "nombre": "QGIS", "icono": "mapa" },
-      { "nombre": "Python", "icono": "codigo" },
-      { "nombre": "Civil 3D", "icono": "terreno" },
-      { "nombre": "Global Mapper", "icono": "globo" },
-      { "nombre": "Leica Infinity", "icono": "satelite" },
-      { "nombre": "Metashape", "icono": "dron" },
-      { "nombre": "GNSS", "icono": "pin" }
+      { "nombre": "ArcGIS Pro", "logo": "arcgis" },
+      { "nombre": "QGIS", "logo": "qgis" },
+      { "nombre": "Python", "logo": "python" },
+      { "nombre": "Civil 3D", "logo": "civil3d" },
+      { "nombre": "Leica Infinity", "logo": "leica" },
+      { "nombre": "Global Mapper", "logo": "globalmapper" },
+      { "nombre": "GNSS", "logo": "gnss" },
+      { "nombre": "Metashape", "logo": "metashape" }
     ],
 
     "info_personal": [
       { "icono": "pin", "etiqueta": "Ubicación", "valor": "Colima, México" },
       { "icono": "graduacion", "etiqueta": "Formación", "valor": "Universidad de Colima" },
-      { "icono": "monitor", "etiqueta": "Software", "valor": "8 herramientas" },
-      { "icono": "check", "etiqueta": "Disponibilidad", "valor": "Disponible para trabajar" }
+      { "icono": "monitor", "etiqueta": "Rol", "valor": "Ing. Topógrafo Geomático" },
+      { "icono": "check", "etiqueta": "Disponibilidad", "valor": "Inmediata" }
     ],
 
     "especialidades": [
-      { "nombre": "Cartografía", "icono": "mapa" },
-      { "nombre": "SIG", "icono": "grid" },
-      { "nombre": "Fotogrametría", "icono": "dron" },
-      { "nombre": "Análisis Espacial", "icono": "capas" },
-      { "nombre": "Geodesia", "icono": "globo" },
-      { "nombre": "Teledetección", "icono": "satelite" },
-      { "nombre": "Monitoreo Ambiental", "icono": "hoja" },
-      { "nombre": "Python", "icono": "codigo" }
+      { "nombre": "Cartografía Temática", "icono": "mapa", "color": "blue" },
+      { "nombre": "Análisis Espacial", "icono": "grid", "color": "violet" },
+      { "nombre": "Fotogrametría", "icono": "dron", "color": "orange" },
+      { "nombre": "Teledetección", "icono": "satelite", "color": "cyan" },
+      { "nombre": "Geodesia", "icono": "globo", "color": "purple" },
+      { "nombre": "Monitoreo Ambiental", "icono": "hoja", "color": "green" }
     ],
 
     "idiomas": [
-      { "nombre": "Español", "porcentaje": 100, "nivel": "C2 · Nativo" },
-      { "nombre": "Inglés", "porcentaje": 35, "nivel": "A2 · en formación" },
-      { "nombre": "Portugués", "porcentaje": 25, "nivel": "A1 · en formación" }
+      { "nombre": "Español", "porcentaje": 100, "nivel": "Nativo" },
+      { "nombre": "Inglés", "porcentaje": 35, "nivel": "A2 · En formación" },
+      { "nombre": "Portugués", "porcentaje": 25, "nivel": "A1 · Básico" }
     ]
   },
 
@@ -1141,7 +1325,6 @@
     }
   ]
 }
-
 </script>
 <script src="render.js"></script>
 <script>

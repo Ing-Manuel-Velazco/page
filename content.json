@@ -3,57 +3,63 @@
     "nombre": "José Manuel",
     "apellidos": "Velazco Ochoa",
     "rol": "Ing. Topógrafo Geomático",
+    "rol_etiqueta": "Ingeniero",
+    "rol_titulo": "Topógrafo Geomático",
+    "tagline": "Especialista en SIG y Análisis Espacial",
+    "disponible": true,
+    "disponibilidad_texto": "Disponible para trabajar",
     "foto": "assets/profile.jpg",
     "email": "velazcoochoajosémanuel@gmail.com",
     "telefono_display": "+52 814 359 7851",
     "telefono_link": "+528143597851",
-    "linkedin": "https://www.linkedin.com/in/josemanuelvelazcoochoa/"
+    "linkedin": "https://www.linkedin.com/in/josemanuelvelazcoochoa/",
+    "github": "",
+    "cv": "assets/CV_Jose_Manuel_Velazco_Ochoa.pdf"
   },
 
   "acerca": {
     "lead": "Ingeniero Topógrafo Geomático en etapa inicial, con formación en análisis geoespacial, Sistemas de Información Geográfica (SIG) y procesamiento de datos territoriales. Genero cartografía temática, ejecuto análisis espacial y aplico herramientas GIS para interpretar información geográfica y apoyar procesos de análisis territorial y ambiental.",
+    "frase": "Transformo datos geoespaciales en información útil para la toma de decisiones y el desarrollo sostenible.",
 
     "estadisticas": [
-      { "icono": "carpeta", "numero": 12, "sufijo": "+", "etiqueta": "Proyectos realizados" },
-      { "icono": "reloj", "numero": 4, "sufijo": "+", "etiqueta": "Años de experiencia" },
-      { "icono": "monitor", "numero": 8, "sufijo": "", "etiqueta": "Software dominados" },
-      { "icono": "mapa", "numero": 30, "sufijo": "+", "etiqueta": "Mapas elaborados" },
-      { "icono": "check", "numero": 100, "sufijo": "%", "etiqueta": "Disponibilidad" }
+      { "icono": "carpeta", "color": "blue", "numero": 12, "sufijo": "+", "etiqueta": "Proyectos realizados" },
+      { "icono": "reloj", "color": "violet", "numero": 4, "sufijo": "+", "etiqueta": "Años de experiencia" },
+      { "icono": "monitor", "color": "teal", "numero": 8, "sufijo": "", "etiqueta": "Software dominados" },
+      { "icono": "mapa", "color": "pink", "numero": 30, "sufijo": "+", "etiqueta": "Mapas elaborados" },
+      { "icono": "check", "color": "cyan", "numero": 100, "sufijo": "%", "etiqueta": "Disponibilidad" }
     ],
 
     "tecnologias": [
-      { "nombre": "ArcGIS Pro", "icono": "grid" },
-      { "nombre": "QGIS", "icono": "mapa" },
-      { "nombre": "Python", "icono": "codigo" },
-      { "nombre": "Civil 3D", "icono": "terreno" },
-      { "nombre": "Global Mapper", "icono": "globo" },
-      { "nombre": "Leica Infinity", "icono": "satelite" },
-      { "nombre": "Metashape", "icono": "dron" },
-      { "nombre": "GNSS", "icono": "pin" }
+      { "nombre": "ArcGIS Pro", "logo": "arcgis" },
+      { "nombre": "QGIS", "logo": "qgis" },
+      { "nombre": "Python", "logo": "python" },
+      { "nombre": "Civil 3D", "logo": "civil3d" },
+      { "nombre": "Leica Infinity", "logo": "leica" },
+      { "nombre": "Global Mapper", "logo": "globalmapper" },
+      { "nombre": "GNSS", "logo": "gnss" },
+      { "nombre": "Metashape", "logo": "metashape" }
     ],
 
     "info_personal": [
       { "icono": "pin", "etiqueta": "Ubicación", "valor": "Colima, México" },
       { "icono": "graduacion", "etiqueta": "Formación", "valor": "Universidad de Colima" },
-      { "icono": "monitor", "etiqueta": "Software", "valor": "8 herramientas" },
-      { "icono": "check", "etiqueta": "Disponibilidad", "valor": "Disponible para trabajar" }
+      { "icono": "monitor", "etiqueta": "Rol", "valor": "Ing. Topógrafo Geomático" },
+      { "icono": "check", "etiqueta": "Disponibilidad", "valor": "Inmediata" }
     ],
 
     "especialidades": [
-      { "nombre": "Cartografía", "icono": "mapa" },
-      { "nombre": "SIG", "icono": "grid" },
-      { "nombre": "Fotogrametría", "icono": "dron" },
-      { "nombre": "Análisis Espacial", "icono": "capas" },
-      { "nombre": "Geodesia", "icono": "globo" },
-      { "nombre": "Teledetección", "icono": "satelite" },
-      { "nombre": "Monitoreo Ambiental", "icono": "hoja" },
-      { "nombre": "Python", "icono": "codigo" }
+      { "nombre": "Cartografía Temática", "icono": "mapa", "color": "blue" },
+      { "nombre": "Análisis Espacial", "icono": "grid", "color": "violet" },
+      { "nombre": "Fotogrametría", "icono": "dron", "color": "orange" },
+      { "nombre": "Teledetección", "icono": "satelite", "color": "cyan" },
+      { "nombre": "Geodesia", "icono": "globo", "color": "purple" },
+      { "nombre": "Monitoreo Ambiental", "icono": "hoja", "color": "green" }
     ],
 
     "idiomas": [
-      { "nombre": "Español", "porcentaje": 100, "nivel": "C2 · Nativo" },
-      { "nombre": "Inglés", "porcentaje": 35, "nivel": "A2 · en formación" },
-      { "nombre": "Portugués", "porcentaje": 25, "nivel": "A1 · en formación" }
+      { "nombre": "Español", "porcentaje": 100, "nivel": "Nativo" },
+      { "nombre": "Inglés", "porcentaje": 35, "nivel": "A2 · En formación" },
+      { "nombre": "Portugués", "porcentaje": 25, "nivel": "A1 · Básico" }
     ]
   },
 
