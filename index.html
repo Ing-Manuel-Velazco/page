@@ -39,7 +39,6 @@ section{padding-block:clamp(4.5rem,9vw,8rem);position:relative}
 .nav ul{display:flex;gap:1.8rem;list-style:none}
 .nav ul a{font:500 .68rem var(--mono);letter-spacing:.18em;color:var(--mut);padding:.35rem 0;border-bottom:2px solid transparent;transition:color .3s,border-color .3s}
 .nav ul a:hover,.nav ul a.act{color:var(--acc);border-color:var(--acc)}
-/* ===== TOGGLE DE TEMA (SVG profesional) ===== */
 .theme-toggle{position:relative;background:none;border:1px solid var(--ln);color:var(--bone);width:40px;height:40px;border-radius:10px;cursor:pointer;transition:background .3s,border-color .3s,transform .3s;flex-shrink:0}
 .theme-toggle:hover{background:var(--bg2);border-color:var(--acc);transform:translateY(-2px)}
 .theme-toggle .ic{position:absolute;top:50%;left:50%;width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transform:translate(-50%,-50%);transition:opacity .35s ease,transform .55s cubic-bezier(.4,0,.2,1)}
@@ -126,7 +125,7 @@ body.ready .hr{opacity:1;transform:none}
 .u{font:500 .68rem var(--mono);letter-spacing:.26em;color:var(--mut);text-transform:uppercase}
 .degree h3{font:700 clamp(1.7rem,3.6vw,2.7rem)/1.1 var(--disp);margin:1rem 0 1.3rem;text-transform:uppercase;background:var(--grad2);-webkit-background-clip:text;background-clip:text;color:transparent}
 .dmeta{display:flex;flex-wrap:wrap;gap:.7rem}
-.verify{display:inline-flex;align-items:center;gap:.6rem;background:var(--grad);color:#fff;padding:.55rem 1rem;border-radius:6px;font:500 .68rem var(--mono);letter-spacing:.14em;margin-top:1.3rem;transition:transform .3s,box-shadow .3s;text-transform:uppercase}
+.verify{display:inline-flex;align-items:center;gap:.6rem;background:var(--grad);color:#fff;padding:.55rem 1rem;border-radius:6px;border:0;cursor:pointer;font:500 .68rem var(--mono);letter-spacing:.14em;margin-top:1.3rem;transition:transform .3s,box-shadow .3s;text-transform:uppercase}
 .verify:hover{transform:translateY(-2px);box-shadow:0 10px 25px rgba(59,130,246,.3)}
 .verify::before{content:'✓';font-weight:700;font-size:1.1em}
 .tesis blockquote{font-size:.98rem;color:var(--bone);border-left:3px solid var(--acc);padding-left:1.1rem;margin:1.1rem 0;font-style:italic}
@@ -173,6 +172,7 @@ body.ready .hr{opacity:1;transform:none}
 .modal.on{opacity:1;visibility:visible}
 .modal-in{background:var(--glass);backdrop-filter:blur(24px);border:1px solid var(--ln);border-radius:16px;max-width:960px;width:100%;max-height:94vh;overflow-y:auto;position:relative;transform:scale(.92) translateY(20px);transition:transform .4s cubic-bezier(.16,1,.3,1)}
 .modal.on .modal-in{transform:scale(1) translateY(0)}
+.vmodal-in{max-width:1100px}
 .modal-close{position:absolute;top:.9rem;right:.9rem;background:var(--bg2);border:1px solid var(--ln);color:var(--bone);width:44px;height:44px;border-radius:50%;cursor:pointer;font-size:1.4rem;transition:all .3s;z-index:10;display:grid;place-items:center}
 .modal-close:hover{background:var(--acc);color:#fff;border-color:var(--acc);transform:rotate(90deg)}
 .modal-head{padding:clamp(1.2rem,2.5vw,2rem) clamp(1.2rem,2.5vw,2rem) .5rem;display:flex;flex-wrap:wrap;align-items:baseline;gap:.8rem}
@@ -184,7 +184,15 @@ body.ready .hr{opacity:1;transform:none}
 .img-view img{max-width:100%;max-height:70vh;height:auto;border-radius:10px;box-shadow:0 8px 30px rgba(0,0,0,.4);background:#fff;pointer-events:none;-webkit-user-drag:none;-webkit-touch-callout:none}
 .img-error{padding:2.5rem 1.5rem;text-align:center;color:#EF4444;line-height:1.7;font-size:.9rem}
 .img-error code{background:var(--bg2);padding:.15rem .4rem;border-radius:4px;color:var(--acc)}
+/* Visor interno de verificación de titulación */
+.frame-view{position:relative;margin:0 clamp(1.2rem,2.5vw,2rem) 1.2rem;border:1px solid var(--ln);border-radius:10px;overflow:hidden;background:#fff;height:70vh}
+.frame-view iframe{width:100%;height:100%;border:0;display:block}
+.frame-loading{position:absolute;inset:0;display:grid;place-items:center;background:var(--bg2);color:var(--mut);font:500 .8rem var(--mono);letter-spacing:.08em;z-index:2;transition:opacity .4s;text-align:center}
+.frame-loading.hide{opacity:0;pointer-events:none}
+@keyframes spin{to{transform:rotate(360deg)}}
+.frame-loading .spin{width:36px;height:36px;border:3px solid var(--ln);border-top-color:var(--acc);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto .8rem}
 .modal-foot{padding:.5rem clamp(1.2rem,2.5vw,2rem) 1.6rem;font-size:.85rem;color:var(--mut);border-top:1px solid var(--ln);margin-top:.5rem;padding-top:1rem}
+.modal-foot a{color:var(--acc)}
 .award{display:grid;grid-template-columns:auto 1fr;gap:2rem;align-items:center;padding:clamp(1.8rem,3.2vw,2.6rem)}
 .medal{width:88px;height:88px;background:var(--grad);display:grid;place-items:center;transform:rotate(45deg);border-radius:12px}
 .medal span{transform:rotate(-45deg);font-size:2rem;color:#fff}
@@ -198,7 +206,7 @@ body.ready .hr{opacity:1;transform:none}
 .c-data b{display:block;color:var(--bone);font-weight:500;margin-top:.4rem;font-size:1.05em}
 footer{border-top:1px solid var(--ln);padding:1.8rem 0;background:var(--bg2)}
 footer .wrap{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;font:500 .62rem var(--mono);letter-spacing:.18em;color:var(--mut);text-transform:uppercase}
-@media(max-width:960px){.two,.xpgrid,.edu{grid-template-columns:1fr}.stick{position:static}.nav ul{display:none}.xp{grid-template-columns:1fr;gap:.6rem}.rail,.railfill,.xp::before{display:none}.award{grid-template-columns:1fr}}
+@media(max-width:960px){.two,.xpgrid,.edu{grid-template-columns:1fr}.stick{position:static}.nav ul{display:none}.xp{grid-template-columns:1fr;gap:.6rem}.rail,.railfill,.xp::before{display:none}.award{grid-template-columns:1fr}.frame-view{height:60vh}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001s!important;transition-duration:.001s!important}html{scroll-behavior:auto}.reveal,.hr{opacity:1!important;transform:none!important}.trk i{transform:scaleX(var(--v))!important}}
 @media print{.modal,.nav,.progress{display:none!important}body{background:#fff;color:#111}}
 </style>
@@ -334,7 +342,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;
           <span class="pill"><i></i>TITULADO</span>
           <span class="pill">CÉDULA Nº 15282631</span>
         </div>
-        <a href="https://titulacion.ucol.mx/validar/186120e6-cf70-41bb-bc05-53019a2a3632" target="_blank" rel="noopener" class="verify">VERIFICAR TITULACIÓN</a>
+        <button class="verify" id="verifybtn" type="button">VERIFICAR TITULACIÓN</button>
       </div>
       <div class="panel tesis reveal" style="--d:.15s">
         <p class="u">PRÁCTICA PROFESIONAL · PROYECTO APLICADO</p>
@@ -397,12 +405,30 @@ footer .wrap{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;
   </div>
 </section>
 
+<!-- Modal de certificados -->
 <div class="modal" id="modal" role="dialog" aria-modal="true">
   <div class="modal-in">
     <button class="modal-close" id="mclose" aria-label="Cerrar">✕</button>
     <div class="modal-head" id="mhead"></div>
     <div class="img-view" id="imgview"></div>
     <div class="modal-foot" id="mfoot"></div>
+  </div>
+</div>
+
+<!-- Modal de verificación de titulación (interno) -->
+<div class="modal" id="vmodal" role="dialog" aria-modal="true">
+  <div class="modal-in vmodal-in">
+    <button class="modal-close" id="vclose" aria-label="Cerrar">✕</button>
+    <div class="modal-head">
+      <span class="modal-badge">VERIFICACIÓN OFICIAL</span>
+      <h3>Título Profesional · Universidad de Colima</h3>
+      <span class="iss">Ingeniero Topógrafo Geomático · Cédula Nº 15282631</span>
+    </div>
+    <div class="frame-view">
+      <div class="frame-loading" id="vload"><div><div class="spin"></div>Conectando con titulacion.ucol.mx…</div></div>
+      <iframe id="vframe" title="Verificación de titulación · Universidad de Colima"></iframe>
+    </div>
+    <div class="modal-foot">Fuente oficial: Universidad de Colima · Si el sitio no permite mostrarse incrustado, <a href="https://titulacion.ucol.mx/validar/186120e6-cf70-41bb-bc05-53019a2a3632" target="_blank" rel="noopener">ábrelo aquí ↗</a></div>
   </div>
 </div>
 
@@ -460,13 +486,14 @@ footer .wrap{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;
    ============================================================ */
 const CARPETA="certificados";
 const POR_PAGINA=8;
+const URL_TITULACION="https://titulacion.ucol.mx/validar/186120e6-cf70-41bb-bc05-53019a2a3632";
 /* ============ FIN DE LA ZONA EDITABLE ============ */
 
 const RM=matchMedia("(prefers-reduced-motion:reduce)").matches;
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 let CERTS=[],currentPage=1;
 
-/* TEMA CLARO/OSCURO (iconos SVG; el CSS controla cuál se ve) */
+/* TEMA CLARO/OSCURO (iconos SVG) */
 const thm=$("#thm"),root=document.documentElement;
 const guardado=localStorage.getItem("theme");
 root.dataset.theme=(guardado==="light"||guardado==="dark")?guardado:"dark";
@@ -685,7 +712,7 @@ fyear.addEventListener("change",()=>{currentPage=1;renderGrid();});
 fiss.addEventListener("change",()=>{currentPage=1;renderGrid();});
 fsearch.addEventListener("input",()=>{currentPage=1;renderGrid();});
 
-/* MODAL */
+/* MODAL CERTIFICADOS */
 const modal=$("#modal"),mhead=$("#mhead"),mfoot=$("#mfoot"),imgview=$("#imgview"),mclose=$("#mclose");
 function openModal(c){
   const year=(c.fecha||"").slice(0,4);
@@ -701,8 +728,26 @@ function openModal(c){
 function closeModal(){modal.classList.remove("on");document.body.style.overflow="";imgview.innerHTML="";}
 mclose.addEventListener("click",closeModal);
 modal.addEventListener("click",e=>{if(e.target===modal)closeModal();});
+
+/* VERIFICACIÓN DE TITULACIÓN (interna, sin pestaña nueva) */
+const vmodal=$("#vmodal"),vframe=$("#vframe"),vload=$("#vload");
+$("#verifybtn").addEventListener("click",()=>{
+  vload.classList.remove("hide");
+  vmodal.classList.add("on");document.body.style.overflow="hidden";
+  vframe.src=URL_TITULACION;
+});
+vframe.addEventListener("load",()=>vload.classList.add("hide"));
+function closeV(){vmodal.classList.remove("on");document.body.style.overflow="";
+  setTimeout(()=>{vframe.src="about:blank";},300);}
+$("#vclose").addEventListener("click",closeV);
+vmodal.addEventListener("click",e=>{if(e.target===vmodal)closeV();});
+
+/* TECLADO (ambos modales) */
 addEventListener("keydown",e=>{
-  if(e.key==="Escape"&&modal.classList.contains("on"))closeModal();
+  if(e.key==="Escape"){
+    if(modal.classList.contains("on"))closeModal();
+    if(vmodal.classList.contains("on"))closeV();
+  }
   if(modal.classList.contains("on")&&(e.ctrlKey||e.metaKey)&&["s","p","c","x"].includes(e.key.toLowerCase()))e.preventDefault();
 });
 
