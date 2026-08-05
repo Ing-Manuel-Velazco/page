@@ -172,7 +172,7 @@ body.ready .hr{opacity:1;transform:none}
 .cert-card time{display:block;font:500 .68rem var(--mono);letter-spacing:.2em;color:var(--acc)}
 .cert-card .view{position:absolute;bottom:1rem;right:1rem;background:var(--grad);color:#fff;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;opacity:0;transform:scale(.8);transition:all .3s;font-size:1.05rem}
 .cert-card:hover .view{opacity:1;transform:scale(1)}
-#certificados,.modal{-webkit-user-select:none;user-select:none}
+#certificados,.modal,#vmodal{-webkit-user-select:none;user-select:none}
 .no-results{text-align:center;padding:3rem;color:var(--mut);font:500 .85rem var(--mono)}
 .pagination{display:flex;justify-content:center;align-items:center;gap:.5rem;margin-top:2.2rem;flex-wrap:wrap}
 .pg-btn{min-width:42px;height:42px;padding:0 .7rem;background:var(--pn);border:1px solid var(--ln);color:var(--bone);border-radius:8px;font:500 .8rem var(--mono);cursor:pointer;transition:all .25s}
@@ -200,12 +200,12 @@ body.ready .hr{opacity:1;transform:none}
 .vtoolbar{display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:.4rem clamp(1.2rem,2.5vw,2rem) .8rem;font:500 .66rem var(--mono);letter-spacing:.08em;color:var(--mut)}
 .vtoolbar a{color:var(--acc);white-space:nowrap}
 .vtoolbar a:hover{text-decoration:underline}
-.frame-view{position:relative;margin:0 clamp(1.2rem,2.5vw,2rem) 1.2rem;border:1px solid var(--ln);border-radius:10px;overflow:auto;background:var(--bg2);height:70vh}
-.frame-view iframe{width:100%;height:100%;border:0;display:block}
-#vshot{width:100%;height:auto;display:none;border:0}
-.frame-loading{position:sticky;top:0;display:grid;place-items:center;background:var(--bg2);color:var(--mut);font:500 .8rem var(--mono);letter-spacing:.08em;z-index:2;transition:opacity .4s;text-align:center;min-height:100%}
-.frame-loading small{display:block;margin-top:.6rem;color:var(--mut);opacity:.8}
-.frame-loading.hide{opacity:0;pointer-events:none;position:absolute;inset:0}
+.frame-view{position:relative;margin:0 clamp(1.2rem,2.5vw,2rem) 1.2rem;border:1px solid var(--ln);border-radius:10px;overflow:auto;background:var(--bg2);height:70vh;-webkit-user-select:none;user-select:none}
+/* Captura blindada: sin interacción directa sobre la imagen */
+#vshot{width:100%;height:auto;display:none;border:0;pointer-events:none;-webkit-user-drag:none;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
+.frame-loading{position:absolute;inset:0;display:grid;place-items:center;background:var(--bg2);color:var(--mut);font:500 .8rem var(--mono);letter-spacing:.08em;z-index:2;transition:opacity .45s;text-align:center}
+.frame-loading small{display:block;margin-top:.7rem;color:var(--mut);opacity:.75;font-size:.62rem;letter-spacing:.12em}
+.frame-loading.hide{opacity:0;pointer-events:none}
 @keyframes spin{to{transform:rotate(360deg)}}
 .frame-loading .spin{width:36px;height:36px;border:3px solid var(--ln);border-top-color:var(--acc);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto .8rem}
 .frame-fallback{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;background:var(--bg2);text-align:center;padding:2rem;z-index:3}
@@ -458,17 +458,22 @@ footer .wrap{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;
       <span class="iss">Ingeniero Topógrafo Geomático · Cédula Nº 15282631</span>
     </div>
     <div class="vtoolbar">
-      <span id="vstatus">Preparando vista…</span>
+      <span id="vstatus">Listo para verificar</span>
       <a href="https://titulacion.ucol.mx/validar/186120e6-cf70-41bb-bc05-53019a2a3632" target="_blank" rel="noopener">Página oficial ↗</a>
     </div>
-    <div class="frame-view" id="fview">
-      <div class="frame-loading" id="vload"><div><div class="spin"></div>Conectando con la verificación…<small>Generando vista segura de la página oficial.</small></div></div>
-      <iframe id="vframe" title="Verificación de titulación · Universidad de Colima" referrerpolicy="no-referrer" style="display:none"></iframe>
-      <img id="vshot" alt="Vista de la página oficial de verificación">
+    <div class="frame-view">
+      <div class="frame-loading" id="vload">
+        <div>
+          <div class="spin"></div>
+          <span id="vmsg">Conectando con titulacion.ucol.mx…</span>
+          <small>CÓDIGO DE VERIFICACIÓN: 186120e6-cf70-41bb-bc05-53019a2a3632</small>
+        </div>
+      </div>
+      <img id="vshot" alt="Verificación oficial de titulación · Universidad de Colima">
       <div class="frame-fallback" id="vfall" hidden>
         <div class="ff-icon">🛡️</div>
-        <h4>El servidor oficial protege su contenido</h4>
-        <p>La Universidad de Colima bloquea la incrustación externa por seguridad. Tu verificación sigue disponible al instante:</p>
+        <h4>Captura local no encontrada</h4>
+        <p>Guarda tu captura como <b>verificacion.png</b> (o <b>verificacion.jpg</b>) junto al index.html para mostrarla aquí. Mientras tanto, la fuente oficial sigue disponible:</p>
         <div class="ff-actions">
           <a class="btn primary" href="https://titulacion.ucol.mx/validar/186120e6-cf70-41bb-bc05-53019a2a3632" target="_blank" rel="noopener">ABRIR VERIFICACIÓN OFICIAL ↗</a>
           <button class="btn ghost" id="vcopy" type="button">COPIAR ENLACE</button>
@@ -523,6 +528,12 @@ footer .wrap{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;
 
 <script>
 (()=>{"use strict";
+/* ===== SIEMPRE ENTRAR AL INICIO (sin recordar scroll ni anclas) ===== */
+if("scrollRestoration" in history)history.scrollRestoration="manual";
+if(location.hash)history.replaceState(null,"",location.pathname+location.search);
+window.scrollTo(0,0);
+addEventListener("load",()=>window.scrollTo(0,0));
+
 const CARPETA="certificados";
 const POR_PAGINA=8;
 const URL_TITULACION="https://titulacion.ucol.mx/validar/186120e6-cf70-41bb-bc05-53019a2a3632";
@@ -626,7 +637,6 @@ document.addEventListener("click",e=>{
   navegarA(hash);
   history.replaceState(null,"",hash);
 });
-if(location.hash)setTimeout(()=>navegarA(location.hash),60);
 
 /* LECTURA ARCHIVOS */
 const MESES={enero:"01",febrero:"02",marzo:"03",abril:"04",mayo:"05",junio:"06",julio:"07",agosto:"08",septiembre:"09",setiembre:"09",octubre:"10",noviembre:"11",diciembre:"12",ene:"01",feb:"02",mar:"03",abr:"04",may:"05",jun:"06",jul:"07",ago:"08",sep:"09",oct:"10",nov:"11",dic:"12",january:"01",february:"02",march:"03",april:"04",june:"06",july:"07",august:"08",october:"10",november:"11",december:"12"};
@@ -799,63 +809,37 @@ function closeModal(){modal.classList.remove("on");document.body.style.overflow=
 mclose.addEventListener("click",closeModal);
 modal.addEventListener("click",e=>{if(e.target===modal)closeModal();});
 
-/* ===== VERIFICACIÓN: proxy propio → captura externa → respaldo ===== */
-const vmodal=$("#vmodal"),vframe=$("#vframe"),vload=$("#vload"),vfall=$("#vfall"),
-      vstatus=$("#vstatus"),vshot=$("#vshot");
-let vTimer=null,vShotTried=false;
-
-async function proxyDisponible(){
-  try{
-    const r=await fetch("proxy.php?ping=1",{cache:"no-store"});
-    return r.ok&&(await r.text()).trim()==="ok";
-  }catch(e){return false;}
-}
-function vShot(){
-  vframe.style.display="none";
-  vshot.style.display="block";
-  vstatus.textContent="Vista capturada de la página oficial";
-  vShotTried=false;
-  vshot.src="https://s.wordpress.com/mshots/v1/"+encodeURIComponent(URL_TITULACION)+"?w=1100";
-  clearTimeout(vTimer);
-  vTimer=setTimeout(()=>{
-    if(!vShotTried&&vload.classList.contains("hide")===false){
-      vShotTried=true;
-      vshot.src="https://image.thum.io/get/width/1100/"+URL_TITULACION;
-    }
-  },12000);
-}
-async function abrirV(){
-  clearTimeout(vTimer);
+/* ===== VERIFICACIÓN: animación de carga → captura local blindada ===== */
+const vmodal=$("#vmodal"),vload=$("#vload"),vfall=$("#vfall"),
+      vstatus=$("#vstatus"),vshot=$("#vshot"),vmsg=$("#vmsg");
+let vTimers=[];
+const vClear=()=>{vTimers.forEach(clearTimeout);vTimers=[];};
+function abrirV(){
+  vClear();
   vfall.hidden=true;
-  vframe.style.display="none";vframe.src="about:blank";
   vshot.style.display="none";vshot.removeAttribute("src");
   vload.classList.remove("hide");
-  vstatus.textContent="Preparando vista…";
+  vstatus.textContent="Verificación en curso…";
   vmodal.classList.add("on");document.body.style.overflow="hidden";
-  if(await proxyDisponible()){
-    vstatus.textContent="Conectando vista en vivo (servida por tu sitio)…";
-    vframe.style.display="block";
-    vframe.src="proxy.php";
-    vTimer=setTimeout(()=>{if(!vload.classList.contains("hide"))vShot();},10000);
-  }else{
-    vShot();
-  }
+  const seq=["Conectando con titulacion.ucol.mx…","Validando código de verificación…","Mostrando resultado…"];
+  seq.forEach((m,i)=>vTimers.push(setTimeout(()=>{vmsg.textContent=m;},i*700)));
+  vTimers.push(setTimeout(()=>{vshot.src="verificacion.png";},seq.length*700+200));
 }
-vframe.addEventListener("load",()=>{
-  if(vframe.src.indexOf("proxy.php")!==-1){
-    clearTimeout(vTimer);vload.classList.add("hide");
-    vstatus.textContent="Verificación en vivo · servida por tu sitio";
-  }
+vshot.addEventListener("load",()=>{
+  vClear();
+  vload.classList.add("hide");
+  vshot.style.display="block";
+  vstatus.textContent="Verificación oficial · Universidad de Colima";
 });
-vshot.addEventListener("load",()=>{vShotTried=true;clearTimeout(vTimer);vload.classList.add("hide");});
 vshot.addEventListener("error",()=>{
-  if(!vShotTried){
-    vShotTried=true;clearTimeout(vTimer);
-    vshot.src="https://image.thum.io/get/width/1100/"+URL_TITULACION;
+  if((vshot.getAttribute("src")||"")==="verificacion.png"){
+    vshot.src="verificacion.jpg";
   }else{
-    clearTimeout(vTimer);vload.classList.add("hide");
-    vshot.style.display="none";vfall.hidden=false;
-    vstatus.textContent="Sin vista disponible";
+    vClear();
+    vload.classList.add("hide");
+    vshot.style.display="none";
+    vfall.hidden=false;
+    vstatus.textContent="Captura local no disponible";
   }
 });
 $("#verifybtn").addEventListener("click",abrirV);
@@ -865,23 +849,30 @@ $("#vcopy").addEventListener("click",async e=>{
   setTimeout(()=>b.textContent=o,2200);
 });
 function closeV(){vmodal.classList.remove("on");document.body.style.overflow="";
-  clearTimeout(vTimer);
-  setTimeout(()=>{vframe.src="about:blank";vframe.style.display="none";vshot.style.display="none";},300);}
+  vClear();
+  setTimeout(()=>{vshot.style.display="none";vshot.removeAttribute("src");},300);}
 $("#vclose").addEventListener("click",closeV);
 vmodal.addEventListener("click",e=>{if(e.target===vmodal)closeV();});
+
+/* ===== PROTECCIÓN GLOBAL (certificados + ambos modales) ===== */
+const proteger=e=>{if(e.target.closest("#certificados,#modal,#vmodal"))e.preventDefault();};
+document.addEventListener("contextmenu",proteger);
+document.addEventListener("dragstart",proteger);
+document.addEventListener("copy",proteger);
+document.addEventListener("dblclick",proteger);
 
 addEventListener("keydown",e=>{
   if(e.key==="Escape"){
     if(modal.classList.contains("on"))closeModal();
     if(vmodal.classList.contains("on"))closeV();
+    return;
   }
-  if(modal.classList.contains("on")&&(e.ctrlKey||e.metaKey)&&["s","p","c","x"].includes(e.key.toLowerCase()))e.preventDefault();
+  const protegido=modal.classList.contains("on")||vmodal.classList.contains("on");
+  if(protegido&&(e.ctrlKey||e.metaKey)){
+    const k=e.key.toLowerCase();
+    if(["s","p","c","x","u","a"].includes(k)||(e.shiftKey&&["i","j","c","s"].includes(k)))e.preventDefault();
+  }
 });
-
-const proteger=e=>{if(e.target.closest("#certificados,#modal"))e.preventDefault();};
-document.addEventListener("contextmenu",proteger);
-document.addEventListener("dragstart",proteger);
-document.addEventListener("copy",proteger);
 
 $("#copymail").addEventListener("click",async e=>{
   const s=e.currentTarget.querySelector("span"),o=s.textContent,mail="velazcoochoajosmanuel@gmail.com";
