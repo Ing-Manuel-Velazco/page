@@ -21,9 +21,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
 a{color:inherit;text-decoration:none}
 .wrap{max-width:1180px;margin-inline:auto;padding-inline:clamp(1.2rem,4vw,2.6rem);position:relative;z-index:1}
 section{padding-block:clamp(4.5rem,9vw,8rem);position:relative}
-.lead,.quote,.xp li,.tesis blockquote,.tesis p,.award p{
-  text-align:justify;text-justify:inter-word;hyphens:auto;
-}
+.lead,.quote,.xp li,.tesis blockquote,.tesis p,.award p{text-align:justify;text-justify:inter-word;hyphens:auto}
 #boot{position:fixed;inset:0;z-index:200;background:var(--bg);display:grid;place-items:center;transition:opacity .8s,visibility .8s}
 #boot.exit{opacity:0;visibility:hidden}
 .boot-in{width:min(620px,88vw);text-align:center}
@@ -199,15 +197,15 @@ body.ready .hr{opacity:1;transform:none}
 .img-view img{max-width:100%;max-height:70vh;height:auto;border-radius:10px;box-shadow:0 8px 30px rgba(0,0,0,.4);background:#fff;pointer-events:none;-webkit-user-drag:none;-webkit-touch-callout:none}
 .img-error{padding:2.5rem 1.5rem;text-align:center;color:#EF4444;line-height:1.7;font-size:.9rem}
 .img-error code{background:var(--bg2);padding:.15rem .4rem;border-radius:4px;color:var(--acc)}
-/* ===== VISOR DE VERIFICACIÓN CON RESPALDO ===== */
 .vtoolbar{display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:.4rem clamp(1.2rem,2.5vw,2rem) .8rem;font:500 .66rem var(--mono);letter-spacing:.08em;color:var(--mut)}
 .vtoolbar a{color:var(--acc);white-space:nowrap}
 .vtoolbar a:hover{text-decoration:underline}
-.frame-view{position:relative;margin:0 clamp(1.2rem,2.5vw,2rem) 1.2rem;border:1px solid var(--ln);border-radius:10px;overflow:hidden;background:#fff;height:70vh}
+.frame-view{position:relative;margin:0 clamp(1.2rem,2.5vw,2rem) 1.2rem;border:1px solid var(--ln);border-radius:10px;overflow:auto;background:var(--bg2);height:70vh}
 .frame-view iframe{width:100%;height:100%;border:0;display:block}
-.frame-loading{position:absolute;inset:0;display:grid;place-items:center;background:var(--bg2);color:var(--mut);font:500 .8rem var(--mono);letter-spacing:.08em;z-index:2;transition:opacity .4s;text-align:center}
+#vshot{width:100%;height:auto;display:none;border:0}
+.frame-loading{position:sticky;top:0;display:grid;place-items:center;background:var(--bg2);color:var(--mut);font:500 .8rem var(--mono);letter-spacing:.08em;z-index:2;transition:opacity .4s;text-align:center;min-height:100%}
 .frame-loading small{display:block;margin-top:.6rem;color:var(--mut);opacity:.8}
-.frame-loading.hide{opacity:0;pointer-events:none}
+.frame-loading.hide{opacity:0;pointer-events:none;position:absolute;inset:0}
 @keyframes spin{to{transform:rotate(360deg)}}
 .frame-loading .spin{width:36px;height:36px;border:3px solid var(--ln);border-top-color:var(--acc);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto .8rem}
 .frame-fallback{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;background:var(--bg2);text-align:center;padding:2rem;z-index:3}
@@ -451,7 +449,6 @@ footer .wrap{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;
   </div>
 </div>
 
-<!-- Modal de verificación con intento + respaldo -->
 <div class="modal" id="vmodal" role="dialog" aria-modal="true">
   <div class="modal-in vmodal-in">
     <button class="modal-close" id="vclose" aria-label="Cerrar">✕</button>
@@ -461,16 +458,17 @@ footer .wrap{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;
       <span class="iss">Ingeniero Topógrafo Geomático · Cédula Nº 15282631</span>
     </div>
     <div class="vtoolbar">
-      <span id="vstatus">Cargando verificación…</span>
-      <a href="https://titulacion.ucol.mx/validar/186120e6-cf70-41bb-bc05-53019a2a3632" target="_blank" rel="noopener">¿No carga? Abrir en pestaña nueva ↗</a>
+      <span id="vstatus">Preparando vista…</span>
+      <a href="https://titulacion.ucol.mx/validar/186120e6-cf70-41bb-bc05-53019a2a3632" target="_blank" rel="noopener">Página oficial ↗</a>
     </div>
-    <div class="frame-view">
-      <div class="frame-loading" id="vload"><div><div class="spin"></div>Conectando con titulacion.ucol.mx…<small>Si tarda demasiado, usa el enlace de arriba.</small></div></div>
-      <iframe id="vframe" title="Verificación de titulación · Universidad de Colima" referrerpolicy="no-referrer"></iframe>
+    <div class="frame-view" id="fview">
+      <div class="frame-loading" id="vload"><div><div class="spin"></div>Conectando con la verificación…<small>Generando vista segura de la página oficial.</small></div></div>
+      <iframe id="vframe" title="Verificación de titulación · Universidad de Colima" referrerpolicy="no-referrer" style="display:none"></iframe>
+      <img id="vshot" alt="Vista de la página oficial de verificación">
       <div class="frame-fallback" id="vfall" hidden>
         <div class="ff-icon">🛡️</div>
         <h4>El servidor oficial protege su contenido</h4>
-        <p>La Universidad de Colima no permite mostrar esta página dentro de otros sitios (medida de seguridad de su servidor). Tu verificación sigue disponible al instante:</p>
+        <p>La Universidad de Colima bloquea la incrustación externa por seguridad. Tu verificación sigue disponible al instante:</p>
         <div class="ff-actions">
           <a class="btn primary" href="https://titulacion.ucol.mx/validar/186120e6-cf70-41bb-bc05-53019a2a3632" target="_blank" rel="noopener">ABRIR VERIFICACIÓN OFICIAL ↗</a>
           <button class="btn ghost" id="vcopy" type="button">COPIAR ENLACE</button>
@@ -580,7 +578,7 @@ if(cred&&!RM){
   });
   cred.addEventListener("mouseleave",()=>{cred.style.transform="rotateY(0deg) rotateX(0deg)";});
 }
-/* FOTO: 1º foto.png → 2º foto.jpg → 3º monograma JV */
+/* FOTO */
 const cimg=$("#credimg");
 if(cimg){
   cimg.addEventListener("error",function(){
@@ -801,28 +799,64 @@ function closeModal(){modal.classList.remove("on");document.body.style.overflow=
 mclose.addEventListener("click",closeModal);
 modal.addEventListener("click",e=>{if(e.target===modal)closeModal();});
 
-/* ===== VERIFICACIÓN: intento + vigilancia + respaldo ===== */
-const vmodal=$("#vmodal"),vframe=$("#vframe"),vload=$("#vload"),vfall=$("#vfall"),vstatus=$("#vstatus");
-let vTimer=null,vOk=false;
-function abrirV(){
-  vOk=false;clearTimeout(vTimer);
-  vfall.hidden=true;vframe.style.display="";
-  vstatus.textContent="Cargando verificación…";
+/* ===== VERIFICACIÓN: proxy propio → captura externa → respaldo ===== */
+const vmodal=$("#vmodal"),vframe=$("#vframe"),vload=$("#vload"),vfall=$("#vfall"),
+      vstatus=$("#vstatus"),vshot=$("#vshot");
+let vTimer=null,vShotTried=false;
+
+async function proxyDisponible(){
+  try{
+    const r=await fetch("proxy.php?ping=1",{cache:"no-store"});
+    return r.ok&&(await r.text()).trim()==="ok";
+  }catch(e){return false;}
+}
+function vShot(){
+  vframe.style.display="none";
+  vshot.style.display="block";
+  vstatus.textContent="Vista capturada de la página oficial";
+  vShotTried=false;
+  vshot.src="https://s.wordpress.com/mshots/v1/"+encodeURIComponent(URL_TITULACION)+"?w=1100";
+  clearTimeout(vTimer);
+  vTimer=setTimeout(()=>{
+    if(!vShotTried&&vload.classList.contains("hide")===false){
+      vShotTried=true;
+      vshot.src="https://image.thum.io/get/width/1100/"+URL_TITULACION;
+    }
+  },12000);
+}
+async function abrirV(){
+  clearTimeout(vTimer);
+  vfall.hidden=true;
+  vframe.style.display="none";vframe.src="about:blank";
+  vshot.style.display="none";vshot.removeAttribute("src");
   vload.classList.remove("hide");
+  vstatus.textContent="Preparando vista…";
   vmodal.classList.add("on");document.body.style.overflow="hidden";
-  vframe.src=URL_TITULACION;
-  /* Vigilancia: si en 9 s no hay señal de carga, activa el respaldo */
-  vTimer=setTimeout(()=>{if(!vOk){
-    vload.classList.add("hide");
-    vframe.style.display="none";
-    vfall.hidden=false;
-    vstatus.textContent="El sitio oficial bloquea la vista incrustada";
-  }},9000);
+  if(await proxyDisponible()){
+    vstatus.textContent="Conectando vista en vivo (servida por tu sitio)…";
+    vframe.style.display="block";
+    vframe.src="proxy.php";
+    vTimer=setTimeout(()=>{if(!vload.classList.contains("hide"))vShot();},10000);
+  }else{
+    vShot();
+  }
 }
 vframe.addEventListener("load",()=>{
-  vOk=true;clearTimeout(vTimer);
-  vload.classList.add("hide");
-  vstatus.textContent="Conectado con titulacion.ucol.mx";
+  if(vframe.src.indexOf("proxy.php")!==-1){
+    clearTimeout(vTimer);vload.classList.add("hide");
+    vstatus.textContent="Verificación en vivo · servida por tu sitio";
+  }
+});
+vshot.addEventListener("load",()=>{vShotTried=true;clearTimeout(vTimer);vload.classList.add("hide");});
+vshot.addEventListener("error",()=>{
+  if(!vShotTried){
+    vShotTried=true;clearTimeout(vTimer);
+    vshot.src="https://image.thum.io/get/width/1100/"+URL_TITULACION;
+  }else{
+    clearTimeout(vTimer);vload.classList.add("hide");
+    vshot.style.display="none";vfall.hidden=false;
+    vstatus.textContent="Sin vista disponible";
+  }
 });
 $("#verifybtn").addEventListener("click",abrirV);
 $("#vcopy").addEventListener("click",async e=>{
@@ -832,7 +866,7 @@ $("#vcopy").addEventListener("click",async e=>{
 });
 function closeV(){vmodal.classList.remove("on");document.body.style.overflow="";
   clearTimeout(vTimer);
-  setTimeout(()=>{vframe.src="about:blank";vframe.style.display="";},300);}
+  setTimeout(()=>{vframe.src="about:blank";vframe.style.display="none";vshot.style.display="none";},300);}
 $("#vclose").addEventListener("click",closeV);
 vmodal.addEventListener("click",e=>{if(e.target===vmodal)closeV();});
 
