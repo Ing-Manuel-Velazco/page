@@ -21,7 +21,6 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
 a{color:inherit;text-decoration:none}
 .wrap{max-width:1180px;margin-inline:auto;padding-inline:clamp(1.2rem,4vw,2.6rem);position:relative;z-index:1}
 section{padding-block:clamp(4.5rem,9vw,8rem);position:relative}
-/* ===== JUSTIFICADO GLOBAL DE TEXTOS ===== */
 .lead,.quote,.xp li,.tesis blockquote,.tesis p,.award p{
   text-align:justify;text-justify:inter-word;hyphens:auto;
 }
@@ -50,7 +49,6 @@ section{padding-block:clamp(4.5rem,9vw,8rem);position:relative}
 :root[data-theme="dark"] .ic-sun{opacity:0;transform:translate(-50%,-50%) rotate(120deg) scale(.4)}
 :root[data-theme="light"] .ic-sun{opacity:1;transform:translate(-50%,-50%) rotate(0) scale(1)}
 :root[data-theme="light"] .ic-moon{opacity:0;transform:translate(-50%,-50%) rotate(-120deg) scale(.4)}
-/* ===== HÉROE: centrado en el espacio visible (compensa la barra fija) ===== */
 .hero{min-height:100vh;min-height:100svh;display:flex;flex-direction:column;justify-content:center;overflow:hidden;position:relative;padding-top:4.5rem}
 .hero::before{content:'';position:absolute;top:20%;left:-10%;width:600px;height:600px;background:radial-gradient(circle,rgba(59,130,246,.15),transparent 70%);filter:blur(80px)}
 .hero::after{content:'';position:absolute;bottom:10%;right:-5%;width:500px;height:500px;background:radial-gradient(circle,rgba(139,92,246,.15),transparent 70%);filter:blur(80px)}
@@ -201,12 +199,23 @@ body.ready .hr{opacity:1;transform:none}
 .img-view img{max-width:100%;max-height:70vh;height:auto;border-radius:10px;box-shadow:0 8px 30px rgba(0,0,0,.4);background:#fff;pointer-events:none;-webkit-user-drag:none;-webkit-touch-callout:none}
 .img-error{padding:2.5rem 1.5rem;text-align:center;color:#EF4444;line-height:1.7;font-size:.9rem}
 .img-error code{background:var(--bg2);padding:.15rem .4rem;border-radius:4px;color:var(--acc)}
+/* ===== VISOR DE VERIFICACIÓN CON RESPALDO ===== */
+.vtoolbar{display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:.4rem clamp(1.2rem,2.5vw,2rem) .8rem;font:500 .66rem var(--mono);letter-spacing:.08em;color:var(--mut)}
+.vtoolbar a{color:var(--acc);white-space:nowrap}
+.vtoolbar a:hover{text-decoration:underline}
 .frame-view{position:relative;margin:0 clamp(1.2rem,2.5vw,2rem) 1.2rem;border:1px solid var(--ln);border-radius:10px;overflow:hidden;background:#fff;height:70vh}
 .frame-view iframe{width:100%;height:100%;border:0;display:block}
 .frame-loading{position:absolute;inset:0;display:grid;place-items:center;background:var(--bg2);color:var(--mut);font:500 .8rem var(--mono);letter-spacing:.08em;z-index:2;transition:opacity .4s;text-align:center}
+.frame-loading small{display:block;margin-top:.6rem;color:var(--mut);opacity:.8}
 .frame-loading.hide{opacity:0;pointer-events:none}
 @keyframes spin{to{transform:rotate(360deg)}}
 .frame-loading .spin{width:36px;height:36px;border:3px solid var(--ln);border-top-color:var(--acc);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto .8rem}
+.frame-fallback{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;background:var(--bg2);text-align:center;padding:2rem;z-index:3}
+.frame-fallback[hidden]{display:none}
+.ff-icon{font-size:2.6rem}
+.frame-fallback h4{font:700 1.1rem var(--disp);color:var(--bone)}
+.frame-fallback p{max-width:56ch;font-size:.85rem;color:var(--mut);line-height:1.7}
+.ff-actions{display:flex;gap:.8rem;flex-wrap:wrap;justify-content:center}
 .modal-foot{padding:.5rem clamp(1.2rem,2.5vw,2rem) 1.6rem;font-size:.85rem;color:var(--mut);border-top:1px solid var(--ln);margin-top:.5rem;padding-top:1rem}
 .modal-foot a{color:var(--acc)}
 .award{display:grid;grid-template-columns:auto 1fr;gap:2rem;align-items:center;padding:clamp(1.8rem,3.2vw,2.6rem)}
@@ -222,7 +231,7 @@ body.ready .hr{opacity:1;transform:none}
 .c-data b{display:block;color:var(--bone);font-weight:500;margin-top:.4rem;font-size:1.05em}
 footer{border-top:1px solid var(--ln);padding:1.8rem 0;background:var(--bg2)}
 footer .wrap{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;font:500 .62rem var(--mono);letter-spacing:.18em;color:var(--mut);text-transform:uppercase}
-@media(max-width:960px){.two,.xpgrid,.edu{grid-template-columns:1fr}.stick{position:static}.nav ul{display:none}.xp{grid-template-columns:1fr;gap:.6rem}.rail,.railfill,.xp::before{display:none}.award{grid-template-columns:1fr}.frame-view{height:60vh}.hero{padding-top:4rem}}
+@media(max-width:960px){.two,.xpgrid,.edu{grid-template-columns:1fr}.stick{position:static}.nav ul{display:none}.xp{grid-template-columns:1fr;gap:.6rem}.rail,.railfill,.xp::before{display:none}.award{grid-template-columns:1fr}.frame-view{height:60vh}.hero{padding-top:4rem}.vtoolbar{flex-direction:column;align-items:flex-start;gap:.4rem}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001s!important;transition-duration:.001s!important}html{scroll-behavior:auto}.reveal,.hr{opacity:1!important;transform:none!important}.trk i{transform:scaleX(var(--v))!important}}
 @media print{.modal,.nav,.progress{display:none!important}body{background:#fff;color:#111}}
 </style>
@@ -442,6 +451,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;
   </div>
 </div>
 
+<!-- Modal de verificación con intento + respaldo -->
 <div class="modal" id="vmodal" role="dialog" aria-modal="true">
   <div class="modal-in vmodal-in">
     <button class="modal-close" id="vclose" aria-label="Cerrar">✕</button>
@@ -450,11 +460,24 @@ footer .wrap{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;
       <h3>Título Profesional · Universidad de Colima</h3>
       <span class="iss">Ingeniero Topógrafo Geomático · Cédula Nº 15282631</span>
     </div>
-    <div class="frame-view">
-      <div class="frame-loading" id="vload"><div><div class="spin"></div>Conectando con titulacion.ucol.mx…</div></div>
-      <iframe id="vframe" title="Verificación de titulación · Universidad de Colima"></iframe>
+    <div class="vtoolbar">
+      <span id="vstatus">Cargando verificación…</span>
+      <a href="https://titulacion.ucol.mx/validar/186120e6-cf70-41bb-bc05-53019a2a3632" target="_blank" rel="noopener">¿No carga? Abrir en pestaña nueva ↗</a>
     </div>
-    <div class="modal-foot">Fuente oficial: Universidad de Colima · Si el sitio no permite mostrarse incrustado, <a href="https://titulacion.ucol.mx/validar/186120e6-cf70-41bb-bc05-53019a2a3632" target="_blank" rel="noopener">ábrelo aquí ↗</a></div>
+    <div class="frame-view">
+      <div class="frame-loading" id="vload"><div><div class="spin"></div>Conectando con titulacion.ucol.mx…<small>Si tarda demasiado, usa el enlace de arriba.</small></div></div>
+      <iframe id="vframe" title="Verificación de titulación · Universidad de Colima" referrerpolicy="no-referrer"></iframe>
+      <div class="frame-fallback" id="vfall" hidden>
+        <div class="ff-icon">🛡️</div>
+        <h4>El servidor oficial protege su contenido</h4>
+        <p>La Universidad de Colima no permite mostrar esta página dentro de otros sitios (medida de seguridad de su servidor). Tu verificación sigue disponible al instante:</p>
+        <div class="ff-actions">
+          <a class="btn primary" href="https://titulacion.ucol.mx/validar/186120e6-cf70-41bb-bc05-53019a2a3632" target="_blank" rel="noopener">ABRIR VERIFICACIÓN OFICIAL ↗</a>
+          <button class="btn ghost" id="vcopy" type="button">COPIAR ENLACE</button>
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot">Fuente oficial: Universidad de Colima · <a href="https://titulacion.ucol.mx/validar/186120e6-cf70-41bb-bc05-53019a2a3632" target="_blank" rel="noopener">titulacion.ucol.mx ↗</a></div>
   </div>
 </div>
 
@@ -557,7 +580,7 @@ if(cred&&!RM){
   });
   cred.addEventListener("mouseleave",()=>{cred.style.transform="rotateY(0deg) rotateX(0deg)";});
 }
-/* FOTO: 1º foto.png (máxima calidad) → 2º foto.jpg → 3º monograma JV */
+/* FOTO: 1º foto.png → 2º foto.jpg → 3º monograma JV */
 const cimg=$("#credimg");
 if(cimg){
   cimg.addEventListener("error",function(){
@@ -582,7 +605,7 @@ const nio=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)retur
   {rootMargin:"-40% 0px -55% 0px"});
 $$("main section[id]").forEach(s=>nio.observe(s));
 
-/* ENFOQUE PRECISO AL NAVEGAR (compensa la barra fija) */
+/* ENFOQUE PRECISO AL NAVEGAR */
 const navEl=$(".nav");
 function navegarA(hash){
   const t=document.querySelector(hash);
@@ -778,16 +801,38 @@ function closeModal(){modal.classList.remove("on");document.body.style.overflow=
 mclose.addEventListener("click",closeModal);
 modal.addEventListener("click",e=>{if(e.target===modal)closeModal();});
 
-/* VERIFICACIÓN */
-const vmodal=$("#vmodal"),vframe=$("#vframe"),vload=$("#vload");
-$("#verifybtn").addEventListener("click",()=>{
+/* ===== VERIFICACIÓN: intento + vigilancia + respaldo ===== */
+const vmodal=$("#vmodal"),vframe=$("#vframe"),vload=$("#vload"),vfall=$("#vfall"),vstatus=$("#vstatus");
+let vTimer=null,vOk=false;
+function abrirV(){
+  vOk=false;clearTimeout(vTimer);
+  vfall.hidden=true;vframe.style.display="";
+  vstatus.textContent="Cargando verificación…";
   vload.classList.remove("hide");
   vmodal.classList.add("on");document.body.style.overflow="hidden";
   vframe.src=URL_TITULACION;
+  /* Vigilancia: si en 9 s no hay señal de carga, activa el respaldo */
+  vTimer=setTimeout(()=>{if(!vOk){
+    vload.classList.add("hide");
+    vframe.style.display="none";
+    vfall.hidden=false;
+    vstatus.textContent="El sitio oficial bloquea la vista incrustada";
+  }},9000);
+}
+vframe.addEventListener("load",()=>{
+  vOk=true;clearTimeout(vTimer);
+  vload.classList.add("hide");
+  vstatus.textContent="Conectado con titulacion.ucol.mx";
 });
-vframe.addEventListener("load",()=>vload.classList.add("hide"));
+$("#verifybtn").addEventListener("click",abrirV);
+$("#vcopy").addEventListener("click",async e=>{
+  const b=e.currentTarget,o=b.textContent;
+  try{await navigator.clipboard.writeText(URL_TITULACION);b.textContent="ENLACE COPIADO ✓";}catch{}
+  setTimeout(()=>b.textContent=o,2200);
+});
 function closeV(){vmodal.classList.remove("on");document.body.style.overflow="";
-  setTimeout(()=>{vframe.src="about:blank";},300);}
+  clearTimeout(vTimer);
+  setTimeout(()=>{vframe.src="about:blank";vframe.style.display="";},300);}
 $("#vclose").addEventListener("click",closeV);
 vmodal.addEventListener("click",e=>{if(e.target===vmodal)closeV();});
 
