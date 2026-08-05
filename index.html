@@ -39,8 +39,14 @@ section{padding-block:clamp(4.5rem,9vw,8rem);position:relative}
 .nav ul{display:flex;gap:1.8rem;list-style:none}
 .nav ul a{font:500 .68rem var(--mono);letter-spacing:.18em;color:var(--mut);padding:.35rem 0;border-bottom:2px solid transparent;transition:color .3s,border-color .3s}
 .nav ul a:hover,.nav ul a.act{color:var(--acc);border-color:var(--acc)}
-.theme-toggle{background:none;border:1px solid var(--ln);color:var(--bone);width:38px;height:38px;border-radius:8px;cursor:pointer;display:grid;place-items:center;transition:background .3s,border-color .3s;font-size:1.1rem}
-.theme-toggle:hover{background:var(--bg2);border-color:var(--acc)}
+/* ===== TOGGLE DE TEMA (SVG profesional) ===== */
+.theme-toggle{position:relative;background:none;border:1px solid var(--ln);color:var(--bone);width:40px;height:40px;border-radius:10px;cursor:pointer;transition:background .3s,border-color .3s,transform .3s;flex-shrink:0}
+.theme-toggle:hover{background:var(--bg2);border-color:var(--acc);transform:translateY(-2px)}
+.theme-toggle .ic{position:absolute;top:50%;left:50%;width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transform:translate(-50%,-50%);transition:opacity .35s ease,transform .55s cubic-bezier(.4,0,.2,1)}
+:root[data-theme="dark"] .ic-moon{opacity:1;transform:translate(-50%,-50%) rotate(0) scale(1)}
+:root[data-theme="dark"] .ic-sun{opacity:0;transform:translate(-50%,-50%) rotate(120deg) scale(.4)}
+:root[data-theme="light"] .ic-sun{opacity:1;transform:translate(-50%,-50%) rotate(0) scale(1)}
+:root[data-theme="light"] .ic-moon{opacity:0;transform:translate(-50%,-50%) rotate(-120deg) scale(.4)}
 .hero{min-height:100vh;min-height:100svh;display:flex;flex-direction:column;justify-content:center;overflow:hidden;position:relative}
 .hero::before{content:'';position:absolute;top:20%;left:-10%;width:600px;height:600px;background:radial-gradient(circle,rgba(59,130,246,.15),transparent 70%);filter:blur(80px)}
 .hero::after{content:'';position:absolute;bottom:10%;right:-5%;width:500px;height:500px;background:radial-gradient(circle,rgba(139,92,246,.15),transparent 70%);filter:blur(80px)}
@@ -221,7 +227,10 @@ footer .wrap{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;
     <li><a href="#certificados">CERTIFICADOS</a></li>
     <li><a href="#contacto">CONTACTO</a></li>
   </ul>
-  <button class="theme-toggle" id="thm" aria-label="Cambiar tema">🌙</button>
+  <button class="theme-toggle" id="thm" aria-label="Cambiar tema">
+    <svg class="ic ic-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    <svg class="ic ic-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+  </button>
 </header>
 
 <main>
@@ -447,7 +456,6 @@ footer .wrap{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;
    POR_PAGINA: certificados por página.
    Nombra tus archivos SEPARADOS POR COMAS:
    Institucion, Nombre del certificado, Mes Año, Serie.jpg
-   Ej.: Santander Open Academy, Hablar en público con técnicas teatrales, Abril 2026, 0420002503435.jpg
    El texto se muestra TAL CUAL (no se alteran mayúsculas).
    ============================================================ */
 const CARPETA="certificados";
@@ -458,12 +466,15 @@ const RM=matchMedia("(prefers-reduced-motion:reduce)").matches;
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 let CERTS=[],currentPage=1;
 
-/* TEMA */
+/* TEMA CLARO/OSCURO (iconos SVG; el CSS controla cuál se ve) */
 const thm=$("#thm"),root=document.documentElement;
-const saved=localStorage.getItem("theme");
-if(saved){root.dataset.theme=saved;thm.textContent=saved==="light"?"☀️":"";}
-thm.addEventListener("click",()=>{const n=root.dataset.theme==="dark"?"light":"dark";
-  root.dataset.theme=n;thm.textContent=n==="light"?"☀️":"🌙";localStorage.setItem("theme",n);});
+const guardado=localStorage.getItem("theme");
+root.dataset.theme=(guardado==="light"||guardado==="dark")?guardado:"dark";
+thm.addEventListener("click",()=>{
+  const nuevo=root.dataset.theme==="dark"?"light":"dark";
+  root.dataset.theme=nuevo;
+  localStorage.setItem("theme",nuevo);
+});
 
 /* BOOT */
 const MSGS=["Inicializando sistema...","Cargando perfil profesional...","Verificando credenciales...","Preparando experiencia...","¡Bienvenido a mi portafolio digital!"];
@@ -515,8 +526,7 @@ const nio=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)retur
   {rootMargin:"-40% 0px -55% 0px"});
 $$("main section[id]").forEach(s=>nio.observe(s));
 
-/* ===== LECTURA DEL NOMBRE DE ARCHIVO (separado por comas) =====
-   Formato: Institucion, Nombre, Mes Año, Serie               */
+/* ===== LECTURA DEL NOMBRE DE ARCHIVO (separado por comas) ===== */
 const MESES={enero:"01",febrero:"02",marzo:"03",abril:"04",mayo:"05",junio:"06",julio:"07",agosto:"08",septiembre:"09",setiembre:"09",octubre:"10",noviembre:"11",diciembre:"12",ene:"01",feb:"02",mar:"03",abr:"04",may:"05",jun:"06",jul:"07",ago:"08",sep:"09",oct:"10",nov:"11",dic:"12",january:"01",february:"02",march:"03",april:"04",june:"06",july:"07",august:"08",october:"10",november:"11",december:"12"};
 const cap1=s=>{s=(s||"").trim();return s?s.charAt(0).toUpperCase()+s.slice(1):"";};
 function parseFecha(d){
@@ -528,7 +538,6 @@ function parseFecha(d){
 }
 function parseArchivo(f){
   const base=f.replace(/\.(jpe?g|png)$/i,"").trim();
-  /* separador principal: coma · respaldo: guion / barra vertical */
   const parts=(base.includes(",")?base.split(/\s*,\s*/):base.split(/\s*[-–—|]\s*/)).map(s=>s.trim()).filter(Boolean);
   let inst="",name="",datePart="",serial="";
   if(parts.length>=4){
@@ -543,7 +552,6 @@ function parseArchivo(f){
   }else if(parts.length===2){inst=parts[0];name=parts[1];}
   else name=parts[0]||base;
   const {codigo,texto}=parseFecha(datePart);
-  /* texto TAL CUAL, sin alterar mayúsculas/minúsculas */
   return{institucion:inst.trim(),nombre:name.trim(),fecha:codigo,fechaTexto:texto,serial:serial.trim()};
 }
 const construirItem=archivo=>({id:0,...parseArchivo(archivo),src:`${CARPETA}/${archivo}`});
@@ -601,7 +609,7 @@ function buildFilters(){
   if(!isss.length)fiss.style.display="none";else fiss.style.display="";
 }
 
-/* BÚSQUEDA (sin acentos, por palabras, con relevancia) */
+/* BÚSQUEDA */
 const norm=s=>(s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
 const subseq=(w,t)=>{let i=0;for(const ch of t){if(ch===w[i])i++;if(i===w.length)return true;}return false;};
 function scoreCert(c,words){
@@ -630,7 +638,7 @@ function getFiltered(){
   return list;
 }
 
-/* GRID: solo NOMBRE + AÑO */
+/* GRID */
 function renderGrid(){
   const filtered=getFiltered();
   const totalPages=Math.max(1,Math.ceil(filtered.length/POR_PAGINA));
@@ -677,7 +685,7 @@ fyear.addEventListener("change",()=>{currentPage=1;renderGrid();});
 fiss.addEventListener("change",()=>{currentPage=1;renderGrid();});
 fsearch.addEventListener("input",()=>{currentPage=1;renderGrid();});
 
-/* MODAL: nombre tal cual + institución + mes/año (serie oculta) */
+/* MODAL */
 const modal=$("#modal"),mhead=$("#mhead"),mfoot=$("#mfoot"),imgview=$("#imgview"),mclose=$("#mclose");
 function openModal(c){
   const year=(c.fecha||"").slice(0,4);
@@ -698,7 +706,7 @@ addEventListener("keydown",e=>{
   if(modal.classList.contains("on")&&(e.ctrlKey||e.metaKey)&&["s","p","c","x"].includes(e.key.toLowerCase()))e.preventDefault();
 });
 
-/* PROTECCIÓN: sin clic derecho, sin arrastrar, sin copiar en certificados */
+/* PROTECCIÓN */
 const proteger=e=>{if(e.target.closest("#certificados,#modal"))e.preventDefault();};
 document.addEventListener("contextmenu",proteger);
 document.addEventListener("dragstart",proteger);
