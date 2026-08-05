@@ -21,6 +21,10 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
 a{color:inherit;text-decoration:none}
 .wrap{max-width:1180px;margin-inline:auto;padding-inline:clamp(1.2rem,4vw,2.6rem);position:relative;z-index:1}
 section{padding-block:clamp(4.5rem,9vw,8rem);position:relative}
+/* ===== JUSTIFICADO GLOBAL DE TEXTOS ===== */
+.lead,.quote,.xp li,.tesis blockquote,.tesis p,.award p{
+  text-align:justify;text-justify:inter-word;hyphens:auto;
+}
 #boot{position:fixed;inset:0;z-index:200;background:var(--bg);display:grid;place-items:center;transition:opacity .8s,visibility .8s}
 #boot.exit{opacity:0;visibility:hidden}
 .boot-in{width:min(620px,88vw);text-align:center}
@@ -46,10 +50,11 @@ section{padding-block:clamp(4.5rem,9vw,8rem);position:relative}
 :root[data-theme="dark"] .ic-sun{opacity:0;transform:translate(-50%,-50%) rotate(120deg) scale(.4)}
 :root[data-theme="light"] .ic-sun{opacity:1;transform:translate(-50%,-50%) rotate(0) scale(1)}
 :root[data-theme="light"] .ic-moon{opacity:0;transform:translate(-50%,-50%) rotate(-120deg) scale(.4)}
-.hero{min-height:100vh;min-height:100svh;display:flex;flex-direction:column;justify-content:center;overflow:hidden;position:relative}
+/* ===== HÉROE: centrado en el espacio visible (compensa la barra fija) ===== */
+.hero{min-height:100vh;min-height:100svh;display:flex;flex-direction:column;justify-content:center;overflow:hidden;position:relative;padding-top:4.5rem}
 .hero::before{content:'';position:absolute;top:20%;left:-10%;width:600px;height:600px;background:radial-gradient(circle,rgba(59,130,246,.15),transparent 70%);filter:blur(80px)}
 .hero::after{content:'';position:absolute;bottom:10%;right:-5%;width:500px;height:500px;background:radial-gradient(circle,rgba(139,92,246,.15),transparent 70%);filter:blur(80px)}
-.hero .wrap{position:relative;z-index:2;padding-top:6.5rem;padding-bottom:3.5rem}
+.hero .wrap{position:relative;z-index:2;padding-top:2.5rem;padding-bottom:3rem}
 .h-tag{font:500 .72rem var(--mono);letter-spacing:.28em;color:var(--acc);display:flex;align-items:center;gap:1rem;text-transform:uppercase}
 .h-tag::before{content:'';width:42px;height:2px;background:var(--grad)}
 .h1{font:700 clamp(2.8rem,10vw,7.5rem)/.95 var(--disp);letter-spacing:-.02em;text-transform:uppercase;margin:1.4rem 0 1.2rem}
@@ -88,9 +93,9 @@ body.ready .hr{opacity:1;transform:none}
 .panel:hover{transform:translateY(-4px);box-shadow:0 20px 50px rgba(59,130,246,.15)}
 .two{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(2.2rem,5.5vw,4.5rem);align-items:center}
 .stick{position:sticky;top:7rem}
-.quote{font:700 clamp(1.9rem,4.6vw,3.2rem)/1.12 var(--disp);letter-spacing:-.015em;margin:0 0 1.4rem;text-align:justify;text-justify:inter-word;hyphens:auto}
+.quote{font:700 clamp(1.9rem,4.6vw,3.2rem)/1.12 var(--disp);letter-spacing:-.015em;margin:0 0 1.4rem}
 .quote b{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
-.lead{font-size:clamp(1.02rem,1.6vw,1.25rem);line-height:1.75;color:var(--bone);text-align:justify;text-justify:inter-word;hyphens:auto}
+.lead{font-size:clamp(1.02rem,1.6vw,1.25rem);line-height:1.75;color:var(--bone)}
 .lead b{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;font-weight:600}
 .lead+.lead{margin-top:1.1rem;color:var(--mut)}
 .cred-wrap{perspective:1200px}
@@ -140,6 +145,7 @@ body.ready .hr{opacity:1;transform:none}
 .verify:hover{transform:translateY(-2px);box-shadow:0 10px 25px rgba(59,130,246,.3)}
 .verify::before{content:'✓';font-weight:700;font-size:1.1em}
 .tesis blockquote{font-size:.98rem;color:var(--bone);border-left:3px solid var(--acc);padding-left:1.1rem;margin:1.1rem 0;font-style:italic}
+.tesis p{font-size:.9rem;color:var(--mut)}
 .tesis .u{display:block;margin-top:1.1rem}
 .skills{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:1.6rem}
 .ph{display:flex;justify-content:space-between;align-items:baseline;border-bottom:2px solid var(--ln);padding-bottom:.9rem;margin-bottom:1.1rem}
@@ -216,7 +222,7 @@ body.ready .hr{opacity:1;transform:none}
 .c-data b{display:block;color:var(--bone);font-weight:500;margin-top:.4rem;font-size:1.05em}
 footer{border-top:1px solid var(--ln);padding:1.8rem 0;background:var(--bg2)}
 footer .wrap{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;font:500 .62rem var(--mono);letter-spacing:.18em;color:var(--mut);text-transform:uppercase}
-@media(max-width:960px){.two,.xpgrid,.edu{grid-template-columns:1fr}.stick{position:static}.nav ul{display:none}.xp{grid-template-columns:1fr;gap:.6rem}.rail,.railfill,.xp::before{display:none}.award{grid-template-columns:1fr}.frame-view{height:60vh}}
+@media(max-width:960px){.two,.xpgrid,.edu{grid-template-columns:1fr}.stick{position:static}.nav ul{display:none}.xp{grid-template-columns:1fr;gap:.6rem}.rail,.railfill,.xp::before{display:none}.award{grid-template-columns:1fr}.frame-view{height:60vh}.hero{padding-top:4rem}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001s!important;transition-duration:.001s!important}html{scroll-behavior:auto}.reveal,.hr{opacity:1!important;transform:none!important}.trk i{transform:scaleX(var(--v))!important}}
 @media print{.modal,.nav,.progress{display:none!important}body{background:#fff;color:#111}}
 </style>
@@ -369,7 +375,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;
       <div class="panel tesis reveal" style="--d:.15s">
         <p class="u">PRÁCTICA PROFESIONAL · PROYECTO APLICADO</p>
         <blockquote>Análisis geoespacial para la identificación de sitios óptimos para estaciones de monitoreo de calidad del aire en el estado de Colima.</blockquote>
-        <p style="font-size:.9rem;color:var(--mut)">Trabajo derivado del Proyecto CONAHCYT Nº 321542, con aplicación directa en políticas ambientales estatales.</p>
+        <p>Trabajo derivado del Proyecto CONAHCYT Nº 321542, con aplicación directa en políticas ambientales estatales.</p>
         <span class="u">CONAHCYT · Nº 321542</span>
       </div>
     </div>
@@ -551,16 +557,12 @@ if(cred&&!RM){
   });
   cred.addEventListener("mouseleave",()=>{cred.style.transform="rotateY(0deg) rotateX(0deg)";});
 }
-/* FOTO: prueba foto.png (calidad máxima), si falla prueba foto.jpg, si ambos fallan → monograma */
+/* FOTO: 1º foto.png (máxima calidad) → 2º foto.jpg → 3º monograma JV */
 const cimg=$("#credimg");
 if(cimg){
-  cimg.addEventListener("error",function h(){
-    if(cimg.src.indexOf("foto.png")!==-1){
-      cimg.src="foto.jpg";
-    }else{
-      cimg.style.display="none";
-      $("#credmono").style.display="grid";
-    }
+  cimg.addEventListener("error",function(){
+    if(cimg.src.indexOf("foto.png")!==-1){cimg.src="foto.jpg";}
+    else{cimg.style.display="none";$("#credmono").style.display="grid";}
   });
 }
 
@@ -579,6 +581,31 @@ const nio=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)retur
   $$(".nav ul a").forEach(a=>a.classList.toggle("act",a.getAttribute("href")==="#"+e.target.id));}),
   {rootMargin:"-40% 0px -55% 0px"});
 $$("main section[id]").forEach(s=>nio.observe(s));
+
+/* ENFOQUE PRECISO AL NAVEGAR (compensa la barra fija) */
+const navEl=$(".nav");
+function navegarA(hash){
+  const t=document.querySelector(hash);
+  if(!t)return;
+  const navH=navEl.offsetHeight;
+  let y=0;
+  if(hash!=="#inicio"){
+    const el=t.querySelector(".shead")||t;
+    y=el.getBoundingClientRect().top+window.scrollY-(navH+32);
+    y=Math.max(0,y);
+  }
+  window.scrollTo({top:y,behavior:RM?"auto":"smooth"});
+}
+document.addEventListener("click",e=>{
+  const a=e.target.closest('a[href^="#"]');
+  if(!a)return;
+  const hash=a.getAttribute("href");
+  if(hash.length<2||!document.querySelector(hash))return;
+  e.preventDefault();
+  navegarA(hash);
+  history.replaceState(null,"",hash);
+});
+if(location.hash)setTimeout(()=>navegarA(location.hash),60);
 
 /* LECTURA ARCHIVOS */
 const MESES={enero:"01",febrero:"02",marzo:"03",abril:"04",mayo:"05",junio:"06",julio:"07",agosto:"08",septiembre:"09",setiembre:"09",octubre:"10",noviembre:"11",diciembre:"12",ene:"01",feb:"02",mar:"03",abr:"04",may:"05",jun:"06",jul:"07",ago:"08",sep:"09",oct:"10",nov:"11",dic:"12",january:"01",february:"02",march:"03",april:"04",june:"06",july:"07",august:"08",october:"10",november:"11",december:"12"};
@@ -727,7 +754,7 @@ function renderPagination(total,totalPages,start,shown){
   pagination.querySelectorAll(".pg-btn").forEach(b=>b.addEventListener("click",()=>{
     const p=parseInt(b.dataset.p);if(p>=1&&p<=totalPages&&p!==currentPage){
       currentPage=p;renderGrid();
-      $("#certificados").scrollIntoView({behavior:RM?"auto":"smooth",block:"start"});}
+      navegarA("#certificados");}
   }));
 }
 fyear.addEventListener("change",()=>{currentPage=1;renderGrid();});
