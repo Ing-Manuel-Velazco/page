@@ -36,11 +36,13 @@ let CERTS=[],currentPage=1;
 /* TEMA */
 const thm=$("#thm"),root=document.documentElement;
 const guardado=localStorage.getItem("theme");
-root.dataset.theme=(guardado==="light"||guardado==="dark")?guardado:"dark";
-thm.textContent=root.dataset.theme==="light"?"☀️":"🌙";
+const prefersDark=matchMedia("(prefers-color-scheme: dark)").matches;
+root.dataset.theme=(guardado==="light"||guardado==="dark")?guardado:(prefersDark?"dark":"light");
+thm.setAttribute("aria-pressed",root.dataset.theme==="dark");
 thm.addEventListener("click",()=>{
   const nuevo=root.dataset.theme==="dark"?"light":"dark";
-  root.dataset.theme=nuevo;thm.textContent=nuevo==="light"?"☀️":"";
+  root.dataset.theme=nuevo;
+  thm.setAttribute("aria-pressed",nuevo==="dark");
   localStorage.setItem("theme",nuevo);
 });
 
@@ -309,6 +311,22 @@ mapview.addEventListener("dblclick",e=>e.preventDefault());
 $("#zin").addEventListener("click",()=>zoomAt(VW/2,VH/2,1.5));
 $("#zout").addEventListener("click",()=>zoomAt(VW/2,VH/2,1/1.5));
 $("#zreset").addEventListener("click",resetView);
+// Keyboard accessibility for map controls
+const mapKeys=e=>{
+  if(e.target.closest(".map-ctrl")||e.target===mapview){
+    switch(e.key){
+      case "+":case "=":zoomAt(VW/2,VH/2,1.5);break;
+      case "-":zoomAt(VW/2,VH/2,1/1.5);break;
+      case "0":resetView();break;
+      case "ArrowUp":vy+=20;clampView();applyView();break;
+      case "ArrowDown":vy-=20;clampView();applyView();break;
+      case "ArrowLeft":vx+=20;clampView();applyView();break;
+      case "ArrowRight":vx-=20;clampView();applyView();break;
+    }
+  }
+};
+document.addEventListener("keydown",mapKeys);
+
 
 /* LISTA LATERAL */
 let selPais=null,selEstado=null,xPage=0;
@@ -354,7 +372,10 @@ function renderXList(){
     $("#xnext").addEventListener("click",()=>{xPage++;renderXList();});
   }else{pg.innerHTML=total?`<span class="pg-info">${total} REGISTRO${total!==1?"S":""}</span>`:"";}
 }
-$("#xsearch").addEventListener("input",()=>{xPage=0;renderXList();});
+// Debounce helper for search inputs
+const debounce=(fn,ms)=>{let t;return(...a)=>{clearTimeout(t);t=setTimeout(()=>fn.apply(this,a),ms);};};
+
+$("#xsearch").addEventListener("input",debounce(()=>{xPage=0;renderXList();},300));
 function renderCrumbs(){}
 
 /* CERTIFICADOS */
@@ -493,7 +514,7 @@ function renderPagination(total,totalPages,start,shown){
 }
 fyear.addEventListener("change",()=>{currentPage=1;renderGrid();});
 fiss.addEventListener("change",()=>{currentPage=1;renderGrid();});
-fsearch.addEventListener("input",()=>{currentPage=1;renderGrid();});
+fsearch.addEventListener("input",debounce(()=>{currentPage=1;renderGrid();},300));
 
 /* MODAL CERTIFICADO */
 function openModalCert(c){
@@ -557,10 +578,10 @@ addEventListener("keydown",e=>{
 });
 
 $("#copymail").addEventListener("click",async e=>{
-  const s=e.currentTarget.querySelector("span"),o=s.textContent,mail="velazcoochoajosmanuel@gmail.com";
-  try{await navigator.clipboard.writeText(mail);s.textContent="COPIADO ✓";}
+  const btn=e.currentTarget,s=btn.querySelector("span"),o=s.textContent,mail="velazcoochoajosmanuel@gmail.com";
+  try{await navigator.clipboard.writeText(mail);s.textContent="COPIADO ✓";btn.setAttribute("aria-live","polite");}
   catch{location.href="mailto:"+mail;return;}
-  setTimeout(()=>s.textContent=o,2200);});
+  setTimeout(()=>{s.textContent=o;btn.removeAttribute("aria-live");},2200);});
 
 $("#yr").textContent=new Date().getFullYear();
 

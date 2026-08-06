@@ -5,11 +5,47 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>José Manuel Velazco Ochoa · Ingeniero Topógrafo Geomático</title>
 <meta name="description" content="Portafolio profesional de José Manuel Velazco Ochoa — Ingeniero Topógrafo Geomático. SIG, Geodesia, GNSS y análisis geoespacial. Colima, México.">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://josevelazco.com/">
+<meta property="og:title" content="José Manuel Velazco Ochoa · Ingeniero Topógrafo Geomático">
+<meta property="og:description" content="Portafolio profesional de José Manuel Velazco Ochoa — SIG, Geodesia, GNSS y análisis geoespacial. Colima, México.">
+<meta property="og:image" content="assets/img/og-image.jpg">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="José Manuel Velazco Ochoa · Ingeniero Topógrafo Geomático">
+<meta name="twitter:description" content="Portafolio profesional de José Manuel Velazco Ochoa — SIG, Geodesia, GNSS y análisis geoespacial.">
+
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='11' fill='none' stroke='%233B82F6' stroke-width='2'/><path d='M16 1v9M16 22v9M1 16h9M22 16h9' stroke='%233B82F6' stroke-width='2'/></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="preload" href="css/styles.css" as="style">
+<link rel="preload" href="js/app.js" as="script">
+<link rel="preload" href="data/mexico-data.js" as="script">
 <link rel="stylesheet" href="css/styles.css">
+
+<!-- Schema.org markup -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "José Manuel Velazco Ochoa",
+  "jobTitle": "Ingeniero Topógrafo Geomático",
+  "url": "https://josevelazco.com",
+  "image": "assets/img/foto.png",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Colima",
+    "addressCountry": "MX"
+  },
+  "knowsAbout": ["Topografía", "Geomática", "SIG", "ArcGIS Pro", "Python", "GNSS", "Fotogrametría", "Cartografía"],
+  "alumniOf": "Universidad de Colima",
+  "identifier": "15282631"
+}
+</script>
 </head>
 <body>
 
@@ -34,43 +70,13 @@
     <li><a href="#certificados">CERTIFICADOS</a></li>
     <li><a href="#contacto">CONTACTO</a></li>
   </ul>
-  <button class="theme-toggle" id="thm" aria-label="Cambiar tema">
+  <button class="theme-toggle" id="thm" aria-label="Cambiar tema de claro a oscuro y viceversa">
     <svg class="ic ic-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
     <svg class="ic ic-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
   </button>
 </header>
 
 <main id="top">
-<body>
-
-<div id="boot" aria-hidden="true">
-  <div class="boot-in">
-    <p class="boot-logo">JOSÉ MANUEL VELAZCO OCHOA</p>
-    <p class="boot-msg" id="bootmsg"></p>
-    <div class="boot-bar"><i></i></div>
-    <p class="boot-welcome">Bienvenido · Preparando tu experiencia profesional...</p>
-  </div>
-</div>
-
-<div class="progress"><span id="bar"></span></div>
-
-<header class="nav">
-  <a class="logo" href="#inicio">J·VELAZCO <em>GEOMÁTICA</em></a>
-  <ul>
-    <li><a href="#perfil">PERFIL</a></li>
-    <li><a href="#experiencia">EXPERIENCIA</a></li>
-    <li><a href="#educacion">EDUCACIÓN</a></li>
-    <li><a href="#habilidades">HABILIDADES</a></li>
-    <li><a href="#certificados">CERTIFICADOS</a></li>
-    <li><a href="#contacto">CONTACTO</a></li>
-  </ul>
-  <button class="theme-toggle" id="thm" aria-label="Cambiar tema">
-    <svg class="ic ic-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-    <svg class="ic ic-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
-  </button>
-</header>
-
-<main>
 <section class="hero" id="inicio">
   <div class="wrap">
     <p class="h-tag hr" style="transition-delay:.05s">PORTAFOLIO PROFESIONAL · CV 2026</p>
@@ -110,7 +116,7 @@
         <div class="cred-top"><span>⌖ <b>GEOMÁTICA</b> · MX</span><span>VT-15282631</span></div>
         <div class="cred-body">
           <div class="cred-photo">
-            <img src="assets/img/foto.png" alt="José Manuel Velazco Ochoa" id="credimg">
+            <img src="assets/img/foto.png" alt="José Manuel Velazco Ochoa · Ingeniero Topógrafo Geomático" id="credimg" loading="lazy" width="200" height="200">
             <div class="cred-mono" id="credmono">JV</div>
           </div>
           <div class="cred-data">
@@ -271,7 +277,7 @@
           <small>CÓDIGO DE VERIFICACIÓN: 186120e6-cf70-41bb-bc05-53019a2a3632</small>
         </div>
       </div>
-      <img id="vshot" alt="Verificación oficial de titulación · Universidad de Colima">
+      <img id="vshot" alt="Verificación oficial de titulación · Universidad de Colima" loading="lazy">
       <div class="frame-fallback" id="vfall" hidden>
         <div class="ff-icon">🛡️</div>
         <h4>Captura local no encontrada</h4>
