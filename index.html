@@ -25,6 +25,7 @@
 <link rel="preload" href="css/styles.css" as="style">
 <link rel="preload" href="js/app.js" as="script">
 <link rel="preload" href="data/mexico-data.js" as="script">
+<link rel="preload" href="data/world-data.js" as="script">
 <link rel="stylesheet" href="css/styles.css">
 
 <!-- Schema.org markup -->
@@ -174,7 +175,7 @@
       <div class="map-panel reveal" id="mappanel">
         <div class="map-head">
           <div class="map-title-wrap">
-            <span class="map-title" id="maptitle">⌖ CARTA · MÉXICO</span>
+            <span class="map-title" id="maptitle">🌍 CARTA · MUNDIAL</span>
             <span class="map-subtitle" id="mapsubtitle">Interactivo</span>
           </div>
           <div class="map-ctrl" role="group" aria-label="Controles del mapa">
@@ -184,7 +185,7 @@
             <button id="zfit" aria-label="Ajustar a experiencias" title="Centrar en mis experiencias">⌖</button>
           </div>
         </div>
-        <div class="map-view" id="mapview" tabindex="0" role="application" aria-label="Mapa interactivo de México · Usa rueda del ratón para zoom, arrastra para mover, doble clic para restablecer">
+        <div class="map-view" id="mapview" tabindex="0" role="application" aria-label="Mapa interactivo mundial · Usa rueda del ratón para zoom, arrastra para mover, doble clic para restablecer">
           <svg id="worldmap" viewBox="0 0 1000 500" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
             <defs>
               <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
@@ -202,13 +203,13 @@
             <g id="worldG">
               <g class="grat" id="grat"></g>
               <g id="countries"></g>
-              <g id="states"></g>
               <g id="highlights"></g>
             </g>
           </svg>
           <div class="map-legend" id="maplegend" aria-label="Leyenda del mapa">
             <div class="legend-item"><span class="legend-dot hasjobs"></span><span>Experiencia confirmada</span></div>
             <div class="legend-item"><span class="legend-dot"></span><span>Sin registros</span></div>
+            <div class="legend-item"><span class="legend-dot info"></span><span>Click para detalles</span></div>
           </div>
           <div class="map-zoom-indicator" id="zoomind" aria-hidden="true">100%</div>
           <div class="map-status" id="mapstatus" aria-live="polite">CARGANDO...</div>
