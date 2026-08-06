@@ -162,6 +162,10 @@ function applyView(){
   MARKS.forEach(m=>m.g.setAttribute("transform",`translate(${m.x} ${m.y}) scale(${(1/vk).toFixed(3)})`));
   mapview.classList.toggle("zoomed",vk>kMin*1.4);
   $$("#countries .pais").forEach(p=>p.classList.toggle("sel",p.dataset.pais===selPais));
+  // Actualizar indicador de zoom
+  const zoomPct=Math.round((vk/kMin)*100);
+  const zind=$("#zoomind");
+  if(zind)zind.textContent=`${zoomPct}%`;
 }
 function zoomAt(sx,sy,f){
   const k2=Math.min(kMax,Math.max(kMin,vk*f));
@@ -171,6 +175,17 @@ function resetView(){
   if(GB){const f=fitBBox(GB,0.92);vk=f.k;vx=f.vx;vy=f.vy;}
   else{vk=1;vx=0;vy=0;}
   applyView();
+}
+function fitToExperiences(){
+  if(!MARKS.length)return;
+  let minx=1e9,miny=1e9,maxx=-1e9,maxy=-1e9;
+  MARKS.forEach(m=>{if(m.x<minx)minx=m.x;if(m.x>maxx)maxx=m.x;if(m.y<miny)miny=m.y;if(m.y>maxy)maxy=m.y;});
+  const bw=Math.max(1e-6,maxx-minx),bh=Math.max(1e-6,maxy-miny);
+  const pad=0.75,k=Math.min(VW/bw,VH/bh)*pad;
+  const cx=(minx+maxx)/2,cy=(miny+maxy)/2;
+  vk=Math.min(kMax,Math.max(kMin,k));
+  vx=VW/2-vk*cx;vy=VH/2-vk*cy;
+  clampView();applyView();
 }
 
 function renderMap(){
@@ -223,7 +238,8 @@ function renderMap(){
   if(GB){const f=fitBBox(GB,0.92);kMin=f.k;kMax=f.k*160;vk=f.k;vx=f.vx;vy=f.vy;}
   else{vk=1;vx=0;vy=0;}
   $("#maptitle").textContent="⌖ CARTA · MÉXICO";
-  mapstatus.textContent=GB?`ENCUADRE AUTOMÁTICO · ${MAPA_ESTADOS.length} GEOMETRÍAS`:"SIN GEOMETRÍAS";
+  $("#mapsubtitle").textContent="Interactivo";
+  mapstatus.innerHTML=`<span>${GB?`ENCUADRE AUTOMÁTICO · ${MAPA_ESTADOS.length} GEOMETRÍAS`:"SIN GEOMETRÍAS"}</span><span id="mapcoords"></span>`;
   renderStates();
   applyView();
 }
@@ -235,15 +251,21 @@ function renderStates(){
     const [x,y]=proj(st.coords[0],st.coords[1]);
     const g=document.createElementNS(NS,"g");
     g.setAttribute("class","st-mark");
-    g.innerHTML=`<circle class="ring" r="6"/><circle class="core" r="2.2"/><text y="-9">${st.estado.toUpperCase()}</text>`;
+    g.innerHTML=`<circle class="ring" r="8"/><circle class="core" r="3"/><text y="-12">${st.estado.toUpperCase()}</text>`;
     g.addEventListener("click",ev=>{ev.stopPropagation();if(dragMoved)return;
       const st2=MAPA_ESTADOS.find(s=>norm(s.n)===norm(st.estado)&&norm(s.p)===norm(c.pais));
+      highlightState(st2||{n:st.estado,p:c.pais});
       openStateModal(st2||{n:st.estado,p:c.pais});});
     g.addEventListener("mousemove",ev=>showTip(ev,`${st.estado} · ${st.jobs.length} trabajo(s)`));
     g.addEventListener("mouseleave",hideTip);
-    sG.appendChild(g);MARKS.push({g,x,y});
+    sG.appendChild(g);MARKS.push({g,x,y,estado:st.estado,pais:c.pais});
   }));
 }
+function highlightState(st){
+  $$("#countries .pais").forEach(p=>p.classList.remove("highlighted"));
+  if(!st)return;
+  const el=$$(`#countries .pais`).find(p=>norm(p.dataset.estado)===norm(st.n)&&norm(p.dataset.pais)===norm(st.p));
+  if(el){el.classList.add("highlighted");el.scrollIntoView({behavior:"smooth",block:"center"});}}
 
 function detectar(){
   const P={};
@@ -258,10 +280,20 @@ function detectar(){
 function showTip(e,txt){
   const r=mapview.getBoundingClientRect();
   maptip.textContent=txt;maptip.classList.add("on");
-  maptip.style.left=Math.min(r.width-10,(e.clientX-r.left)+14)+"px";
-  maptip.style.top=Math.max(0,(e.clientY-r.top)-30)+"px";
+  const x=Math.min(r.width-150,(e.clientX-r.left)+14);
+  const y=Math.max(0,(e.clientY-r.top)-30);
+  maptip.style.left=x+"px";
+  maptip.style.top=y+"px";
+  // Actualizar coordenadas en tiempo real
+  const mc=$("#mapcoords");
+  if(mc){
+    const mx=(e.clientX-r.left)*VW/r.width,vx2=vx,my=(e.clientY-r.top)*VH/r.height,vy2=vy;
+    const [lon,lat]=inverseProj((mx-vx2)/vk,(my-vy2)/vk);
+    mc.textContent=`${lat.toFixed(2)}° N · ${Math.abs(lon).toFixed(2)}° W`;
+  }
 }
-function hideTip(){maptip.classList.remove("on");}
+function inverseProj(x,y){const lon=(x/2.7778)-180,lat=90-(y/2.7778);return[lon,lat];}
+function hideTip(){maptip.classList.remove("on");const mc=$("#mapcoords");if(mc)mc.textContent="";}
 
 /* Ventana interna: trabajos del estado; click en trabajo => detalle */
 const modal=$("#modal"),mhead=$("#mhead"),mfoot=$("#mfoot"),imgview=$("#imgview"),mclose=$("#mclose");
@@ -307,10 +339,11 @@ mapview.addEventListener("pointermove",e=>{
 mapview.addEventListener("pointerup",endPan);
 mapview.addEventListener("pointercancel",endPan);
 mapview.addEventListener("contextmenu",e=>e.preventDefault());
-mapview.addEventListener("dblclick",e=>e.preventDefault());
+mapview.addEventListener("dblclick",e=>{e.preventDefault();if(dragMoved)return;resetView();});
 $("#zin").addEventListener("click",()=>zoomAt(VW/2,VH/2,1.5));
 $("#zout").addEventListener("click",()=>zoomAt(VW/2,VH/2,1/1.5));
 $("#zreset").addEventListener("click",resetView);
+$("#zfit").addEventListener("click",fitToExperiences);
 // Keyboard accessibility for map controls
 const mapKeys=e=>{
   if(e.target.closest(".map-ctrl")||e.target===mapview){
