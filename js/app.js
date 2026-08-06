@@ -128,10 +128,11 @@ const proj=(lat,lon)=>[+((lon+180)*2.7778).toFixed(2),+((90-lat)*2.7778).toFixed
 const fmtCoords=c=>`${Math.abs(c[0]).toFixed(2)}° ${c[0]>=0?"N":"S"} · ${Math.abs(c[1]).toFixed(2)}° ${c[1]>=0?"E":"O"}`;
 const norm=s=>(s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
 const VW=1000,VH=500;
-let GB=null,kMin=1,kMax=1,vk=1,vx=0,vy=0,dragMoved=false,pDown=null;
+let GB=null,kMin=1,kMax=8,vk=1,vx=0,vy=0,dragMoved=false,pDown=null;
+let initialVx=0,initialVy=0;
 const MAPA_ESTADOS=(typeof window!=="undefined"&&(window.MAPA_ESTADOS||window.MEXICO_ESTADOS))?(window.MAPA_ESTADOS||window.MEXICO_ESTADOS):[];
 const svg=$("#worldmap"),worldG=$("#worldG"),mapview=$("#mapview"),maptip=$("#maptip"),mapstatus=$("#mapstatus");
-let MARKS=[];
+let MARKS=[],stateLabels=[];
 
 function dp(pts,tol){const n=pts.length;if(n<4)return pts;
   const keep=new Uint8Array(n);keep[0]=keep[n-1]=1;const st=[[0,n-1]];
@@ -156,10 +157,14 @@ function clampView(){
   const miny=VH-vk*GB.maxy,maxy=-vk*GB.miny;
   vx=Math.min(maxx,Math.max(minx,vx));
   vy=Math.min(maxy,Math.max(miny,vy));
+  // Restaurar traslación inicial al llegar al zoom mínimo
+  if(vk<=kMin){vx=initialVx;vy=initialVy;}
 }
 function applyView(){
   worldG.setAttribute("transform",`translate(${vx} ${vy}) scale(${vk})`);
   MARKS.forEach(m=>m.g.setAttribute("transform",`translate(${m.x} ${m.y}) scale(${(1/vk).toFixed(3)})`));
+  // Actualizar tamaño aparente de etiquetas de estados
+  updateLabelSizes();
   mapview.classList.toggle("zoomed",vk>kMin*1.4);
   $$("#countries .pais").forEach(p=>p.classList.toggle("sel",p.dataset.pais===selPais));
   // Actualizar indicador de zoom
@@ -169,12 +174,21 @@ function applyView(){
 }
 function zoomAt(sx,sy,f){
   const k2=Math.min(kMax,Math.max(kMin,vk*f));
+  // Zoom respecto al cursor: el punto bajo el cursor no se mueve
   vx=sx-(sx-vx)*(k2/vk);vy=sy-(sy-vy)*(k2/vk);vk=k2;clampView();applyView();
 }
 function resetView(){
   if(GB){const f=fitBBox(GB,0.92);vk=f.k;vx=f.vx;vy=f.vy;}
-  else{vk=1;vx=0;vy=0;}
+  else{vk=1;vx=initialVx;vy=initialVy;}
   applyView();
+}
+function updateLabelSizes(){
+  // Calcular tamaño aparente: clamp(10, 10 * sqrt(escala), 16)
+  const apparentSize=Math.max(10,Math.min(16,10*Math.sqrt(vk)));
+  stateLabels.forEach(lbl=>{
+    // font-size en el SVG = aparente / escala para que se vea proporcional
+    lbl.setAttribute("font-size",(apparentSize/vk).toFixed(2));
+  });
 }
 function fitToExperiences(){
   if(!MARKS.length)return;
@@ -216,8 +230,6 @@ function renderMap(){
         const el=document.createElementNS(NS,"path");
         el.setAttribute("d",d);el.setAttribute("class","pais hasjobs");
         el.dataset.pais=s.p;el.dataset.estado=s.n;
-        el.addEventListener("mousemove",ev=>showTip(ev,`${s.n}, ${s.p} · clic para ver trabajos`));
-        el.addEventListener("mouseleave",hideTip);
         el.addEventListener("click",ev=>{ev.stopPropagation();if(dragMoved)return;openStateModal(s);});
         frag.appendChild(el);
       }else{
@@ -226,8 +238,6 @@ function renderMap(){
         let d="";for(let i=0;i<red.length;i++){d+=(i?"L":"M")+red[i][0]+","+red[i][1];}d+="Z";
         const el=document.createElementNS(NS,"path");
         el.setAttribute("d",d);el.setAttribute("class","pais");
-        el.addEventListener("mousemove",ev=>showTip(ev,`${s.n}, ${s.p}`));
-        el.addEventListener("mouseleave",hideTip);
         frag.appendChild(el);
       }
     });
@@ -235,23 +245,26 @@ function renderMap(){
   cG.appendChild(frag);
 
   GB=GBt;
-  if(GB){const f=fitBBox(GB,0.92);kMin=f.k;kMax=f.k*160;vk=f.k;vx=f.vx;vy=f.vy;}
-  else{vk=1;vx=0;vy=0;}
+  if(GB){const f=fitBBox(GB,0.92);kMin=f.k;kMax=kMin*8;vk=f.k;vx=f.vx;vy=f.vy;initialVx=vx;initialVy=vy;}
+  else{vk=1;vx=0;vy=0;initialVx=0;initialVy=0;}
   $("#maptitle").textContent="⌖ CARTA · MÉXICO";
   $("#mapsubtitle").textContent="Interactivo";
-  mapstatus.innerHTML=`<span>${GB?`ENCUADRE AUTOMÁTICO · ${MAPA_ESTADOS.length} GEOMETRÍAS`:"SIN GEOMETRÍAS"}</span><span id="mapcoords"></span>`;
+  mapstatus.innerHTML=`<span>${GB?`ENCUADRE AUTOMÁTICO · ${MAPA_ESTADOS.length} GEOMETRÍAS`:"SIN GEOMETRÍAS"}</span>`;
   renderStates();
   applyView();
 }
 
 function renderStates(){
   const P=detectar();
-  const sG=$("#states");sG.innerHTML="";MARKS=[];
+  const sG=$("#states");sG.innerHTML="";MARKS=[];stateLabels=[];
   Object.values(P).forEach(c=>Object.values(c.estados).forEach(st=>{
     const [x,y]=proj(st.coords[0],st.coords[1]);
     const g=document.createElementNS(NS,"g");
     g.setAttribute("class","st-mark");
-    g.innerHTML=`<circle class="ring" r="8"/><circle class="core" r="3"/><text y="-12">${st.estado.toUpperCase()}</text>`;
+    g.innerHTML=`<circle class="ring" r="8"/><circle class="core" r="3"/><text y="-12" text-anchor="middle">${st.estado.toUpperCase()}</text>`;
+    // Guardar referencia a la etiqueta de texto para actualizar su tamaño
+    const textEl=g.querySelector("text");
+    stateLabels.push(textEl);
     g.addEventListener("click",ev=>{ev.stopPropagation();if(dragMoved)return;
       const st2=MAPA_ESTADOS.find(s=>norm(s.n)===norm(st.estado)&&norm(s.p)===norm(c.pais));
       highlightState(st2||{n:st.estado,p:c.pais});
@@ -278,24 +291,10 @@ function detectar(){
 }
 
 function showTip(e,txt){
-  const r=mapview.getBoundingClientRect();
-  maptip.textContent=txt;maptip.classList.add("on");
-  const x=Math.min(r.width-150,(e.clientX-r.left)+14);
-  const y=Math.max(0,(e.clientY-r.top)-30);
-  maptip.style.left=x+"px";
-  maptip.style.top=y+"px";
-  // Actualizar coordenadas en tiempo real
-  const mc=$("#mapcoords");
-  if(mc){
-    const mx=(e.clientX-r.left)*VW/r.width,vx2=vx,my=(e.clientY-r.top)*VH/r.height,vy2=vy;
-    const [lon,lat]=inverseProj((mx-vx2)/vk,(my-vy2)/vk);
-    mc.textContent=`${lat.toFixed(2)}° N · ${Math.abs(lon).toFixed(2)}° W`;
-  }
+  // Tooltip eliminado según requerimientos - solo hover sutil en CSS
 }
 function inverseProj(x,y){const lon=(x/2.7778)-180,lat=90-(y/2.7778);return[lon,lat];}
-function hideTip(){maptip.classList.remove("on");const mc=$("#mapcoords");if(mc)mc.textContent="";}
-
-/* Ventana interna: trabajos del estado; click en trabajo => detalle */
+function hideTip(){}
 const modal=$("#modal"),mhead=$("#mhead"),mfoot=$("#mfoot"),imgview=$("#imgview"),mclose=$("#mclose");
 const MESN=["ENE","FEB","MAR","ABR","MAY","JUN","JUL","AGO","SEP","OCT","NOV","DIC"];
 const fmtYM=ym=>{const [y,m]=ym.split("-");return `${MESN[+m-1]} ${y}`;};

@@ -130,7 +130,7 @@ body.ready .hr{opacity:1;transform:none}
 .st-mark .ring{fill:none;stroke:var(--acc2);stroke-width:1.2;transform-box:fill-box;transform-origin:center;animation:pring 2s ease-out infinite}
 @keyframes pring{0%{opacity:.9;transform:scale(.4)}100%{opacity:0;transform:scale(2.4)}}
 .st-mark .core{fill:var(--acc2)}
-.st-mark text{font:600 7px var(--mono);fill:var(--bone);letter-spacing:.12em;text-anchor:middle;paint-order:stroke;stroke:rgba(10,14,39,.85);stroke-width:2px}
+.st-mark text{font:600 var(--mono);fill:var(--bone);letter-spacing:.12em;text-anchor:middle;paint-order:stroke;stroke:rgba(10,14,39,.85);stroke-width:0.5px;font-size:7px}
 :root[data-theme="light"] .st-mark text{stroke:rgba(248,250,252,.9)}
 .map-tip{position:absolute;z-index:5;pointer-events:none;background:var(--glass);border:1px solid var(--ln);border-radius:8px;padding:.45rem .7rem;font:500 .62rem var(--mono);letter-spacing:.08em;color:var(--bone);opacity:0;transition:opacity .2s;white-space:nowrap;backdrop-filter:blur(8px);box-shadow:0 4px 12px rgba(0,0,0,.3)}
 .map-tip.on{opacity:1}
