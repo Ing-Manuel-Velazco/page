@@ -121,8 +121,8 @@ document.addEventListener("click",e=>{
 });
 
 /* ============================================================
-   MAPA — SOLO mexico-data.js. Encuadre automático = bbox de TODA
-   la geometría existente; ese encuadre es el límite de zoom-out.
+   MAPA MUNDIAL — Carga de países desde world-data.js
+   Proyección Mercator, zoom/pan interactivo, etiquetas escalables
    ============================================================ */
 const proj=(lat,lon)=>[+((lon+180)*2.7778).toFixed(2),+((90-lat)*2.7778).toFixed(2)];
 const fmtCoords=c=>`${Math.abs(c[0]).toFixed(2)}° ${c[0]>=0?"N":"S"} · ${Math.abs(c[1]).toFixed(2)}° ${c[1]>=0?"E":"O"}`;
@@ -130,9 +130,10 @@ const norm=s=>(s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,
 const VW=1000,VH=500;
 let GB=null,kMin=1,kMax=8,vk=1,vx=0,vy=0,dragMoved=false,pDown=null;
 let initialVx=0,initialVy=0;
-const MAPA_ESTADOS=(typeof window!=="undefined"&&(window.MAPA_ESTADOS||window.MEXICO_ESTADOS))?(window.MAPA_ESTADOS||window.MEXICO_ESTADOS):[];
-const svg=$("#worldmap"),worldG=$("#worldG"),mapview=$("#mapview"),maptip=$("#maptip"),mapstatus=$("#mapstatus");
-let MARKS=[],stateLabels=[];
+// Cargar datos mundiales o fallback a México
+const WORLD_COUNTRIES=(typeof window!=="undefined"&&window.WORLD_COUNTRIES)?window.WORLD_COUNTRIES:[];
+const svg=$("#worldmap"),worldG=$("#worldG"),mapview=$("#mapview"),mapstatus=$("#mapstatus");
+let MARKS=[],countryLabels=[];
 
 function dp(pts,tol){const n=pts.length;if(n<4)return pts;
   const keep=new Uint8Array(n);keep[0]=keep[n-1]=1;const st=[[0,n-1]];
@@ -185,7 +186,7 @@ function resetView(){
 function updateLabelSizes(){
   // Calcular tamaño aparente: clamp(10, 10 * sqrt(escala), 16)
   const apparentSize=Math.max(10,Math.min(16,10*Math.sqrt(vk)));
-  stateLabels.forEach(lbl=>{
+  countryLabels.forEach(lbl=>{
     // font-size en el SVG = aparente / escala para que se vea proporcional
     lbl.setAttribute("font-size",(apparentSize/vk).toFixed(2));
   });
@@ -204,42 +205,40 @@ function fitToExperiences(){
 
 function renderMap(){
   let g="";
-  for(let lon=-120;lon<=-85;lon+=5){const x=(lon+180)*2.7778;g+=`<line x1="${x}" y1="0" x2="${x}" y2="500"/>`;}
-  for(let lat=10;lat<=35;lat+=5){const y=(90-lat)*2.7778;g+=`<line x1="0" y1="${y}" x2="1000" y2="${y}"/>`;}
+  for(let lon=-180;lon<=180;lon+=30){const x=(lon+180)*2.7778;g+=`<line x1="${x}" y1="0" x2="${x}" y2="500"/>`;}
+  for(let lat=-60;lat<=85;lat+=30){const y=(90-lat)*2.7778;g+=`<line x1="0" y1="${y}" x2="1000" y2="${y}"/>`;}
   $("#grat").innerHTML=g;
 
   const matched={};
-  EXPERIENCIAS.forEach(e=>{matched[norm(e.pais)+"|"+norm(e.estado)]=true;});
+  EXPERIENCIAS.forEach(e=>{matched[norm(e.pais)]=true;});
   const cG=$("#countries");cG.innerHTML="";
 
   // bbox global desde TODA la geometría existente => encuadre automático
   let GBt=null;
   const frag=document.createDocumentFragment();
-  MAPA_ESTADOS.forEach(s=>{
-    const key=norm(s.p)+"|"+norm(s.n);
+  WORLD_COUNTRIES.forEach(c=>{
+    const key=norm(c.n);
     const isM=matched[key];
-    s.g.forEach(ring=>{
+    c.g.forEach(ring=>{
       const n=ring.length;if(n<3)return;
       let pts=new Array(n);let minx=1e9,miny=1e9,maxx=-1e9,maxy=-1e9;
-      for(let i=0;i<n;i++){const [x,y]=proj(ring[i][1],ring[i][0]);pts[i]=[x,y];
+      for(let i=0;i<n;i++){const [x,y]=ring[i];pts[i]=[x,y];
         if(x<minx)minx=x;if(x>maxx)maxx=x;if(y<miny)miny=y;if(y>maxy)maxy=y;}
       if(!GBt)GBt={minx,miny,maxx,maxy};
       else{GBt.minx=Math.min(GBt.minx,minx);GBt.miny=Math.min(GBt.miny,miny);GBt.maxx=Math.max(GBt.maxx,maxx);GBt.maxy=Math.max(GBt.maxy,maxy);}
-      if(isM){
-        let d="";for(let i=0;i<n;i++){d+=(i?"L":"M")+pts[i][0]+","+pts[i][1];}d+="Z";
-        const el=document.createElementNS(NS,"path");
-        el.setAttribute("d",d);el.setAttribute("class","pais hasjobs");
-        el.dataset.pais=s.p;el.dataset.estado=s.n;
-        el.addEventListener("click",ev=>{ev.stopPropagation();if(dragMoved)return;openStateModal(s);});
-        frag.appendChild(el);
-      }else{
-        if((maxx-minx)<0.02&&(maxy-miny)<0.02)return;
-        let red=n>300?dp(pts,0.5):pts;
-        let d="";for(let i=0;i<red.length;i++){d+=(i?"L":"M")+red[i][0]+","+red[i][1];}d+="Z";
-        const el=document.createElementNS(NS,"path");
-        el.setAttribute("d",d);el.setAttribute("class","pais");
-        frag.appendChild(el);
-      }
+      
+      let d="";for(let i=0;i<n;i++){d+=(i?"L":"M")+pts[i][0]+","+pts[i][1];}d+="Z";
+      const el=document.createElementNS(NS,"path");
+      el.setAttribute("d",d);
+      el.setAttribute("class","pais"+(isM?" hasjobs":""));
+      el.dataset.pais=c.n;
+      
+      // Añadir etiqueta de país centrada
+      const cx=pts.reduce((s,p)=>s+p[0],0)/n;
+      const cy=pts.reduce((s,p)=>s+p[1],0)/n;
+      
+      el.addEventListener("click",ev=>{ev.stopPropagation();if(dragMoved)return;openCountryModal(c);});
+      frag.appendChild(el);
     });
   });
   cG.appendChild(frag);
@@ -247,60 +246,20 @@ function renderMap(){
   GB=GBt;
   if(GB){const f=fitBBox(GB,0.92);kMin=f.k;kMax=kMin*8;vk=f.k;vx=f.vx;vy=f.vy;initialVx=vx;initialVy=vy;}
   else{vk=1;vx=0;vy=0;initialVx=0;initialVy=0;}
-  $("#maptitle").textContent="⌖ CARTA · MÉXICO";
-  $("#mapsubtitle").textContent="Interactivo";
-  mapstatus.innerHTML=`<span>${GB?`ENCUADRE AUTOMÁTICO · ${MAPA_ESTADOS.length} GEOMETRÍAS`:"SIN GEOMETRÍAS"}</span>`;
-  renderStates();
+  $("#maptitle").textContent="🌍 CARTA · MUNDIAL";
+  $("#mapsubtitle").textContent=WORLD_COUNTRIES.length+" países";
+  mapstatus.innerHTML=`<span>${GB?`ENCUADRE AUTOMÁTICO · ${WORLD_COUNTRIES.length} PAÍSES`:"SIN GEOMETRÍAS"}</span>`;
   applyView();
 }
 
-function renderStates(){
-  const P=detectar();
-  const sG=$("#states");sG.innerHTML="";MARKS=[];stateLabels=[];
-  Object.values(P).forEach(c=>Object.values(c.estados).forEach(st=>{
-    const [x,y]=proj(st.coords[0],st.coords[1]);
-    const g=document.createElementNS(NS,"g");
-    g.setAttribute("class","st-mark");
-    g.innerHTML=`<circle class="ring" r="8"/><circle class="core" r="3"/><text y="-12" text-anchor="middle">${st.estado.toUpperCase()}</text>`;
-    // Guardar referencia a la etiqueta de texto para actualizar su tamaño
-    const textEl=g.querySelector("text");
-    stateLabels.push(textEl);
-    g.addEventListener("click",ev=>{ev.stopPropagation();if(dragMoved)return;
-      const st2=MAPA_ESTADOS.find(s=>norm(s.n)===norm(st.estado)&&norm(s.p)===norm(c.pais));
-      highlightState(st2||{n:st.estado,p:c.pais});
-      openStateModal(st2||{n:st.estado,p:c.pais});});
-    g.addEventListener("mousemove",ev=>showTip(ev,`${st.estado} · ${st.jobs.length} trabajo(s)`));
-    g.addEventListener("mouseleave",hideTip);
-    sG.appendChild(g);MARKS.push({g,x,y,estado:st.estado,pais:c.pais});
-  }));
-}
-function highlightState(st){
-  $$("#countries .pais").forEach(p=>p.classList.remove("highlighted"));
-  if(!st)return;
-  const el=$$(`#countries .pais`).find(p=>norm(p.dataset.estado)===norm(st.n)&&norm(p.dataset.pais)===norm(st.p));
-  if(el){el.classList.add("highlighted");el.scrollIntoView({behavior:"smooth",block:"center"});}}
-
-function detectar(){
-  const P={};
-  EXPERIENCIAS.forEach(e=>{
-    const p=P[e.pais]||(P[e.pais]={pais:e.pais,jobs:[],estados:{},centroid:e.coords});
-    p.jobs.push(e);
-    (p.estados[e.estado]||(p.estados[e.estado]={estado:e.estado,jobs:[],coords:e.coords})).jobs.push(e);
-  });
-  return P;
-}
-
-function showTip(e,txt){
-  // Tooltip eliminado según requerimientos - solo hover sutil en CSS
-}
-function inverseProj(x,y){const lon=(x/2.7778)-180,lat=90-(y/2.7778);return[lon,lat];}
-function hideTip(){}
+// Función para abrir modal de país
 const modal=$("#modal"),mhead=$("#mhead"),mfoot=$("#mfoot"),imgview=$("#imgview"),mclose=$("#mclose");
 const MESN=["ENE","FEB","MAR","ABR","MAY","JUN","JUL","AGO","SEP","OCT","NOV","DIC"];
 const fmtYM=ym=>{const [y,m]=ym.split("-");return `${MESN[+m-1]} ${y}`;};
-function openStateModal(st){
-  const jobs=EXPERIENCIAS.filter(e=>norm(e.estado)===norm(st.n)&&norm(e.pais)===norm(st.p));
-  mhead.innerHTML=`<span class="modal-badge">ESTADO</span><h3>${st.n}, ${st.p}</h3><span class="iss">${jobs.length} trabajo(s) registrado(s)</span>`;
+
+function openCountryModal(c){
+  const jobs=EXPERIENCIAS.filter(e=>norm(e.pais)===norm(c.n));
+  mhead.innerHTML=`<span class="modal-badge">PAÍS</span><h3>${c.n}</h3><span class="iss">${jobs.length} trabajo(s) registrado(s)</span>`;
   imgview.innerHTML=`<div class="jobs-list">`+(jobs.length?jobs.map(e=>`
     <div class="job-card">
       <div class="job-h"><div><h4>${e.puesto}</h4><p>${e.empresa}${e.sigla?` (${e.sigla})`:''}</p></div><span class="xchev">▾</span></div>
@@ -309,8 +268,8 @@ function openStateModal(st){
         <ul>${e.logros.map(l=>`<li>${l}</li>`).join('')}</ul>
         <div class="chips">${e.tools.map(t=>`<span class="chip">${t}</span>`).join('')}</div>
       </div></div>
-    </div>`).join(''):`<p class="no-results">Sin trabajos registrados en ${st.n}.</p>`)+`</div>`;
-  mfoot.innerHTML=`Haz clic en un trabajo para ver su detalle · ${st.n}, ${st.p}`;
+    </div>`).join(''):`<p class="no-results">Sin trabajos registrados en ${c.n}.</p>`)+`</div>`;
+  mfoot.innerHTML=`Haz clic en un trabajo para ver su detalle · ${c.n}`;
   imgview.querySelectorAll(".job-card").forEach(jc=>{
     jc.querySelector(".job-h").addEventListener("click",()=>jc.classList.toggle("open"));
   });
