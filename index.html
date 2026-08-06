@@ -24,8 +24,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="preload" href="css/styles.css" as="style">
 <link rel="preload" href="js/app.js" as="script">
-<link rel="preload" href="data/mexico-data.js" as="script">
-<link rel="preload" href="data/world-data.js" as="script">
+<link rel="preload" href="js/mexico-data.js" as="script">
+<link rel="preload" href="js/mexico-map.js" as="script">
 <link rel="stylesheet" href="css/styles.css">
 
 <!-- Schema.org markup -->
@@ -175,44 +175,23 @@
       <div class="map-panel reveal" id="mappanel">
         <div class="map-head">
           <div class="map-title-wrap">
-            <span class="map-title" id="maptitle">🌍 CARTA · MUNDIAL</span>
-            <span class="map-subtitle" id="mapsubtitle">Interactivo</span>
+            <span class="map-title" id="maptitle">🇲🇽 MAPA · MÉXICO</span>
+            <span class="map-subtitle" id="mapsubtitle">Interactivo por Estados</span>
           </div>
           <div class="map-ctrl" role="group" aria-label="Controles del mapa">
-            <button id="zin" aria-label="Acercar zoom" title="Zoom + (Rueda hacia arriba)">+</button>
-            <button id="zout" aria-label="Alejar zoom" title="Zoom − (Rueda hacia abajo)">−</button>
-            <button id="zreset" aria-label="Restablecer vista inicial" title="Vista completa (Doble clic)">⟲</button>
-            <button id="zfit" aria-label="Ajustar a experiencias" title="Centrar en mis experiencias">⌖</button>
+            <button id="zoom-in" aria-label="Acercar zoom" title="Zoom +">+</button>
+            <button id="zoom-out" aria-label="Alejar zoom" title="Zoom −">−</button>
+            <button id="reset-map" aria-label="Restablecer vista inicial" title="Vista completa">⟲</button>
           </div>
         </div>
-        <div class="map-view" id="mapview" tabindex="0" role="application" aria-label="Mapa interactivo mundial · Usa rueda del ratón para zoom, arrastra para mover, doble clic para restablecer">
-          <svg id="worldmap" viewBox="0 0 1000 500" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-            <defs>
-              <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-                <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
-                <feMerge>
-                  <feMergeNode in="coloredBlur"/>
-                  <feMergeNode in="SourceGraphic"/>
-                </feMerge>
-              </filter>
-              <radialGradient id="gradHighlight" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stop-color="#3B82F6" stop-opacity="0.4"/>
-                <stop offset="100%" stop-color="#3B82F6" stop-opacity="0"/>
-              </radialGradient>
-            </defs>
-            <g id="worldG">
-              <g class="grat" id="grat"></g>
-              <g id="countries"></g>
-              <g id="highlights"></g>
-            </g>
-          </svg>
-          <div class="map-legend" id="maplegend" aria-label="Leyenda del mapa">
-            <div class="legend-item"><span class="legend-dot hasjobs"></span><span>Experiencia confirmada</span></div>
-            <div class="legend-item"><span class="legend-dot"></span><span>Sin registros</span></div>
-            <div class="legend-item"><span class="legend-dot info"></span><span>Click para detalles</span></div>
-          </div>
-          <div class="map-zoom-indicator" id="zoomind" aria-hidden="true">100%</div>
-          <div class="map-status" id="mapstatus" aria-live="polite">CARGANDO...</div>
+        <div class="map-view" id="mexico-map-wrapper" tabindex="0" role="application" aria-label="Mapa interactivo de México · Usa rueda del ratón para zoom, arrastra para mover">
+          <!-- El mapa SVG se genera dinámicamente -->
+        </div>
+        <div class="map-legend" id="maplegend" aria-label="Leyenda del mapa">
+          <div class="legend-item"><span class="dot active"></span><span>Con Experiencia</span></div>
+          <div class="legend-item"><span class="dot"></span><span>Sin Registro</span></div>
+        </div>
+        <div class="map-tooltip" id="map-tooltip" aria-hidden="true"></div>
         </div>
       </div>
       <div class="xp-side">
@@ -390,8 +369,8 @@
 </main>
 
 <noscript><style>.hr,.reveal{opacity:1!important;transform:none!important}#boot{display:none!important}</style></noscript>
-<script src="data/world-data.js"></script>
-<script src="data/mexico-data.js"></script>
+<script src="js/mexico-data.js"></script>
+<script src="js/mexico-map.js"></script>
 <script src="certificados/manifest.js"></script>
 <script src="js/app.js"></script>
 </body>
