@@ -216,10 +216,18 @@ function renderMap(){
   // bbox global desde TODA la geometría existente => encuadre automático
   let GBt=null;
   const frag=document.createDocumentFragment();
+  
+  if(typeof WORLD_COUNTRIES==='undefined'||!WORLD_COUNTRIES.length){
+    mapstatus.innerHTML="<span>ERROR: No se cargaron los datos del mapa</span>";
+    return;
+  }
+  
   WORLD_COUNTRIES.forEach(c=>{
     const key=norm(c.n);
     const isM=matched[key];
+    if(!c.g||!Array.isArray(c.g))return;
     c.g.forEach(ring=>{
+      if(!Array.isArray(ring))return;
       const n=ring.length;if(n<3)return;
       let pts=new Array(n);let minx=1e9,miny=1e9,maxx=-1e9,maxy=-1e9;
       for(let i=0;i<n;i++){const [x,y]=ring[i];pts[i]=[x,y];
@@ -233,22 +241,17 @@ function renderMap(){
       el.setAttribute("class","pais"+(isM?" hasjobs":""));
       el.dataset.pais=c.n;
       
-      // Añadir etiqueta de país centrada
-      const cx=pts.reduce((s,p)=>s+p[0],0)/n;
-      const cy=pts.reduce((s,p)=>s+p[1],0)/n;
-      
       el.addEventListener("click",ev=>{ev.stopPropagation();if(dragMoved)return;openCountryModal(c);});
       frag.appendChild(el);
     });
   });
   cG.appendChild(frag);
 
-  GB=GBt;
-  if(GB){const f=fitBBox(GB,0.92);kMin=f.k;kMax=kMin*8;vk=f.k;vx=f.vx;vy=f.vy;initialVx=vx;initialVy=vy;}
+  if(GBt){const f=fitBBox(GBt,0.92);kMin=f.k;kMax=kMin*8;vk=f.k;vx=f.vx;vy=f.vy;initialVx=vx;initialVy=vy;}
   else{vk=1;vx=0;vy=0;initialVx=0;initialVy=0;}
   $("#maptitle").textContent="🌍 CARTA · MUNDIAL";
   $("#mapsubtitle").textContent=WORLD_COUNTRIES.length+" países";
-  mapstatus.innerHTML=`<span>${GB?`ENCUADRE AUTOMÁTICO · ${WORLD_COUNTRIES.length} PAÍSES`:"SIN GEOMETRÍAS"}</span>`;
+  mapstatus.innerHTML=`<span>${GBt?`ENCUADRE AUTOMÁTICO · ${WORLD_COUNTRIES.length} PAÍSES CARGADOS`:"SIN GEOMETRÍAS"}</span>`;
   applyView();
 }
 
