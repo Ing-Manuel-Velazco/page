@@ -273,3 +273,40 @@ footer .wrap{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001s!important;transition-duration:.001s!important}html{scroll-behavior:auto}.reveal,.hr{opacity:1!important;transform:none!important}.trk i{transform:scaleX(var(--v))!important}}
 @media print{.modal,.nav,.progress{display:none!important}body{background:#fff;color:#111}}
 </style>
+
+/* Estadísticas de experiencia */
+.xp-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem}
+.stat-card{background:var(--pn);border:1px solid var(--ln);border-radius:12px;padding:1.2rem;text-align:center;backdrop-filter:blur(12px);transition:border-color .3s,transform .3s}
+.stat-card:hover{border-color:var(--acc);transform:translateY(-2px)}
+.stat-num{display:block;font:700 clamp(1.8rem,5vw,2.5rem)/1 var(--disp);background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.stat-label{font:500 .6rem var(--mono);letter-spacing:.18em;color:var(--mut);text-transform:uppercase;display:block;margin-top:.4rem}
+
+/* Filtros rápidos */
+.xp-filters{display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:1.5rem}
+.filter-btn{background:var(--pn);border:1px solid var(--ln);color:var(--bone);padding:.6rem 1rem;border-radius:8px;font:500 .7rem var(--mono);cursor:pointer;transition:all .3s;letter-spacing:.08em}
+.filter-btn:hover{border-color:var(--acc);background:var(--bg2)}
+.filter-btn.active{background:var(--acc);border-color:var(--acc);color:#fff}
+.filter-btn[aria-pressed="true"]{background:var(--acc);border-color:var(--acc);color:#fff}
+
+/* Badge de tipo en tarjetas */
+.xbadge{font-size:1rem;margin-left:.4rem}
+
+/* Mejoras de accesibilidad en mapa */
+.map-view:focus{outline:2px solid var(--acc);outline-offset:2px}
+.map-ctrl button:focus{outline:2px solid var(--acc);outline-offset:2px}
+
+/* Paginación con números */
+.pg-info{font:500 .65rem var(--mono);letter-spacing:.12em;color:var(--mut)}
+
+/* Visually hidden para lectores de pantalla */
+.visually-hidden{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+/* Responsive para estadísticas */
+@media(max-width:768px){
+  .xp-stats{grid-template-columns:repeat(2,1fr)}
+  .xp-filters{justify-content:center}
+}
+@media(max-width:480px){
+  .xp-stats{grid-template-columns:1fr}
+  .filter-btn{flex:1 1 auto;text-align:center}
+}

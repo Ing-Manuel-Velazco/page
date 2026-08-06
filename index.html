@@ -141,33 +141,65 @@
 <section id="experiencia">
   <div class="wrap">
     <div class="shead reveal"><span class="tag">02 · TRAYECTORIA</span><h2 class="scr">EXPERIENCIA DE CAMPO</h2><span class="rule"></span></div>
+    
+    <!-- Estadísticas rápidas -->
+    <div class="xp-stats reveal" id="xpstats" aria-label="Estadísticas de experiencia">
+      <div class="stat-card">
+        <span class="stat-num" id="totalxp">0</span>
+        <span class="stat-label">Experiencias</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-num" id="totalempresas">0</span>
+        <span class="stat-label">Empresas</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-num" id="totalestados">0</span>
+        <span class="stat-label">Estados</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-num" id="totalanos">0</span>
+        <span class="stat-label">Años de experiencia</span>
+      </div>
+    </div>
+    
+    <!-- Filtros rápidos -->
+    <div class="xp-filters reveal" id="xpfilters" role="group" aria-label="Filtros de experiencia">
+      <button class="filter-btn active" data-filter="all" aria-pressed="true">Todos</button>
+      <button class="filter-btn" data-filter="campo" aria-pressed="false">🏗️ Campo</button>
+      <button class="filter-btn" data-filter="oficina" aria-pressed="false">💻 Oficina</button>
+      <button class="filter-btn" data-filter="investigacion" aria-pressed="false">🔬 Investigación</button>
+    </div>
+    
     <div class="xpmap-grid">
       <div class="map-panel reveal">
         <div class="map-head">
           <span class="map-title" id="maptitle">⌖ CARTA · MÉXICO</span>
-          <div class="map-ctrl">
-            <button id="zin" aria-label="Acercar">+</button>
-            <button id="zout" aria-label="Alejar">−</button>
-            <button id="zreset" aria-label="Restablecer">⟲</button>
+          <div class="map-ctrl" role="group" aria-label="Controles del mapa">
+            <button id="zin" aria-label="Acercar zoom">+</button>
+            <button id="zout" aria-label="Alejar zoom">−</button>
+            <button id="zreset" aria-label="Restablecer vista inicial">⟲</button>
           </div>
         </div>
-        <div class="map-view" id="mapview">
-          <svg id="worldmap" viewBox="0 0 1000 500" preserveAspectRatio="xMidYMid meet">
+        <div class="map-view" id="mapview" tabindex="0" role="application" aria-label="Mapa interactivo de México">
+          <svg id="worldmap" viewBox="0 0 1000 500" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
             <g id="worldG">
               <g class="grat" id="grat"></g>
               <g id="countries"></g>
               <g id="states"></g>
             </g>
           </svg>
-          <div class="map-tip" id="maptip"></div>
+          <div class="map-tip" id="maptip" role="tooltip" aria-hidden="true"></div>
         </div>
-        <div class="map-status" id="mapstatus">CARGANDO...</div>
+        <div class="map-status" id="mapstatus" aria-live="polite">CARGANDO...</div>
       </div>
       <div class="xp-side">
-        <div class="xp-search reveal"><input id="xsearch" placeholder="🔍 Buscar puesto, empresa, herramienta o lugar..."></div>
-        <div class="xp-crumbs reveal" id="xcrumbs"></div>
-        <div id="xlist"></div>
-        <div class="xp-pager reveal" id="xpager"></div>
+        <div class="xp-search reveal">
+          <label for="xsearch" class="visually-hidden">Buscar experiencias</label>
+          <input id="xsearch" placeholder="🔍 Buscar puesto, empresa, herramienta o lugar..." type="search" autocomplete="off">
+        </div>
+        <div class="xp-crumbs reveal" id="xcrumbs" aria-live="polite"></div>
+        <div id="xlist" role="list" aria-label="Lista de experiencias profesionales"></div>
+        <div class="xp-pager reveal" id="xpager" role="navigation" aria-label="Paginación de experiencias"></div>
       </div>
     </div>
   </div>

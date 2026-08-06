@@ -11,19 +11,19 @@ const URL_TITULACION="https://titulacion.ucol.mx/validar/186120e6-cf70-41bb-bc05
 
 const EXPERIENCIAS=[
   {puesto:"Cadista / Dibujante CAD",empresa:"Secretaría de la Defensa Nacional",sigla:"SEDENA",inicio:"2025-10",fin:"2025-11",dur:"1 mes",
-   pais:"México",estado:"Jalisco",ciudad:"Guadalajara",coords:[20.67,-103.35],
+   pais:"México",estado:"Jalisco",ciudad:"Guadalajara",coords:[20.67,-103.35],tipo:"oficina",
    logros:["Generé planos técnicos y modelos de superficie para proyectos de infraestructura.","Realicé cálculos volumétricos y análisis de nivelación, apoyando la interpretación geométrica del terreno."],
    tools:["AutoCAD Civil 3D","Modelado de superficies","Cálculo volumétrico"]},
   {puesto:"Becario de Investigación",empresa:"Sistema Nacional de Investigadores",sigla:"CONAHCYT",inicio:"2021-12",fin:"2024-11",dur:"3 años",
-   pais:"México",estado:"Colima",ciudad:"Colima",coords:[19.24,-103.72],
+   pais:"México",estado:"Colima",ciudad:"Colima",coords:[19.24,-103.72],tipo:"investigacion",
    logros:["Propuse y validé una metodología estatal para la ubicación óptima de estaciones de monitoreo de calidad del aire.","Levantamiento de datos geográficos en campo.","Desarrollé cartografía temática y bases de datos geoespaciales.","Colaboré en análisis geoambientales e informes técnicos para el perfil epidemi-toxicológico de Colima · Proyecto Nº 321542."],
    tools:["ArcGIS Pro","Cartografía temática","Geodatabases","Análisis espacial"]},
   {puesto:"Supervisor de Obras",empresa:"Corporativo de Estudios Técnicos y de Ingeniería Civil",sigla:"CRETEC",inicio:"2023-01",fin:"2023-09",dur:"9 meses",
-   pais:"México",estado:"Colima",ciudad:"Colima",coords:[19.24,-103.72],
+   pais:"México",estado:"Colima",ciudad:"Colima",coords:[19.24,-103.72],tipo:"campo",
    logros:["Supervisé movimientos de tierra y cálculo de volúmenes en proyectos de gran escala.","Generé planos técnicos y modelos de superficie para documentación y control de obra.","Coordiné equipos en campo en el Aeropuerto Internacional de Colima."],
    tools:["Civil 3D","Estación total","GPS","Coordinación de campo"]},
   {puesto:"Auxiliar de Topógrafo",empresa:"Meridiano Topografía",sigla:"",inicio:"2021-01",fin:"2021-07",dur:"7 meses",
-   pais:"México",estado:"Colima",ciudad:"Colima",coords:[19.24,-103.72],
+   pais:"México",estado:"Colima",ciudad:"Colima",coords:[19.24,-103.72],tipo:"campo",
    logros:["Ejecuté levantamientos planimétricos y altimétricos.","Operé equipos topográficos para captura y análisis de información georreferenciada."],
    tools:["Estación total","Nivel fijo","Levantamientos planimétricos"]}
 ];
@@ -329,10 +329,30 @@ document.addEventListener("keydown",mapKeys);
 
 
 /* LISTA LATERAL */
-let selPais=null,selEstado=null,xPage=0;
+let selPais=null,selEstado=null,xPage=0,selFiltro="all";
 const XPAGE=2;
+
+/* Calcular estadísticas */
+function calcStats(){
+  const total=EXPERIENCIAS.length;
+  const empresas=[...new Set(EXPERIENCIAS.map(e=>e.empresa))].length;
+  const estados=[...new Set(EXPERIENCIAS.map(e=>e.estado))].length;
+  let anosTotal=0;
+  EXPERIENCIAS.forEach(e=>{
+    const [y,m]=e.inicio.split("-").map(Number);
+    const [yf,mf]=e.fin.split("-").map(Number);
+    const meses=(yf-y)*12+(mf-m)+1;
+    anosTotal+=meses/12;
+  });
+  $("#totalxp").textContent=total;
+  $("#totalempresas").textContent=empresas;
+  $("#totalestados").textContent=estados;
+  $("#totalanos").textContent=anosTotal>=1?anosTotal.toFixed(1):"<1";
+}
+
 function getFilteredX(){
   let list=[...EXPERIENCIAS].sort((a,b)=>b.fin.localeCompare(a.fin));
+  if(selFiltro&&selFiltro!=="all")list=list.filter(e=>e.tipo===selFiltro);
   if(selEstado)list=list.filter(e=>e.estado===selEstado);
   else if(selPais)list=list.filter(e=>e.pais===selPais);
   const q=norm($("#xsearch").value.trim());
@@ -350,10 +370,12 @@ function renderXList(){
   items.forEach(e=>{
     const card=document.createElement("div");
     card.className="xp-card";
+    card.setAttribute("role","listitem");
+    const badge=e.tipo==="campo"?"🏗️":e.tipo==="oficina"?"💻":"🔬";
     card.innerHTML=`
       <div class="xh">
         <div><h3>${e.puesto}</h3><p class="org">${e.empresa}${e.sigla?` <em>(${e.sigla})</em>`:""}</p></div>
-        <div class="xmeta"><time>${fmtYM(e.inicio)} — ${fmtYM(e.fin)}</time><span class="xdur">${e.dur}</span><span class="xchev">▾</span></div>
+        <div class="xmeta"><time>${fmtYM(e.inicio)} — ${fmtYM(e.fin)}</time><span class="xdur">${e.dur}</span><span class="xbadge">${badge}</span><span class="xchev">▾</span></div>
       </div>
       <div class="xp-body"><div class="xp-body-in">
         <p class="xloc">⌖ ${e.ciudad}, ${e.estado}, ${e.pais} · ${fmtCoords(e.coords)}</p>
@@ -365,9 +387,9 @@ function renderXList(){
   });
   const pg=$("#xpager");
   if(total>XPAGE){
-    pg.innerHTML=`<button class="pg-btn" id="xprev" ${xPage===0?"disabled":""}>‹</button>
-      <span class="pg-info">${xPage*XPAGE+1}–${Math.min(total,(xPage+1)*XPAGE)} DE ${total}</span>
-      <button class="pg-btn" id="xnext" ${xPage>=pages-1?"disabled":""}>›</button>`;
+    pg.innerHTML=`<button class="pg-btn" id="xprev" ${xPage===0?"disabled":""} aria-label="Página anterior">‹</button>
+      <span class="pg-info" aria-live="polite">${xPage*XPAGE+1}–${Math.min(total,(xPage+1)*XPAGE)} DE ${total}</span>
+      <button class="pg-btn" id="xnext" ${xPage>=pages-1?"disabled":""} aria-label="Página siguiente">›</button>`;
     $("#xprev").addEventListener("click",()=>{xPage--;renderXList();});
     $("#xnext").addEventListener("click",()=>{xPage++;renderXList();});
   }else{pg.innerHTML=total?`<span class="pg-info">${total} REGISTRO${total!==1?"S":""}</span>`:"";}
@@ -376,8 +398,20 @@ function renderXList(){
 const debounce=(fn,ms)=>{let t;return(...a)=>{clearTimeout(t);t=setTimeout(()=>fn.apply(this,a),ms);};};
 
 $("#xsearch").addEventListener("input",debounce(()=>{xPage=0;renderXList();},300));
-function renderCrumbs(){}
 
+/* Filtros rápidos */
+$$('.filter-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    $$('.filter-btn').forEach(b=>{b.classList.remove('active');b.setAttribute('aria-pressed','false');});
+    btn.classList.add('active');
+    btn.setAttribute('aria-pressed','true');
+    selFiltro=btn.dataset.filter;
+    xPage=0;
+    renderXList();
+  });
+});
+
+function renderCrumbs(){}
 /* CERTIFICADOS */
 const MESES={"enero":"01","febrero":"02","marzo":"03","abril":"04","mayo":"05","junio":"06","julio":"07","agosto":"08","septiembre":"09","setiembre":"09","octubre":"10","noviembre":"11","diciembre":"12","ene":"01","feb":"02","mar":"03","abr":"04","may":"05","jun":"06","jul":"07","ago":"08","sep":"09","oct":"10","nov":"11","dic":"12","january":"01","february":"02","march":"03","april":"04","june":"06","july":"07","august":"08","october":"10","november":"11","december":"12"};
 const cap1=s=>{s=(s||"").trim();return s?s.charAt(0).toUpperCase()+s.slice(1):"";};
@@ -587,6 +621,7 @@ $("#yr").textContent=new Date().getFullYear();
 
 /* INICIO */
 renderMap();
+calcStats();
 renderCrumbs();
 renderXList();
 initCerts();
