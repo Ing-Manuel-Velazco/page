@@ -10,18 +10,31 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/styles.css">
-<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}</script>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
 <noscript><style>.hr,.reveal{opacity:1!important;transform:none!important}#boot{display:none!important}</style></noscript>
 </head>
 <body>
 
-<div id="boot" aria-hidden="true">
-  <div class="boot-in">
-    <p class="boot-logo">JOSÉ MANUEL VELAZCO OCHOA</p>
-    <p class="boot-msg" id="bootmsg"></p>
+<div id="boot" role="status">
+  <span class="sr-only">Cargando portafolio profesional…</span>
+  <div id="bootgl" aria-hidden="true"></div>
+  <div class="boot-in" aria-hidden="true">
+    <div class="boot-ret">
+      <svg viewBox="0 0 120 120">
+        <circle class="ret-ring ret-r1" cx="60" cy="60" r="46"/>
+        <circle class="ret-ring ret-r2" cx="60" cy="60" r="34"/>
+        <path class="ret-cross" d="M60 6v16M60 98v16M6 60h16M98 60h16"/>
+        <circle class="ret-core" cx="60" cy="60" r="3.5"/>
+      </svg>
+      <span class="ret-sat"></span>
+    </div>
+    <p class="boot-name" id="bootname">JOSÉ MANUEL VELAZCO OCHOA</p>
+    <p class="boot-role">Ingeniero Topógrafo Geomático</p>
+    <p class="boot-coords" id="bootcoords">19.2452° N · 103.7241° W</p>
     <div class="boot-bar"><i></i></div>
-    <p class="boot-welcome">Bienvenido · Preparando tu experiencia profesional...</p>
+    <p class="boot-msg" id="bootmsg">INICIALIZANDO SISTEMA…</p>
   </div>
+  <p class="boot-skip" aria-hidden="true">Clic · Enter — omitir</p>
 </div>
 
 <div class="progress"><span id="bar"></span></div>
@@ -68,39 +81,55 @@
 </div>
 
 <section id="perfil">
-  <div class="wrap two">
-    <div class="stick">
-      <div class="shead reveal"><span class="tag">01 · PERFIL</span><span class="rule"></span></div>
-      <h2 class="reveal scr" style="font:700 clamp(1.9rem,4.8vw,3.3rem)/1.05 var(--disp);text-transform:uppercase;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:1.6rem">QUIÉN SOY</h2>
-      <p class="quote reveal" style="--d:.1s">Transformo el <b>terreno</b> en <b>información</b> que genera confianza.</p>
-      <p class="lead reveal" style="--d:.2s">Una mala decisión cuesta tiempo y dinero. Una buena comienza con datos precisos. Mi trabajo consiste en medir, analizar e interpretar el terreno para que cada proyecto inicie sobre una base sólida.</p>
-      <p class="lead reveal" style="--d:.3s">Soy <b>Ingeniero Topógrafo Geomático</b>. Combino trabajo en campo con estación total y GNSS, procesamiento en SIG y automatización con Python para entregar información precisa y útil para la toma de decisiones.</p>
-    </div>
-    <div class="cred-wrap reveal" style="--d:.25s">
-      <div class="cred" id="cred">
-        <div class="cred-glare"></div>
-        <div class="cred-top"><span>⌖ <b>GEOMÁTICA</b> · MX</span><span>VT-15282631</span></div>
-        <div class="cred-body">
-          <div class="cred-photo">
-            <img src="foto.png" alt="José Manuel Velazco Ochoa" id="credimg">
-            <div class="cred-mono" id="credmono">JV</div>
+  <div class="wrap">
+    <div class="shead reveal"><span class="tag">01 · PERFIL</span><span class="rule"></span></div>
+    <h2 class="h2grad reveal scr">QUIÉN SOY</h2>
+    <p class="quote reveal" style="--d:.1s">Transformo el <b>terreno</b> en <b>información</b> que genera confianza.</p>
+    <div class="pf-grid">
+      <p class="lead pf-bio reveal" style="--d:.15s">Soy José Manuel Velazco Ochoa, Ingeniero Topógrafo Geomático titulado por la Universidad de Colima, recién egresado y disponible para proyectos nacionales e internacionales. Me motiva ver cómo la información procesada se proyecta al terreno real: del dato preciso a la decisión en campo. Integro levantamiento con estación total, GNSS y dron RTK con procesamiento en SIG y automatización en Python para entregar información confiable en cada etapa del proyecto.</p>
+      <div class="pf-card reveal" style="--d:.25s">
+        <div class="idcard" id="idcard" role="button" tabindex="0" aria-label="Girar ficha de identificación">
+          <div class="id-face id-front">
+            <div class="id-top"><span>⌖ <b>GEOMÁTICA</b> · MX</span><span>VT-15282631</span></div>
+            <div class="id-stamp">TITULADO ✓</div>
+            <div class="id-mid">
+              <div class="id-photo">
+                <img src="foto.png" alt="José Manuel Velazco Ochoa" id="credimg">
+                <div class="id-mono" id="credmono">JV</div>
+                <span class="id-scan" aria-hidden="true"></span>
+              </div>
+              <div>
+                <h3 class="id-name">JOSÉ MANUEL VELAZCO OCHOA</h3>
+                <p class="id-role">Ingeniero Topógrafo Geomático</p>
+              </div>
+            </div>
+            <p class="id-coords">19.2452° N · 103.7241° W</p>
+            <div class="id-bar" aria-hidden="true"></div>
           </div>
-          <div class="cred-data">
-            <h3>JOSÉ MANUEL VELAZCO OCHOA</h3>
-            <p class="cred-title">Ingeniero Topógrafo Geomático</p>
-            <div class="cred-rows">
+          <div class="id-face id-back">
+            <div class="id-top"><span>⌖ <b>FICHA TÉCNICA</b></span><span>VT-15282631</span></div>
+            <div class="id-rows">
               <span>CÉDULA<b>15282631</b></span>
               <span>NAC.<b>23·04·2002</b></span>
               <span>ORIGEN<b>COLIMA, MX</b></span>
-              <span>IDIOMAS<b>ES·EN·PT</b></span>
             </div>
+            <div class="id-langs">
+              <div class="id-lang"><span>ES</span><span class="dots" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span><span>NATIVO</span></div>
+              <div class="id-lang"><span>EN</span><span class="dots" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i></span><span>B1</span></div>
+              <div class="id-lang"><span>PT</span><span class="dots" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i></span><span>B1</span></div>
+            </div>
+            <div class="id-bar" aria-hidden="true"></div>
           </div>
         </div>
-        <div class="cred-stamp">TITULADO ✓</div>
-        <div class="cred-coords">19.2452° N · 103.7241° W</div>
-        <div class="cred-bar" aria-hidden="true"></div>
+        <button class="flipbtn" id="flipbtn" type="button" aria-pressed="false" aria-controls="idcard">⇄ GIRAR FICHA</button>
+        <p class="pf-hint">CLIC O ENTER SOBRE LA FICHA PARA GIRARLA</p>
       </div>
     </div>
+    <ul class="pf-list">
+      <li class="reveal" style="--d:.15s"><span class="pf-n">01</span><h3>MEDIR</h3><p>Levantamientos en campo con estación total, GNSS y dron RTK: el dato nace en el terreno, con precisión verificable.</p></li>
+      <li class="reveal" style="--d:.25s"><span class="pf-n">02</span><h3>ANALIZAR</h3><p>Procesamiento en SIG, cartografía temática y automatización con Python para convertir datos en información útil.</p></li>
+      <li class="reveal" style="--d:.35s"><span class="pf-n">03</span><h3>DECIDIR</h3><p>Una buena decisión comienza con datos precisos: entrego información clara para que cada proyecto inicie sobre una base sólida.</p></li>
+    </ul>
   </div>
 </section>
 
@@ -186,8 +215,8 @@
       </div>
       <div class="panel reveal" style="--d:.2s"><div class="ph"><h3>Idiomas</h3><span>ID-01</span></div>
         <div class="mt"><div class="lr"><span>ESPAÑOL · NATIVO</span><span>100%</span></div><div class="trk"><i style="--v:1"></i></div></div>
-        <div class="mt"><div class="lr"><span>INGLÉS · A2 EN FORMACIÓN</span><span>35%</span></div><div class="trk"><i style="--v:.35"></i></div></div>
-        <div class="mt"><div class="lr"><span>PORTUGUÉS · A2 EN FORMACIÓN</span><span>35%</span></div><div class="trk"><i style="--v:.35"></i></div></div>
+        <div class="mt"><div class="lr"><span>INGLÉS · B1</span><span>50%</span></div><div class="trk"><i style="--v:.5"></i></div></div>
+        <div class="mt"><div class="lr"><span>PORTUGUÉS · B1</span><span>50%</span></div><div class="trk"><i style="--v:.5"></i></div></div>
       </div>
     </div>
   </div>
@@ -278,7 +307,7 @@
     <div class="c-data reveal" style="--d:.3s">
       <div>TELÉFONO<b>+52 814 359 7851</b></div>
       <div>BASE<b>COLIMA, MÉXICO</b></div>
-      <div>DISPONIBILIDAD<b>PROYECTOS NACIONALES</b></div>
+      <div>DISPONIBILIDAD<b>PROYECTOS NACIONALES E INTERNACIONALES</b></div>
     </div>
   </div>
 </section>
