@@ -300,14 +300,37 @@
     <div class="shead reveal"><span class="tag">07 · CONECTEMOS</span><span class="rule"></span></div>
     <h2 class="reveal">UBIQUEMOS TU PRÓXIMO <span>PROYECTO</span></h2>
     <p class="lead reveal" style="--d:.1s">¿Necesitas levantar, modelar o analizar un territorio? Estoy a un mensaje de distancia — sin fronteras.</p>
-    <div class="c-row reveal" style="--d:.2s">
-      <button class="btn primary" id="copymail">✉ <span>velazcoochoajosmanuel@gmail.com</span> · COPIAR</button>
-      <a class="btn ghost" href="https://www.linkedin.com/in/josemanuelvelazcoochoa/" target="_blank" rel="noopener">LINKEDIN ↗</a>
-    </div>
-    <div class="c-data reveal" style="--d:.3s">
-      <div>TELÉFONO<b>+52 814 359 7851</b></div>
-      <div>BASE<b>COLIMA, MÉXICO</b></div>
-      <div>DISPONIBILIDAD<b>PROYECTOS NACIONALES E INTERNACIONALES</b></div>
+    <div class="c-grid">
+      <form class="c-form panel reveal" id="cform" style="--d:.15s" novalidate>
+        <p class="c-fhead">ESCRÍBEME <span>// SE ABRE EN TU CLIENTE DE CORREO</span></p>
+        <label class="c-field"><span>NOMBRE</span><input name="nombre" type="text" autocomplete="name" placeholder="Tu nombre"></label>
+        <label class="c-field"><span>CORREO</span><input name="correo" type="email" autocomplete="email" placeholder="tucorreo@ejemplo.com"></label>
+        <label class="c-field"><span>MENSAJE *</span><textarea name="mensaje" rows="5" required placeholder="Ubicación, alcance, plazos… cuéntame sobre tu proyecto."></textarea></label>
+        <button class="btn primary" type="submit">ABRIR EN TU CORREO ✉</button>
+        <p class="c-hint">Sin servidores intermedios: el mensaje se redacta en tu propio correo.</p>
+      </form>
+      <div class="c-channels">
+        <div class="c-card reveal" style="--d:.2s">
+          <span class="c-ico" aria-hidden="true">✉</span>
+          <div class="c-info"><span class="c-lbl">CORREO</span><b>velazcoochoajosemanuel@gmail.com</b></div>
+          <button class="c-copy" id="copymail" type="button" aria-label="Copiar correo"><span>COPIAR</span></button>
+        </div>
+        <div class="c-card reveal" style="--d:.27s">
+          <span class="c-ico" aria-hidden="true">☏</span>
+          <div class="c-info"><span class="c-lbl">TELÉFONO</span><b>+52 814 359 7851</b></div>
+          <button class="c-copy" id="copytel" type="button" aria-label="Copiar teléfono"><span>COPIAR</span></button>
+        </div>
+        <a class="c-card reveal" style="--d:.34s" href="https://www.linkedin.com/in/josemanuelvelazcoochoa/" target="_blank" rel="noopener">
+          <span class="c-ico" aria-hidden="true">in</span>
+          <div class="c-info"><span class="c-lbl">LINKEDIN</span><b>josemanuelvelazcoochoa</b></div>
+          <span class="c-copy" aria-hidden="true"><span>ABRIR ↗</span></span>
+        </a>
+        <div class="c-status reveal" style="--d:.41s">
+          <span class="pill"><i></i>DISPONIBLE PARA PROYECTOS</span>
+          <span class="pill">⌖ COLIMA, MÉXICO</span>
+          <span class="pill">🕐 <b id="ctclock">--:--:--</b>&nbsp;HORA LOCAL</span>
+        </div>
+      </div>
     </div>
   </div>
 </section>
