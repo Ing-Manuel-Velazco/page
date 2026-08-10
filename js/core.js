@@ -1,7 +1,8 @@
 /* ============================================================
    js/core.js — Shell y utilidades compartidas
-   Tema · boot · reveals · nav · scroll · modal · acordeones · protección
-   ============================================================ */
+   Tema · boot 3D (siempre completo) · reveals · nav · scroll ·
+   modal · acordeones · protección
+============================================================ */
 export const $  = s => document.querySelector(s);
 export const $$ = s => [...document.querySelectorAll(s)];
 export const NS = "http://www.w3.org/2000/svg";
@@ -19,7 +20,7 @@ export const fmtYM = ym => { const [y, m] = ym.split("-"); return `${MESN[+m - 1
 export const fmtCoords = c =>
   `${Math.abs(c[0]).toFixed(2)}° ${c[0] >= 0 ? "N" : "S"} · ${Math.abs(c[1]).toFixed(2)}° ${c[1] >= 0 ? "E" : "O"}`;
 
-/* ---------- scramble (títulos) ---------- */
+/* ---------- scramble (decode) ---------- */
 const CH = "▓▒░<>/#%&@01";
 export function scramble(el, dur = 850){
   if (RM) return;
@@ -34,7 +35,7 @@ export function scramble(el, dur = 850){
   f(t0);
 }
 
-/* ---------- tema (emite jv:theme para que la escena 3D se recoloree) ---------- */
+/* ---------- tema ---------- */
 export function initTheme(){
   const root = document.documentElement, btn = $("#thm");
   let guardado = null;
@@ -48,27 +49,65 @@ export function initTheme(){
   });
 }
 
-/* ---------- boot ---------- */
-const MSGS = ["Inicializando sistema...", "Cargando perfil profesional...", "Verificando credenciales...", "Preparando experiencia...", "¡Bienvenido a mi portafolio digital!"];
+/* ---------- boot: HUD 2D instantáneo → 3D → dive → exit ----------
+   La cinemática 3D completa se reproduce en CADA visita.
+   Skip: clic / Enter / Espacio / Escape. RM: sin boot.
+   Si el CDN falla: degrade automático a 2D. Tope de seguridad 6.5 s. */
+const BOOT_MSGS = ["INICIALIZANDO SISTEMA…", "CALIBRANDO GNSS…", "CARGANDO PERFIL…", "LISTO ✓"];
 export function initBoot(){
-  const boot = $("#boot"), msg = $("#bootmsg");
+  const boot = $("#boot");
+  if (!boot) { document.body.classList.add("ready"); return; }
   if (RM) { boot.remove(); document.body.classList.add("ready"); return; }
-  let mi = 0, done = false;
+
+  const name = $("#bootname"), coords = $("#bootcoords"), msg = $("#bootmsg");
+  let done = false, ctrl = null, raf = null, iv = null;
+  const timers = [];
+
+  const onKey = e => { if (["Enter", "Escape", " "].includes(e.key)) finish(); };
   const finish = () => {
     if (done) return; done = true;
+    timers.forEach(clearTimeout);
+    if (iv) clearInterval(iv);
+    if (raf) cancelAnimationFrame(raf);
+    if (ctrl) ctrl.stop();
+    removeEventListener("keydown", onKey);
+    boot.removeEventListener("click", finish);
     document.body.classList.add("ready");
     boot.classList.add("exit");
-    setTimeout(() => boot.remove(), 800);
+    setTimeout(() => boot.remove(), 700);
   };
-  const typeMsg = () => {
-    if (mi >= MSGS.length) return;
-    const t = MSGS[mi]; let ci = 0;
-    const type = () => { if (ci <= t.length) { msg.textContent = t.slice(0, ci); ci++; setTimeout(type, 45); } };
-    type(); mi++; setTimeout(typeMsg, 1100);
-  };
-  boot.classList.add("go"); typeMsg();
-  setTimeout(finish, 3400);
+
   boot.addEventListener("click", finish);
+  addEventListener("keydown", onKey);
+  boot.classList.add("go");
+  if (name) scramble(name, 900);
+
+  /* coordenadas convergiendo (fix GNSS) */
+  const LAT = 19.2452, LON = 103.7241, t0 = performance.now(), DUR = 1250;
+  const stepC = now => {
+    const u = Math.min(1, (now - t0) / DUR), e = 1 - Math.pow(1 - u, 3), j = 1 - e;
+    coords.textContent = u >= 1
+      ? `${LAT.toFixed(4)}° N · ${LON.toFixed(4)}° W`
+      : `${(LAT + (Math.random() - .5) * 7 * j).toFixed(4)}° N · ${(LON + (Math.random() - .5) * 7 * j).toFixed(4)}° W`;
+    raf = (u < 1 && !done) ? requestAnimationFrame(stepC) : null;
+  };
+  raf = requestAnimationFrame(stepC);
+
+  /* estados cíclicos */
+  let mi = 0;
+  iv = setInterval(() => { mi++; if (mi < BOOT_MSGS.length) msg.textContent = BOOT_MSGS[mi]; else clearInterval(iv); }, 400);
+
+  /* cinemática 3D en cada visita */
+  import("./boot3d.js").then(m => {
+    if (done) return;
+    ctrl = m.crearBoot3D($("#bootgl"), { onDive: () => boot.classList.add("dive") });
+    if (!ctrl) { timers.push(setTimeout(finish, 1200)); return; }
+    boot.classList.add("gl-on");
+    ctrl.play(() => { if (!done) finish(); });
+  }).catch(() => { if (!done) timers.push(setTimeout(finish, 1400)); });
+
+  /* tope de seguridad */
+  timers.push(setTimeout(finish, 6500));
 }
 
 /* ---------- reveals + scramble de títulos ---------- */
@@ -96,7 +135,7 @@ export function initScrollProgress(){
   addEventListener("scroll", onScroll, { passive: true }); onScroll();
 }
 
-/* ---------- nav: sección activa + navegación interna ---------- */
+/* ---------- nav ---------- */
 export function navegarA(hash){
   const t = document.querySelector(hash); if (!t) return;
   const navH = $(".nav").offsetHeight; let y = 0;
@@ -122,7 +161,7 @@ export function initNav(){
   });
 }
 
-/* ---------- modal genérico (certificados + estados) ---------- */
+/* ---------- modal genérico ---------- */
 let modal, mhead, imgview, mfoot;
 export function initModal(){
   modal = $("#modal"); mhead = $("#mhead"); imgview = $("#imgview"); mfoot = $("#mfoot");
@@ -130,7 +169,7 @@ export function initModal(){
   modal.addEventListener("click", e => { if (e.target === modal) closeModal(); });
   addEventListener("keydown", e => {
     if (e.key !== "Escape") return;
-    if ($("#vmodal").classList.contains("on")) return; /* lo gestiona verificacion.js */
+    if ($("#vmodal").classList.contains("on")) return;
     if (modal.classList.contains("on")) closeModal();
   });
 }
@@ -148,7 +187,7 @@ export function closeModal(){
   imgview.innerHTML = "";
 }
 
-/* ---------- acordeones con altura real (sin recortes) ---------- */
+/* ---------- acordeones ---------- */
 export function accordion(card, head, body){
   head.addEventListener("click", () => {
     const open = card.classList.toggle("open");

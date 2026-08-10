@@ -14,24 +14,28 @@ if (location.hash) history.replaceState(null, "", location.pathname + location.s
 window.scrollTo(0, 0);
 addEventListener("load", () => window.scrollTo(0, 0));
 
-/* ---------- credencial: tilt 3D + fallback de foto ---------- */
-function initCred(){
-  const cred = $("#cred");
-  if (cred && !RM) {
-    cred.addEventListener("mousemove", e => {
-      const r = cred.getBoundingClientRect();
-      const px = (e.clientX - r.left) / r.width - .5, py = (e.clientY - r.top) / r.height - .5;
-      cred.style.transform = `rotateY(${(px * 14).toFixed(2)}deg) rotateX(${(-py * 12).toFixed(2)}deg)`;
-      cred.style.setProperty("--gx", (px * 100 + 50) + "%");
-      cred.style.setProperty("--gy", (py * 100 + 50) + "%");
-    });
-    cred.addEventListener("mouseleave", () => { cred.style.transform = "rotateY(0deg) rotateX(0deg)"; });
-  }
+/* ---------- perfil: fallback de foto + flip de la ficha ---------- */
+function initPerfil(){
+  /* cadena de degradación: foto.png → foto.jpg → monograma JV */
   const cimg = $("#credimg");
   if (cimg) cimg.addEventListener("error", function(){
     if (cimg.src.indexOf("foto.png") !== -1) cimg.src = "foto.jpg";
-    else { cimg.style.display = "none"; $("#credmono").style.display = "grid"; }
+    else { cimg.style.display = "none"; const m = $("#credmono"); if (m) m.style.display = "grid"; }
   });
+
+  /* flip 3D accesible (clic, Enter o botón) */
+  const card = $("#idcard"), btn = $("#flipbtn");
+  if (!card || !btn) return;
+  const flip = () => {
+    const f = card.classList.toggle("flipped");
+    btn.setAttribute("aria-pressed", String(f));
+    btn.textContent = f ? "⇄ VER FRENTE" : "⇄ GIRAR FICHA";
+  };
+  card.addEventListener("click", flip);
+  card.addEventListener("keydown", e => {
+    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); flip(); }
+  });
+  btn.addEventListener("click", flip);
 }
 
 /* ---------- contacto ---------- */
@@ -55,7 +59,7 @@ initScrollProgress();
 initNav();
 initAccordionResize();
 initProteccion();
-initCred();
+initPerfil();
 initMapa();
 initTrayectoria();
 initCerts();
