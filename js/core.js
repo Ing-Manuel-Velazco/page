@@ -1,7 +1,7 @@
 /* ============================================================
    js/core.js — Shell y utilidades compartidas
-   Tema · boot 3D (siempre completo) · reveals · nav · scroll ·
-   modal · acordeones · protección
+   Tema · boot 3D orquestado · reveals · nav · scroll · modal ·
+   acordeones · protección
 ============================================================ */
 export const $  = s => document.querySelector(s);
 export const $$ = s => [...document.querySelectorAll(s)];
@@ -14,11 +14,6 @@ export const norm = s => (s || "").toLowerCase().normalize("NFD")
 
 export const esc = s => String(s ?? "").replace(/[&<>"']/g,
   c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-
-const MESN = ["ENE","FEB","MAR","ABR","MAY","JUN","JUL","AGO","SEP","OCT","NOV","DIC"];
-export const fmtYM = ym => { const [y, m] = ym.split("-"); return `${MESN[+m - 1]} ${y}`; };
-export const fmtCoords = c =>
-  `${Math.abs(c[0]).toFixed(2)}° ${c[0] >= 0 ? "N" : "S"} · ${Math.abs(c[1]).toFixed(2)}° ${c[1] >= 0 ? "E" : "O"}`;
 
 /* ---------- scramble (decode) ---------- */
 const CH = "▓▒░<>/#%&@01";
@@ -49,11 +44,8 @@ export function initTheme(){
   });
 }
 
-/* ---------- boot: HUD 2D instantáneo → 3D → dive → exit ----------
-   La cinemática 3D completa se reproduce en CADA visita.
-   Skip: clic / Enter / Espacio / Escape. RM: sin boot.
-   Si el CDN falla: degrade automático a 2D. Tope de seguridad 6.5 s. */
-const BOOT_MSGS = ["INICIALIZANDO SISTEMA…", "CALIBRANDO GNSS…", "CARGANDO PERFIL…", "LISTO ✓"];
+/* ---------- boot: HUD 2D → 3D → dive → exit ---------- */
+import { t } from "./i18n.js";
 export function initBoot(){
   const boot = $("#boot");
   if (!boot) { document.body.classList.add("ready"); return; }
@@ -82,7 +74,6 @@ export function initBoot(){
   boot.classList.add("go");
   if (name) scramble(name, 900);
 
-  /* coordenadas convergiendo (fix GNSS) */
   const LAT = 19.2452, LON = 103.7241, t0 = performance.now(), DUR = 1250;
   const stepC = now => {
     const u = Math.min(1, (now - t0) / DUR), e = 1 - Math.pow(1 - u, 3), j = 1 - e;
@@ -93,11 +84,10 @@ export function initBoot(){
   };
   raf = requestAnimationFrame(stepC);
 
-  /* estados cíclicos */
+  const MSGS = [t("boot.m1"), t("boot.m2"), t("boot.m3"), t("boot.m4")];
   let mi = 0;
-  iv = setInterval(() => { mi++; if (mi < BOOT_MSGS.length) msg.textContent = BOOT_MSGS[mi]; else clearInterval(iv); }, 400);
+  iv = setInterval(() => { mi++; if (mi < MSGS.length) msg.textContent = MSGS[mi]; else clearInterval(iv); }, 400);
 
-  /* cinemática 3D en cada visita */
   import("./boot3d.js").then(m => {
     if (done) return;
     ctrl = m.crearBoot3D($("#bootgl"), { onDive: () => boot.classList.add("dive") });
@@ -106,7 +96,6 @@ export function initBoot(){
     ctrl.play(() => { if (!done) finish(); });
   }).catch(() => { if (!done) timers.push(setTimeout(finish, 1400)); });
 
-  /* tope de seguridad */
   timers.push(setTimeout(finish, 6500));
 }
 
@@ -137,10 +126,10 @@ export function initScrollProgress(){
 
 /* ---------- nav ---------- */
 export function navegarA(hash){
-  const t = document.querySelector(hash); if (!t) return;
+  const tEl = document.querySelector(hash); if (!tEl) return;
   const navH = $(".nav").offsetHeight; let y = 0;
   if (hash !== "#inicio") {
-    const el = t.querySelector(".shead") || t;
+    const el = tEl.querySelector(".shead") || tEl;
     y = el.getBoundingClientRect().top + window.scrollY - (navH + 32);
     y = Math.max(0, y);
   }

@@ -1,7 +1,8 @@
 /* ============================================================
    js/verificacion.js — Modal de verificación de titulación
-   ============================================================ */
+============================================================ */
 import { $ } from "./core.js";
+import { t } from "./i18n.js";
 
 const URL_TITULACION = "https://titulacion.ucol.mx/validar/186120e6-cf70-41bb-bc05-53019a2a3632";
 
@@ -14,9 +15,9 @@ function abrirV(){
   vClear(); vfall.hidden = true;
   vshot.style.display = "none"; vshot.removeAttribute("src");
   vload.classList.remove("hide");
-  vstatus.textContent = "Verificación en curso…";
+  vstatus.textContent = t("v.validating");
   vmodal.classList.add("on"); document.body.style.overflow = "hidden";
-  const seq = ["Conectando con titulacion.ucol.mx…", "Validando código de verificación…", "Mostrando resultado…"];
+  const seq = [t("v.connecting"), t("v.validating"), t("v.showing")];
   seq.forEach((m, i) => vTimers.push(setTimeout(() => { vmsg.textContent = m; }, i * 700)));
   vTimers.push(setTimeout(() => { vshot.src = "verificacion.png"; }, seq.length * 700 + 200));
 }
@@ -29,20 +30,20 @@ export function initVerificacion(){
   vshot.addEventListener("load", () => {
     vClear(); vload.classList.add("hide");
     vshot.style.display = "block";
-    vstatus.textContent = "Verificación oficial · Universidad de Colima";
+    vstatus.textContent = t("v.done");
   });
   vshot.addEventListener("error", () => {
     if ((vshot.getAttribute("src") || "") === "verificacion.png") { vshot.src = "verificacion.jpg"; }
     else {
       vClear(); vload.classList.add("hide");
       vshot.style.display = "none"; vfall.hidden = false;
-      vstatus.textContent = "Captura local no disponible";
+      vstatus.textContent = t("v.noshot");
     }
   });
   $("#verifybtn").addEventListener("click", abrirV);
   $("#vcopy").addEventListener("click", async e => {
     const b = e.currentTarget, o = b.textContent;
-    try { await navigator.clipboard.writeText(URL_TITULACION); b.textContent = "ENLACE COPIADO ✓"; } catch (_) {}
+    try { await navigator.clipboard.writeText(URL_TITULACION); b.textContent = t("v.copied"); } catch (_) {}
     setTimeout(() => b.textContent = o, 2200);
   });
   $("#vclose").addEventListener("click", closeV);

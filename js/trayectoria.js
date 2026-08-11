@@ -1,49 +1,51 @@
 /* ============================================================
    js/trayectoria.js — Timeline geoespacial (sección 02)
    Búsqueda + crumbs + stats + timeline sincronizada con el mapa
-   (hover resalta el estado; "⌖ VER EN MAPA" vuela la cámara)
-   ============================================================ */
-import { $, norm, esc, fmtYM, fmtCoords, accordion } from "./core.js";
+============================================================ */
+import { $, norm, esc, accordion } from "./core.js";
+import { t, loc, allv, fmtYM, fmtCoords, getLang } from "./i18n.js";
 import { EXPERIENCIAS } from "./data.js";
 import { state, setFiltro, onFiltro } from "./state.js";
 import { volarAEstado, resaltarEstado } from "./mapa.js";
 
-/* ---------- stats calculadas de la fuente de datos ---------- */
-const meses = (a, b) => {
-  const [ay, am] = a.split("-").map(Number), [by, bm] = b.split("-").map(Number);
-  return (by - ay) * 12 + (bm - am) + 1;
-};
 const fmtMeses = m => {
   const y = Math.floor(m / 12), r = m % 12;
-  const sy = y ? `${y} AÑO${y !== 1 ? "S" : ""}` : "";
-  const sr = r ? `${r} MES${r !== 1 ? "ES" : ""}` : "";
-  return (sy + (sy && sr ? " " : "") + sr) || "0 MESES";
+  const sy = y ? `${y} ${y !== 1 ? t("exp.años") : t("exp.año")}` : "";
+  const sr = r ? `${r} ${r !== 1 ? t("exp.meses") : t("exp.mes")}` : "";
+  return (sy + (sy && sr ? " " : "") + sr) || `0 ${t("exp.meses")}`;
 };
+
 function renderStats(){
   const total = EXPERIENCIAS.reduce((s, e) => s + meses(e.inicio, e.fin), 0);
   const est = new Set(EXPERIENCIAS.map(e => norm(e.estado))).size;
   $("#xstats").innerHTML =
-    `<span class="stat"><b>${EXPERIENCIAS.length}</b> EXPERIENCIAS</span>` +
-    `<span class="stat"><b>${est}</b> ESTADOS</span>` +
-    `<span class="stat"><b>${fmtMeses(total)}</b> DE CAMPO</span>`;
+    `<span class="stat"><b>${EXPERIENCIAS.length}</b> ${t("exp.statExp")}</span>` +
+    `<span class="stat"><b>${est}</b> ${t("exp.statEst")}</span>` +
+    `<span class="stat"><b>${fmtMeses(total)}</b> ${t("exp.statCampo")}</span>`;
 }
+const meses = (a, b) => {
+  const [ay, am] = a.split("-").map(Number), [by, bm] = b.split("-").map(Number);
+  return (by - ay) * 12 + (bm - am) + 1;
+};
 
-/* ---------- filtros ---------- */
 function getFilteredX(){
   let list = [...EXPERIENCIAS].sort((a, b) => b.fin.localeCompare(a.fin));
   if (state.selEstado) list = list.filter(e => norm(e.estado) === state.key);
   else if (state.selPais) list = list.filter(e => norm(e.pais) === norm(state.selPais));
   const q = norm($("#xsearch").value.trim());
-  if (q) list = list.filter(e =>
-    norm(`${e.puesto} ${e.empresa} ${e.sigla} ${e.estado} ${e.pais} ${e.tools.join(" ")}`).includes(q));
+  if (q) list = list.filter(e => {
+    const hay = norm([allv(e.puesto), allv(e.empresa), e.sigla, e.estado, e.pais, e.ciudad,
+      ...["es","en","pt"].flatMap(l => e.tools[l] || [])].join(" "));
+    return hay.includes(q);
+  });
   return list;
 }
 
 function renderCrumbs(){
   const c = $("#xcrumbs");
-  let html = `<button class="crumb ${!state.selPais && !state.selEstado ? "act" : ""}" data-f="all">TODOS</button>`;
-  if (state.selPais) html += `<button class="crumb ${state.selPais && !state.selEstado ? "act" : ""}" data-f="pais">MÉXICO</button>`;
-  if (state.selEstado) html += `<button class="crumb act" data-f="estado" title="Quitar filtro">⌖ ${esc(state.selEstado)} ✕</button>`;
+  let html = `<button class="crumb ${!state.selPais && !state.selEstado ? "act" : ""}" data-f="all">${t("exp.all")}</button>`;
+  if (state.selPais) html += `<button class="crumb ${state.selPais && !state.selEstado ? "act" : ""}" data-f="pais">${t("exp.pais")}</button>`;
+  if (state.selEstado) html += `<button class="crumb act" data-f="estado" title="✕"> ${esc(state.selEstado)} ✕</button>`;
   c.innerHTML = html;
   c.querySelectorAll(".crumb").forEach(b => b.addEventListener("click", () => {
     const f = b.dataset.f;
@@ -52,11 +54,10 @@ function renderCrumbs(){
   }));
 }
 
-/* ---------- timeline ---------- */
 function renderXList(){
   const list = getFilteredX();
   const L = $("#xlist"); L.innerHTML = "";
-  if (!list.length) { L.innerHTML = '<p class="no-results">Sin coincidencias.</p>'; return; }
+  if (!list.length) { L.innerHTML = `<p class="no-results">${t("exp.nomatch")}</p>`; return; }
   list.forEach((e, i) => {
     const item = document.createElement("article");
     item.className = "tl-item";
@@ -65,14 +66,14 @@ function renderXList(){
       <span class="tl-node" aria-hidden="true"><i></i></span>
       <div class="xp-card">
         <div class="xh">
-          <div><h3>${esc(e.puesto)}</h3><p class="org">${esc(e.empresa)}${e.sigla ? ` <em>(${esc(e.sigla)})</em>` : ""}</p></div>
-          <div class="xmeta"><time>${fmtYM(e.inicio)} — ${fmtYM(e.fin)}</time><span class="xdur">${esc(e.dur)}</span><span class="xchev">▾</span></div>
+          <div><h3>${esc(loc(e.puesto))}</h3><p class="org">${esc(loc(e.empresa))}${e.sigla ? ` <em>(${esc(e.sigla)})</em>` : ""}</p></div>
+          <div class="xmeta"><time>${fmtYM(e.inicio)} — ${fmtYM(e.fin)}</time><span class="xdur">${esc(loc(e.dur))}</span><span class="xchev">▾</span></div>
         </div>
         <div class="xp-body"><div class="xp-body-in">
-          <p class="xloc">⌖ ${esc(e.ciudad)}, ${esc(e.estado)}, ${esc(e.pais)} · ${fmtCoords(e.coords)}</p>
-          <ul>${e.logros.map(l => `<li>${esc(l)}</li>`).join("")}</ul>
-          <div class="chips">${e.tools.map(t => `<span class="chip">${esc(t)}</span>`).join("")}</div>
-          <button class="locbtn" type="button">⌖ VER EN MAPA</button>
+          <p class="xloc">⌖ ${esc(e.ciudad)}, ${esc(e.estado)}, ${esc(t("exp.paisname"))} · ${fmtCoords(e.coords)}</p>
+          <ul>${loc(e.logros).map(l => `<li>${esc(l)}</li>`).join("")}</ul>
+          <div class="chips">${loc(e.tools).map(x => `<span class="chip">${esc(x)}</span>`).join("")}</div>
+          <button class="locbtn" type="button">${t("exp.vermap")}</button>
         </div></div>
       </div>`;
     const card = item.querySelector(".xp-card");
@@ -92,7 +93,6 @@ function renderXList(){
 export function initTrayectoria(){
   $("#xsearch").addEventListener("input", () => renderXList());
   onFiltro(() => { renderXList(); renderCrumbs(); });
-  renderStats();
-  renderCrumbs();
-  renderXList();
+  addEventListener("jv:lang", () => { renderStats(); renderCrumbs(); renderXList(); });
+  renderStats(); renderCrumbs(); renderXList();
 }
