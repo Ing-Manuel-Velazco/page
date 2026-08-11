@@ -16,7 +16,7 @@
 <body>
 
 <div id="boot" role="status">
-  <span class="sr-only">Cargando portafolio profesional…</span>
+  <span class="sr-only" data-i18n="boot.sr">Cargando portafolio profesional…</span>
   <div id="bootgl" aria-hidden="true"></div>
   <div class="boot-in" aria-hidden="true">
     <div class="boot-ret">
@@ -29,12 +29,12 @@
       <span class="ret-sat"></span>
     </div>
     <p class="boot-name" id="bootname">JOSÉ MANUEL VELAZCO OCHOA</p>
-    <p class="boot-role">Ingeniero Topógrafo Geomático</p>
+    <p class="boot-role" data-i18n="boot.role">Ingeniero Topógrafo Geomático</p>
     <p class="boot-coords" id="bootcoords">19.2452° N · 103.7241° W</p>
     <div class="boot-bar"><i></i></div>
     <p class="boot-msg" id="bootmsg">INICIALIZANDO SISTEMA…</p>
   </div>
-  <p class="boot-skip" aria-hidden="true">Clic · Enter — omitir</p>
+  <p class="boot-skip" aria-hidden="true" data-i18n="boot.skip">Clic · Enter — omitir</p>
 </div>
 
 <div class="progress"><span id="bar"></span></div>
@@ -42,14 +42,19 @@
 <header class="nav">
   <a class="logo" href="#inicio">J·VELAZCO <em>GEOMÁTICA</em></a>
   <ul>
-    <li><a href="#perfil">PERFIL</a></li>
-    <li><a href="#experiencia">EXPERIENCIA</a></li>
-    <li><a href="#educacion">EDUCACIÓN</a></li>
-    <li><a href="#habilidades">HABILIDADES</a></li>
-    <li><a href="#certificados">CERTIFICADOS</a></li>
-    <li><a href="#contacto">CONTACTO</a></li>
+    <li><a href="#perfil" data-i18n="nav.perfil">PERFIL</a></li>
+    <li><a href="#experiencia" data-i18n="nav.experiencia">EXPERIENCIA</a></li>
+    <li><a href="#educacion" data-i18n="nav.educacion">EDUCACIÓN</a></li>
+    <li><a href="#habilidades" data-i18n="nav.habilidades">HABILIDADES</a></li>
+    <li><a href="#certificados" data-i18n="nav.certificados">CERTIFICADOS</a></li>
+    <li><a href="#contacto" data-i18n="nav.contacto">CONTACTO</a></li>
   </ul>
-  <button class="theme-toggle" id="thm" aria-label="Cambiar tema">
+  <div class="lang" id="langswitch" role="group" aria-label="Idioma">
+    <button data-lang="es" class="act" aria-pressed="true">ES</button>
+    <button data-lang="en" aria-pressed="false">EN</button>
+    <button data-lang="pt" aria-pressed="false">PT</button>
+  </div>
+  <button class="theme-toggle" id="thm" aria-label="Cambiar tema" data-i18n-aria="nav.tema">
     <svg class="ic ic-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
     <svg class="ic ic-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
   </button>
@@ -58,40 +63,40 @@
 <main>
 <section class="hero" id="inicio">
   <div class="wrap">
-    <p class="h-tag hr" style="transition-delay:.05s">PORTAFOLIO PROFESIONAL · CV 2026</p>
+    <p class="h-tag hr" style="transition-delay:.05s" data-i18n="hero.tag">PORTAFOLIO PROFESIONAL · CV 2026</p>
     <h1 class="h1 hr" style="transition-delay:.15s"><span>JOSÉ MANUEL</span><span>VELAZCO OCHOA</span></h1>
-    <p class="h-role hr" style="transition-delay:.3s">INGENIERO TOPÓGRAFO GEOMÁTICO</p>
+    <p class="h-role hr" style="transition-delay:.3s" data-i18n="hero.role">INGENIERO TOPÓGRAFO GEOMÁTICO</p>
     <div class="h-meta hr" style="transition-delay:.45s">
-      <span class="pill"><i></i>DISPONIBLE PARA PROYECTOS</span>
-      <span class="pill">⌖ COLIMA, MÉXICO</span>
-      <span class="pill">CÉDULA 15282631</span>
+      <span class="pill"><i></i><span data-i18n="hero.pill1">DISPONIBLE PARA PROYECTOS</span></span>
+      <span class="pill" data-i18n="hero.pill2">⌖ COLIMA, MÉXICO</span>
+      <span class="pill" data-i18n="hero.pill3">CÉDULA 15282631</span>
     </div>
     <div class="h-cta hr" style="transition-delay:.6s">
-      <a class="btn primary" href="#experiencia">VER TRAYECTORIA ↓</a>
-      <a class="btn ghost" href="#contacto">ESTABLECER CONTACTO</a>
+      <a class="btn primary" href="#experiencia" data-i18n="hero.cta1">VER TRAYECTORIA ↓</a>
+      <a class="btn ghost" href="#contacto" data-i18n="hero.cta2">ESTABLECER CONTACTO</a>
     </div>
   </div>
 </section>
 
 <div class="mq" aria-hidden="true">
   <div class="mq-track">
-    <div class="mq-set"><span>ARCGIS PRO</span><b>✦</b><span>AUTOCAD CIVIL 3D</span><b>✦</b><span>PYTHON</span><b>✦</b><span>TELEDETECCIÓN</span><b>✦</b><span>GNSS</span><b>✦</b><span>FOTOGRAMETRÍA</span><b>✦</b><span>CARTOGRAFÍA TEMÁTICA</span><b>✦</b><span>ANÁLISIS ESPACIAL</span><b>✦</b><span>GEODESIA</span><b>✦</b><span>MONITOREO AMBIENTAL</span><b>✦</b></div>
-    <div class="mq-set"><span>ARCGIS PRO</span><b>✦</b><span>AUTOCAD CIVIL 3D</span><b>✦</b><span>PYTHON</span><b>✦</b><span>TELEDETECCIÓN</span><b>✦</b><span>GNSS</span><b>✦</b><span>FOTOGRAMETRÍA</span><b>✦</b><span>CARTOGRAFÍA TEMÁTICA</span><b>✦</b><span>ANÁLISIS ESPACIAL</span><b>✦</b><span>GEODESIA</span><b>✦</b><span>MONITOREO AMBIENTAL</span><b>✦</b></div>
+    <div class="mq-set"><span data-i18n="mq.1">ARCGIS PRO</span><b>✦</b><span data-i18n="mq.2">AUTOCAD CIVIL 3D</span><b>✦</b><span data-i18n="mq.3">PYTHON</span><b>✦</b><span data-i18n="mq.4">TELEDETECCIÓN</span><b>✦</b><span data-i18n="mq.5">GNSS</span><b>✦</b><span data-i18n="mq.6">FOTOGRAMETRÍA</span><b>✦</b><span data-i18n="mq.7">CARTOGRAFÍA TEMÁTICA</span><b>✦</b><span data-i18n="mq.8">ANÁLISIS ESPACIAL</span><b>✦</b><span data-i18n="mq.9">GEODESIA</span><b>✦</b><span data-i18n="mq.10">MONITOREO AMBIENTAL</span><b>✦</b></div>
+    <div class="mq-set"><span data-i18n="mq.1">ARCGIS PRO</span><b>✦</b><span data-i18n="mq.2">AUTOCAD CIVIL 3D</span><b>✦</b><span data-i18n="mq.3">PYTHON</span><b>✦</b><span data-i18n="mq.4">TELEDETECCIÓN</span><b>✦</b><span data-i18n="mq.5">GNSS</span><b>✦</b><span data-i18n="mq.6">FOTOGRAMETRÍA</span><b>✦</b><span data-i18n="mq.7">CARTOGRAFÍA TEMÁTICA</span><b>✦</b><span data-i18n="mq.8">ANÁLISIS ESPACIAL</span><b>✦</b><span data-i18n="mq.9">GEODESIA</span><b>✦</b><span data-i18n="mq.10">MONITOREO AMBIENTAL</span><b>✦</b></div>
   </div>
 </div>
 
 <section id="perfil">
   <div class="wrap">
-    <div class="shead reveal"><span class="tag">01 · PERFIL</span><span class="rule"></span></div>
-    <h2 class="h2grad reveal scr">QUIÉN SOY</h2>
-    <p class="quote reveal" style="--d:.1s">Transformo el <b>terreno</b> en <b>información</b> que genera confianza.</p>
+    <div class="shead reveal"><span class="tag" data-i18n="sec.perfil">01 · PERFIL</span><span class="rule"></span></div>
+    <h2 class="h2grad reveal scr" data-i18n="perfil.h2">QUIÉN SOY</h2>
+    <p class="quote reveal" style="--d:.1s" data-i18n="perfil.quote">Transformo el terreno en información que genera confianza.</p>
     <div class="pf-grid">
-      <p class="lead pf-bio reveal" style="--d:.15s">Soy José Manuel Velazco Ochoa, Ingeniero Topógrafo Geomático titulado por la Universidad de Colima, recién egresado y disponible para proyectos nacionales e internacionales. Me motiva ver cómo la información procesada se proyecta al terreno real: del dato preciso a la decisión en campo. Integro levantamiento con estación total, GNSS y dron RTK con procesamiento en SIG y automatización en Python para entregar información confiable en cada etapa del proyecto.</p>
+      <p class="lead pf-bio reveal" style="--d:.15s" data-i18n="perfil.bio">Soy José Manuel Velazco Ochoa, Ingeniero Topógrafo Geomático titulado por la Universidad de Colima, recién egresado y disponible para proyectos nacionales e internacionales. Me motiva ver cómo la información procesada se proyecta al terreno real: del dato preciso a la decisión en campo. Integro levantamiento con estación total, GNSS y dron RTK con procesamiento en SIG y automatización en Python para entregar información confiable en cada etapa del proyecto.</p>
       <div class="pf-card reveal" style="--d:.25s">
         <div class="idcard" id="idcard" role="button" tabindex="0" aria-label="Girar ficha de identificación">
           <div class="id-face id-front">
-            <div class="id-top"><span>⌖ <b>GEOMÁTICA</b> · MX</span><span>VT-15282631</span></div>
-            <div class="id-stamp">TITULADO ✓</div>
+            <div class="id-top"><span data-i18n="cred.top">⌖ GEOMÁTICA · MX</span><span>VT-15282631</span></div>
+            <div class="id-stamp" data-i18n="cred.stamp">TITULADO ✓</div>
             <div class="id-mid">
               <div class="id-photo">
                 <img src="foto.png" alt="José Manuel Velazco Ochoa" id="credimg">
@@ -100,60 +105,60 @@
               </div>
               <div>
                 <h3 class="id-name">JOSÉ MANUEL VELAZCO OCHOA</h3>
-                <p class="id-role">Ingeniero Topógrafo Geomático</p>
+                <p class="id-role" data-i18n="hero.role">Ingeniero Topógrafo Geomático</p>
               </div>
             </div>
             <p class="id-coords">19.2452° N · 103.7241° W</p>
             <div class="id-bar" aria-hidden="true"></div>
           </div>
           <div class="id-face id-back">
-            <div class="id-top"><span>⌖ <b>FICHA TÉCNICA</b></span><span>VT-15282631</span></div>
+            <div class="id-top"><span data-i18n="cred.back">⌖ FICHA TÉCNICA</span><span>VT-15282631</span></div>
             <div class="id-rows">
-              <span>CÉDULA<b>15282631</b></span>
-              <span>NAC.<b>23·04·2002</b></span>
-              <span>ORIGEN<b>COLIMA, MX</b></span>
+              <span><span data-i18n="cred.cedula">CÉDULA</span><b>15282631</b></span>
+              <span><span data-i18n="cred.nac">NAC.</span><b>23·04·2002</b></span>
+              <span><span data-i18n="cred.orig">ORIGEN</span><b>COLIMA, MX</b></span>
             </div>
             <div class="id-langs">
-              <div class="id-lang"><span>ES</span><span class="dots" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span><span>NATIVO</span></div>
+              <div class="id-lang"><span>ES</span><span class="dots" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span><span data-i18n="cred.nativo">NATIVO</span></div>
               <div class="id-lang"><span>EN</span><span class="dots" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i></span><span>B1</span></div>
               <div class="id-lang"><span>PT</span><span class="dots" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i></span><span>B1</span></div>
             </div>
             <div class="id-bar" aria-hidden="true"></div>
           </div>
         </div>
-        <button class="flipbtn" id="flipbtn" type="button" aria-pressed="false" aria-controls="idcard">⇄ GIRAR FICHA</button>
-        <p class="pf-hint">CLIC O ENTER SOBRE LA FICHA PARA GIRARLA</p>
+        <button class="flipbtn" id="flipbtn" type="button" aria-pressed="false" aria-controls="idcard" data-i18n="cred.flip">⇄ GIRAR FICHA</button>
+        <p class="pf-hint" data-i18n="cred.hint">CLIC O ENTER SOBRE LA FICHA PARA GIRARLA</p>
       </div>
     </div>
     <ul class="pf-list">
-      <li class="reveal" style="--d:.15s"><span class="pf-n">01</span><h3>MEDIR</h3><p>Levantamientos en campo con estación total, GNSS y dron RTK: el dato nace en el terreno, con precisión verificable.</p></li>
-      <li class="reveal" style="--d:.25s"><span class="pf-n">02</span><h3>ANALIZAR</h3><p>Procesamiento en SIG, cartografía temática y automatización con Python para convertir datos en información útil.</p></li>
-      <li class="reveal" style="--d:.35s"><span class="pf-n">03</span><h3>DECIDIR</h3><p>Una buena decisión comienza con datos precisos: entrego información clara para que cada proyecto inicie sobre una base sólida.</p></li>
+      <li class="reveal" style="--d:.15s"><span class="pf-n">01</span><h3 data-i18n="perfil.p1t">MEDIR</h3><p data-i18n="perfil.p1">Levantamientos en campo con estación total, GNSS y dron RTK: el dato nace en el terreno, con precisión verificable.</p></li>
+      <li class="reveal" style="--d:.25s"><span class="pf-n">02</span><h3 data-i18n="perfil.p2t">ANALIZAR</h3><p data-i18n="perfil.p2">Procesamiento en SIG, cartografía temática y automatización con Python para convertir datos en información útil.</p></li>
+      <li class="reveal" style="--d:.35s"><span class="pf-n">03</span><h3 data-i18n="perfil.p3t">DECIDIR</h3><p data-i18n="perfil.p3">Una buena decisión comienza con datos precisos: entrego información clara para que cada proyecto inicie sobre una base sólida.</p></li>
     </ul>
   </div>
 </section>
 
 <section id="experiencia">
   <div class="wrap">
-    <div class="shead reveal"><span class="tag">02 · TRAYECTORIA</span><h2 class="scr">EXPERIENCIA DE CAMPO</h2><span class="rule"></span></div>
+    <div class="shead reveal"><span class="tag" data-i18n="sec.exp">02 · TRAYECTORIA</span><h2 class="scr" data-i18n="exp.h2">EXPERIENCIA DE CAMPO</h2><span class="rule"></span></div>
     <div class="xpmap-grid">
       <div class="map-panel reveal">
         <div class="map-head">
-          <span class="map-title" id="maptitle">⌖ CARTA 3D · MÉXICO</span>
+          <span class="map-title" id="maptitle" data-i18n="exp.maptitle">⌖ CARTA 3D · MÉXICO</span>
           <div class="map-ctrl">
-            <button id="zin" aria-label="Acercar">+</button>
-            <button id="zout" aria-label="Alejar">−</button>
-            <button id="zreset" aria-label="Restablecer">⟲</button>
+            <button id="zin" aria-label="Acercar" data-i18n-aria="exp.zoomin">+</button>
+            <button id="zout" aria-label="Alejar" data-i18n-aria="exp.zoomout">−</button>
+            <button id="zreset" aria-label="Restablecer" data-i18n-aria="exp.reset">⟲</button>
           </div>
         </div>
         <div class="map-view" id="mapview">
           <div id="glview"></div>
           <div class="map-tip" id="maptip"></div>
         </div>
-        <div class="map-status" id="mapstatus">CARGANDO ESCENA 3D…</div>
+        <div class="map-status" id="mapstatus" data-i18n="exp.status">CARGANDO ESCENA 3D…</div>
       </div>
       <div class="xp-side">
-        <div class="xp-search reveal"><input id="xsearch" placeholder="🔍 Buscar puesto, empresa, herramienta o lugar..."></div>
+        <div class="xp-search reveal"><input id="xsearch" placeholder="🔍 Buscar puesto, empresa, herramienta o lugar..." data-i18n-ph="exp.searchph"></div>
         <div class="xp-crumbs reveal" id="xcrumbs"></div>
         <div class="tl-stats reveal" id="xstats"></div>
         <div class="tl" id="xlist"></div>
@@ -164,22 +169,22 @@
 
 <section id="educacion">
   <div class="wrap">
-    <div class="shead reveal"><span class="tag">03 · FORMACIÓN</span><h2 class="scr">EDUCACIÓN</h2><span class="rule"></span></div>
+    <div class="shead reveal"><span class="tag" data-i18n="sec.edu">03 · FORMACIÓN</span><h2 class="scr" data-i18n="edu.h2">EDUCACIÓN</h2><span class="rule"></span></div>
     <div class="edu">
       <div class="panel degree reveal">
-        <p class="u">UNIVERSIDAD DE COLIMA · COLIMA, MÉXICO</p>
-        <h3>Ingeniero Topógrafo Geomático</h3>
+        <p class="u" data-i18n="edu.uni">UNIVERSIDAD DE COLIMA · COLIMA, MÉXICO</p>
+        <h3 data-i18n="hero.role">Ingeniero Topógrafo Geomático</h3>
         <div class="dmeta">
           <span class="pill">2020 → 2025</span>
-          <span class="pill"><i></i>TITULADO</span>
-          <span class="pill">CÉDULA Nº 15282631</span>
+          <span class="pill"><i></i><span data-i18n="edu.tit">TITULADO</span></span>
+          <span class="pill" data-i18n="edu.ced">CÉDULA Nº 15282631</span>
         </div>
-        <button class="verify" id="verifybtn" type="button">VERIFICAR TITULACIÓN</button>
+        <button class="verify" id="verifybtn" type="button" data-i18n="edu.verify">VERIFICAR TITULACIÓN</button>
       </div>
       <div class="panel tesis reveal" style="--d:.15s">
-        <p class="u">PRÁCTICA PROFESIONAL · PROYECTO APLICADO</p>
-        <blockquote>Análisis geoespacial para la identificación de sitios óptimos para estaciones de monitoreo de calidad del aire en el estado de Colima.</blockquote>
-        <p>Trabajo derivado del Proyecto CONAHCYT Nº 321542, con aplicación directa en políticas ambientales estatales.</p>
+        <p class="u" data-i18n="edu.tesisTag">PRÁCTICA PROFESIONAL · PROYECTO APLICADO</p>
+        <blockquote data-i18n="edu.tesisQ">Análisis geoespacial para la identificación de sitios óptimos para estaciones de monitoreo de calidad del aire en el estado de Colima.</blockquote>
+        <p data-i18n="edu.tesisP">Trabajo derivado del Proyecto CONAHCYT Nº 321542, con aplicación directa en políticas ambientales estatales.</p>
         <span class="u">CONAHCYT · Nº 321542</span>
       </div>
     </div>
@@ -188,35 +193,35 @@
 
 <section id="habilidades">
   <div class="wrap">
-    <div class="shead reveal"><span class="tag">04 · ARSENAL TÉCNICO</span><h2 class="scr">HERRAMIENTAS Y COMPETENCIAS</h2><span class="rule"></span></div>
+    <div class="shead reveal"><span class="tag" data-i18n="sec.skills">04 · ARSENAL TÉCNICO</span><h2 class="scr" data-i18n="skills.h2">HERRAMIENTAS Y COMPETENCIAS</h2><span class="rule"></span></div>
     <div class="skills">
-      <div class="panel reveal"><div class="ph"><h3>Software SIG</h3><span>SIG-01</span></div>
+      <div class="panel reveal"><div class="ph"><h3 data-i18n="sk.sig">Software SIG</h3><span>SIG-01</span></div>
         <div class="chips"><span class="chip">ArcGIS Pro</span><span class="chip">ArcMap</span><span class="chip">QGIS</span><span class="chip">Global Mapper</span><span class="chip">Python GIS</span></div>
         <div class="mt"><div class="lr"><span>ARCGIS PRO</span><span>95%</span></div><div class="trk"><i style="--v:.95"></i></div></div>
-        <div class="mt"><div class="lr"><span>PYTHON · AUTOMATIZACIÓN</span><span>80%</span></div><div class="trk"><i style="--v:.8"></i></div></div>
+        <div class="mt"><div class="lr"><span data-i18n="sk.b2">PYTHON · AUTOMATIZACIÓN</span><span>80%</span></div><div class="trk"><i style="--v:.8"></i></div></div>
       </div>
-      <div class="panel reveal" style="--d:.1s"><div class="ph"><h3>Análisis Espacial</h3><span>SIG-02</span></div>
-        <div class="chips"><span class="chip">Multicriterio</span><span class="chip">Cambio de uso de suelo</span><span class="chip">Islas de calor</span><span class="chip">Heat maps</span></div>
-        <div class="mt"><div class="lr"><span>ANÁLISIS TERRITORIAL</span><span>90%</span></div><div class="trk"><i style="--v:.9"></i></div></div>
-        <div class="mt"><div class="lr"><span>TELEDETECCIÓN</span><span>82%</span></div><div class="trk"><i style="--v:.82"></i></div></div>
+      <div class="panel reveal" style="--d:.1s"><div class="ph"><h3 data-i18n="sk.an">Análisis Espacial</h3><span>SIG-02</span></div>
+        <div class="chips"><span class="chip" data-i18n="chip.multi">Multicriterio</span><span class="chip" data-i18n="chip.suelo">Cambio de uso de suelo</span><span class="chip" data-i18n="chip.islas">Islas de calor</span><span class="chip" data-i18n="chip.heat">Heat maps</span></div>
+        <div class="mt"><div class="lr"><span data-i18n="sk.b3">ANÁLISIS TERRITORIAL</span><span>90%</span></div><div class="trk"><i style="--v:.9"></i></div></div>
+        <div class="mt"><div class="lr"><span data-i18n="sk.b4">TELEDETECCIÓN</span><span>82%</span></div><div class="trk"><i style="--v:.82"></i></div></div>
       </div>
-      <div class="panel reveal" style="--d:.2s"><div class="ph"><h3>Geodesia y GNSS</h3><span>GEO-01</span></div>
-        <div class="chips"><span class="chip">Leica Infinity</span><span class="chip">RINEX</span><span class="chip">Efemérides precisas</span><span class="chip">Antenas .atx</span><span class="chip">Ajuste de redes</span></div>
-        <div class="mt"><div class="lr"><span>POSTPROCESO GEODÉSICO</span><span>85%</span></div><div class="trk"><i style="--v:.85"></i></div></div>
+      <div class="panel reveal" style="--d:.2s"><div class="ph"><h3 data-i18n="sk.geo">Geodesia y GNSS</h3><span>GEO-01</span></div>
+        <div class="chips"><span class="chip">Leica Infinity</span><span class="chip">RINEX</span><span class="chip" data-i18n="chip.efem">Efemérides precisas</span><span class="chip" data-i18n="chip.atx">Antenas .atx</span><span class="chip" data-i18n="chip.redes">Ajuste de redes</span></div>
+        <div class="mt"><div class="lr"><span data-i18n="sk.b5">POSTPROCESO GEODÉSICO</span><span>85%</span></div><div class="trk"><i style="--v:.85"></i></div></div>
       </div>
-      <div class="panel reveal"><div class="ph"><h3>Topografía y CAD</h3><span>TOPO-01</span></div>
-        <div class="chips"><span class="chip">Civil 3D</span><span class="chip">MDE</span><span class="chip">Curvas de nivel</span><span class="chip">Volúmenes</span></div>
+      <div class="panel reveal"><div class="ph"><h3 data-i18n="sk.topo">Topografía y CAD</h3><span>TOPO-01</span></div>
+        <div class="chips"><span class="chip">Civil 3D</span><span class="chip" data-i18n="chip.mde">MDE</span><span class="chip" data-i18n="chip.curvas">Curvas de nivel</span><span class="chip" data-i18n="chip.vol">Volúmenes</span></div>
         <div class="mt"><div class="lr"><span>AUTOCAD CIVIL 3D</span><span>90%</span></div><div class="trk"><i style="--v:.9"></i></div></div>
-        <div class="mt"><div class="lr"><span>MODELADO DIGITAL</span><span>88%</span></div><div class="trk"><i style="--v:.88"></i></div></div>
+        <div class="mt"><div class="lr"><span data-i18n="sk.b7">MODELADO DIGITAL</span><span>88%</span></div><div class="trk"><i style="--v:.88"></i></div></div>
       </div>
-      <div class="panel reveal" style="--d:.1s"><div class="ph"><h3>Equipo de Campo</h3><span>CAMPO-01</span></div>
-        <div class="chips"><span class="chip">GPS / GNSS</span><span class="chip">Estación Total</span><span class="chip">Nivel Fijo</span><span class="chip">DJI Matrice 300 RTK</span></div>
-        <div class="mt"><div class="lr"><span>LEVANTAMIENTO Y PRECISIÓN</span><span>92%</span></div><div class="trk"><i style="--v:.92"></i></div></div>
+      <div class="panel reveal" style="--d:.1s"><div class="ph"><h3 data-i18n="sk.campo">Equipo de Campo</h3><span>CAMPO-01</span></div>
+        <div class="chips"><span class="chip">GPS / GNSS</span><span class="chip" data-i18n="chip.estot">Estación Total</span><span class="chip" data-i18n="chip.nivel">Nivel Fijo</span><span class="chip">DJI Matrice 300 RTK</span></div>
+        <div class="mt"><div class="lr"><span data-i18n="sk.b8">LEVANTAMIENTO Y PRECISIÓN</span><span>92%</span></div><div class="trk"><i style="--v:.92"></i></div></div>
       </div>
-      <div class="panel reveal" style="--d:.2s"><div class="ph"><h3>Idiomas</h3><span>ID-01</span></div>
-        <div class="mt"><div class="lr"><span>ESPAÑOL · NATIVO</span><span>100%</span></div><div class="trk"><i style="--v:1"></i></div></div>
-        <div class="mt"><div class="lr"><span>INGLÉS · B1</span><span>50%</span></div><div class="trk"><i style="--v:.5"></i></div></div>
-        <div class="mt"><div class="lr"><span>PORTUGUÉS · B1</span><span>50%</span></div><div class="trk"><i style="--v:.5"></i></div></div>
+      <div class="panel reveal" style="--d:.2s"><div class="ph"><h3 data-i18n="sk.idi">Idiomas</h3><span>ID-01</span></div>
+        <div class="mt"><div class="lr"><span data-i18n="sk.es">ESPAÑOL · NATIVO</span><span>100%</span></div><div class="trk"><i style="--v:1"></i></div></div>
+        <div class="mt"><div class="lr"><span data-i18n="sk.en">INGLÉS · B1</span><span>50%</span></div><div class="trk"><i style="--v:.5"></i></div></div>
+        <div class="mt"><div class="lr"><span data-i18n="sk.pt">PORTUGUÉS · B1</span><span>50%</span></div><div class="trk"><i style="--v:.5"></i></div></div>
       </div>
     </div>
   </div>
@@ -224,16 +229,16 @@
 
 <section id="certificados">
   <div class="wrap">
-    <div class="shead reveal"><span class="tag">05 · ACREDITACIONES</span><h2 class="scr">CERTIFICADOS</h2><span class="rule"></span></div>
+    <div class="shead reveal"><span class="tag" data-i18n="sec.cert">05 · ACREDITACIONES</span><h2 class="scr" data-i18n="cert.h2">CERTIFICADOS</h2><span class="rule"></span></div>
     <div class="cert-filters" id="certfilters" style="display:none">
       <select id="fyear"><option value="">Todos los años</option></select>
       <select id="fiss"><option value="">Todas las instituciones</option></select>
-      <input type="text" id="fsearch" placeholder="🔍 Buscar por nombre, institución o año...">
+      <input type="text" id="fsearch" placeholder="🔍 Buscar por nombre, institución o año..." data-i18n-ph="cert.ph">
     </div>
     <div class="cert-grid" id="certgrid"></div>
     <div class="pagination" id="pagination"></div>
     <p class="pg-count" id="pgcount"></p>
-    <p class="no-results" id="nores" style="display:none">Sin resultados para tu búsqueda. <span id="sugg"></span></p>
+    <p class="no-results" id="nores" style="display:none"><span data-i18n="cert.noresults">Sin resultados para tu búsqueda.</span> <span id="sugg"></span></p>
   </div>
 </section>
 
@@ -250,46 +255,46 @@
   <div class="modal-in vmodal-in">
     <button class="modal-close" id="vclose" aria-label="Cerrar">✕</button>
     <div class="modal-head">
-      <span class="modal-badge">VERIFICACIÓN OFICIAL</span>
-      <h3>Título Profesional · Universidad de Colima</h3>
-      <span class="iss">Ingeniero Topógrafo Geomático · Cédula Nº 15282631</span>
+      <span class="modal-badge" data-i18n="v.badge">VERIFICACIÓN OFICIAL</span>
+      <h3 data-i18n="v.h3">Título Profesional · Universidad de Colima</h3>
+      <span class="iss" data-i18n="v.iss">Ingeniero Topógrafo Geomático · Cédula Nº 15282631</span>
     </div>
     <div class="vtoolbar">
-      <span id="vstatus">Listo para verificar</span>
-      <a href="https://titulacion.ucol.mx/validar/186120e6-cf70-41bb-bc05-53019a2a3632" target="_blank" rel="noopener">Página oficial ↗</a>
+      <span id="vstatus" data-i18n="v.ready">Listo para verificar</span>
+      <a href="https://titulacion.ucol.mx/validar/186120e6-cf70-41bb-bc05-53019a2a3632" target="_blank" rel="noopener" data-i18n="v.official">Página oficial ↗</a>
     </div>
     <div class="frame-view">
       <div class="frame-loading" id="vload">
         <div>
           <div class="spin"></div>
-          <span id="vmsg">Conectando con titulacion.ucol.mx…</span>
+          <span id="vmsg" data-i18n="v.connecting">Conectando con titulacion.ucol.mx…</span>
           <small>CÓDIGO DE VERIFICACIÓN: 186120e6-cf70-41bb-bc05-53019a2a3632</small>
         </div>
       </div>
       <img id="vshot" alt="Verificación oficial de titulación · Universidad de Colima">
       <div class="frame-fallback" id="vfall" hidden>
         <div class="ff-icon">🛡️</div>
-        <h4>Captura local no encontrada</h4>
-        <p>Guarda tu captura como <b>verificacion.png</b> (o <b>verificacion.jpg</b>) junto al index.html para mostrarla aquí. Mientras tanto, la fuente oficial sigue disponible:</p>
+        <h4 data-i18n="v.fallH">Captura local no encontrada</h4>
+        <p data-i18n="v.fallP">Guarda tu captura como verificacion.png (o verificacion.jpg) junto al index.html para mostrarla aquí. Mientras tanto, la fuente oficial sigue disponible:</p>
         <div class="ff-actions">
-          <a class="btn primary" href="https://titulacion.ucol.mx/validar/186120e6-cf70-41bb-bc05-53019a2a3632" target="_blank" rel="noopener">ABRIR VERIFICACIÓN OFICIAL ↗</a>
-          <button class="btn ghost" id="vcopy" type="button">COPIAR ENLACE</button>
+          <a class="btn primary" href="https://titulacion.ucol.mx/validar/186120e6-cf70-41bb-bc05-53019a2a3632" target="_blank" rel="noopener" data-i18n="v.open">ABRIR VERIFICACIÓN OFICIAL ↗</a>
+          <button class="btn ghost" id="vcopy" type="button" data-i18n="v.copy">COPIAR ENLACE</button>
         </div>
       </div>
     </div>
-    <div class="modal-foot">Fuente oficial: Universidad de Colima · <a href="https://titulacion.ucol.mx/validar/186120e6-cf70-41bb-bc05-53019a2a3632" target="_blank" rel="noopener">titulacion.ucol.mx ↗</a></div>
+    <div class="modal-foot"><span data-i18n="v.foot">Fuente oficial: Universidad de Colima ·</span> <a href="https://titulacion.ucol.mx/validar/186120e6-cf70-41bb-bc05-53019a2a3632" target="_blank" rel="noopener">titulacion.ucol.mx ↗</a></div>
   </div>
 </div>
 
 <section id="premios">
   <div class="wrap">
-    <div class="shead reveal"><span class="tag">06 · DISTINCIÓN</span><h2 class="scr">PONENCIA ACADÉMICA</h2><span class="rule"></span></div>
+    <div class="shead reveal"><span class="tag" data-i18n="sec.award">06 · DISTINCIÓN</span><h2 class="scr" data-i18n="award.h2">PONENCIA ACADÉMICA</h2><span class="rule"></span></div>
     <div class="panel award reveal">
       <div class="medal"><span>✦</span></div>
       <div>
-        <p class="tag">UNIVERSIDAD DE COLIMA · MAYO 2023</p>
-        <h3>"Análisis espacial para identificar sitios óptimos del territorio para la instalación de estaciones de medición de la calidad del aire"</h3>
-        <p>Presentación de los resultados de la investigación aplicada con CONAHCYT ante audiencia académica y técnica.</p>
+        <p class="tag" data-i18n="award.tag">UNIVERSIDAD DE COLIMA · MAYO 2023</p>
+        <h3 data-i18n="award.title">"Análisis espacial para identificar sitios óptimos del territorio para la instalación de estaciones de medición de la calidad del aire"</h3>
+        <p data-i18n="award.p">Presentación de los resultados de la investigación aplicada con CONAHCYT ante audiencia académica y técnica.</p>
       </div>
     </div>
   </div>
@@ -297,38 +302,38 @@
 
 <section id="contacto" class="contact">
   <div class="wrap">
-    <div class="shead reveal"><span class="tag">07 · CONECTEMOS</span><span class="rule"></span></div>
-    <h2 class="reveal">UBIQUEMOS TU PRÓXIMO <span>PROYECTO</span></h2>
-    <p class="lead reveal" style="--d:.1s">¿Necesitas levantar, modelar o analizar un territorio? Estoy a un mensaje de distancia — sin fronteras.</p>
+    <div class="shead reveal"><span class="tag" data-i18n="sec.contact">07 · CONECTEMOS</span><span class="rule"></span></div>
+    <h2 class="reveal" data-i18n-html="contact.h2">UBIQUEMOS TU PRÓXIMO <span>PROYECTO</span></h2>
+    <p class="lead reveal" style="--d:.1s" data-i18n="contact.lead">¿Necesitas levantar, modelar o analizar un territorio? Estoy a un mensaje de distancia — sin fronteras.</p>
     <div class="c-grid">
       <form class="c-form panel reveal" id="cform" style="--d:.15s" novalidate>
-        <p class="c-fhead">ESCRÍBEME <span>// SE ABRE EN TU CLIENTE DE CORREO</span></p>
-        <label class="c-field"><span>NOMBRE</span><input name="nombre" type="text" autocomplete="name" placeholder="Tu nombre"></label>
-        <label class="c-field"><span>CORREO</span><input name="correo" type="email" autocomplete="email" placeholder="tucorreo@ejemplo.com"></label>
-        <label class="c-field"><span>MENSAJE *</span><textarea name="mensaje" rows="5" required placeholder="Ubicación, alcance, plazos… cuéntame sobre tu proyecto."></textarea></label>
-        <button class="btn primary" type="submit">ABRIR EN TU CORREO ✉</button>
-        <p class="c-hint">Sin servidores intermedios: el mensaje se redacta en tu propio correo.</p>
+        <p class="c-fhead"><span data-i18n="contact.head">ESCRÍBEME</span> <span class="note" data-i18n="contact.headNote">// SE ABRE EN TU CLIENTE DE CORREO</span></p>
+        <label class="c-field"><span data-i18n="contact.nombre">NOMBRE</span><input name="nombre" type="text" autocomplete="name" placeholder="Tu nombre" data-i18n-ph="contact.phName"></label>
+        <label class="c-field"><span data-i18n="contact.correo">CORREO</span><input name="correo" type="email" autocomplete="email" placeholder="tucorreo@ejemplo.com" data-i18n-ph="contact.phMail"></label>
+        <label class="c-field"><span data-i18n="contact.mensaje">MENSAJE *</span><textarea name="mensaje" rows="5" required placeholder="Ubicación, alcance, plazos… cuéntame sobre tu proyecto." data-i18n-ph="contact.phMsg"></textarea></label>
+        <button class="btn primary" type="submit" data-i18n="contact.submit">ABRIR EN TU CORREO ✉</button>
+        <p class="c-hint" data-i18n="contact.hint">Sin servidores intermedios: el mensaje se redacta en tu propio correo.</p>
       </form>
       <div class="c-channels">
         <div class="c-card reveal" style="--d:.2s">
           <span class="c-ico" aria-hidden="true">✉</span>
-          <div class="c-info"><span class="c-lbl">CORREO</span><b>velazcoochoajosemanuel@gmail.com</b></div>
-          <button class="c-copy" id="copymail" type="button" aria-label="Copiar correo"><span>COPIAR</span></button>
+          <div class="c-info"><span class="c-lbl" data-i18n="contact.mail">CORREO</span><b>velazcoochoajosemanuel@gmail.com</b></div>
+          <button class="c-copy" id="copymail" type="button" aria-label="Copiar correo"><span data-i18n="contact.copy">COPIAR</span></button>
         </div>
         <div class="c-card reveal" style="--d:.27s">
           <span class="c-ico" aria-hidden="true">☏</span>
-          <div class="c-info"><span class="c-lbl">TELÉFONO</span><b>+52 814 359 7851</b></div>
-          <button class="c-copy" id="copytel" type="button" aria-label="Copiar teléfono"><span>COPIAR</span></button>
+          <div class="c-info"><span class="c-lbl" data-i18n="contact.tel">TELÉFONO</span><b>+52 814 359 7851</b></div>
+          <button class="c-copy" id="copytel" type="button" aria-label="Copiar teléfono"><span data-i18n="contact.copy">COPIAR</span></button>
         </div>
         <a class="c-card reveal" style="--d:.34s" href="https://www.linkedin.com/in/josemanuelvelazcoochoa/" target="_blank" rel="noopener">
           <span class="c-ico" aria-hidden="true">in</span>
-          <div class="c-info"><span class="c-lbl">LINKEDIN</span><b>josemanuelvelazcoochoa</b></div>
-          <span class="c-copy" aria-hidden="true"><span>ABRIR ↗</span></span>
+          <div class="c-info"><span class="c-lbl" data-i18n="contact.linkedin">LINKEDIN</span><b>josemanuelvelazcoochoa</b></div>
+          <span class="c-copy" aria-hidden="true"><span data-i18n="contact.open">ABRIR ↗</span></span>
         </a>
         <div class="c-status reveal" style="--d:.41s">
-          <span class="pill"><i></i>DISPONIBLE PARA PROYECTOS</span>
-          <span class="pill">⌖ COLIMA, MÉXICO</span>
-          <span class="pill">🕐 <b id="ctclock">--:--:--</b>&nbsp;HORA LOCAL</span>
+          <span class="pill"><i></i><span data-i18n="contact.avail">DISPONIBLE PARA PROYECTOS</span></span>
+          <span class="pill" data-i18n="hero.pill2">⌖ COLIMA, MÉXICO</span>
+          <span class="pill">🕐 <b id="ctclock">--:--:--</b>&nbsp;<span data-i18n="contact.clock">HORA LOCAL</span></span>
         </div>
       </div>
     </div>
@@ -339,8 +344,8 @@
 <footer>
   <div class="wrap">
     <span>© <span id="yr">2026</span> JOSÉ MANUEL VELAZCO OCHOA</span>
-    <span>INGENIERO TOPÓGRAFO GEOMÁTICO</span>
-    <span>HECHO EN COLIMA, MX ⌖</span>
+    <span data-i18n="foot.role">INGENIERO TOPÓGRAFO GEOMÁTICO</span>
+    <span data-i18n="foot.made">HECHO EN COLIMA, MX ⌖</span>
   </div>
 </footer>
 
