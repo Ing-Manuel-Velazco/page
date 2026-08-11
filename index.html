@@ -230,10 +230,12 @@
 <section id="certificados">
   <div class="wrap">
     <div class="shead reveal"><span class="tag" data-i18n="sec.cert">05 · ACREDITACIONES</span><h2 class="scr" data-i18n="cert.h2">CERTIFICADOS</h2><span class="rule"></span></div>
-    <div class="cert-filters" id="certfilters" style="display:none">
+    <div class="ct-stats reveal" id="cstats"></div>
+    <div class="ct-bar reveal" id="certfilters" style="display:none">
+      <input type="text" id="fsearch" placeholder="🔍 Buscar por nombre, institución o año..." data-i18n-ph="cert.ph">
       <select id="fyear"><option value="">Todos los años</option></select>
       <select id="fiss"><option value="">Todas las instituciones</option></select>
-      <input type="text" id="fsearch" placeholder="🔍 Buscar por nombre, institución o año..." data-i18n-ph="cert.ph">
+      <button class="ct-clear" id="fclear" type="button" hidden data-i18n="cert.clear">LIMPIAR FILTROS</button>
     </div>
     <div class="cert-grid" id="certgrid"></div>
     <div class="pagination" id="pagination"></div>
