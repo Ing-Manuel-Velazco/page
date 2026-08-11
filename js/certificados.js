@@ -2,9 +2,11 @@
    js/certificados.js — 05 · Acreditaciones
    Stats + toolbar de filtros + tarjetas estilo credencial +
    modal de vista. Datos desde certificados/manifest.js.
-   FIX: paginación SIN deslizamiento (scroll congelado), 8 por
-   página y altura de retícula estable entre páginas. Al añadir
-   certificados al manifest, las páginas se recalculan solas.
+   · Paginación SIN deslizamiento (scroll congelado), 8/página,
+     altura estable entre páginas (placeholders ocultos).
+   · FIX: si una imagen da 404 (p. ej. archivo no subido o nombre
+     distinto en GitHub), la tarjeta NO se oculta: muestra un
+     placeholder "SIN VISTA" y sigue visible y clicable.
 ============================================================ */
 import { $, norm, esc, openModal } from "./core.js";
 import { t } from "./i18n.js";
@@ -94,9 +96,23 @@ function getFiltered(){
   return list;
 }
 
+/* ---------- placeholder si la imagen falta (404 en GitHub) ---------- */
+function fallbackThumb(img, year){
+  img.onerror = null;
+  const svg =
+    `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 260'>` +
+    `<rect width='400' height='260' fill='#0F1535'/>` +
+    `<rect x='10' y='10' width='380' height='240' fill='none' stroke='#3B82F6' stroke-opacity='.35' stroke-width='2'/>` +
+    `<path d='M200 96a34 34 0 1 1 0 68 34 34 0 0 1 0-68z' fill='none' stroke='#06B6D4' stroke-opacity='.6' stroke-width='2'/>` +
+    `<text x='200' y='138' text-anchor='middle' font-family='monospace' font-size='15' fill='#94A3B8'>SIN VISTA</text>` +
+    `<text x='200' y='196' text-anchor='middle' font-family='monospace' font-size='12' fill='#3B82F6'>${year || ""}</text>` +
+    `</svg>`;
+  img.src = "data:image/svg+xml," + encodeURIComponent(svg);
+  img.classList.add("ld");
+}
+
 /* ---------- render con scroll congelado y altura estable ---------- */
 function renderGrid(){
-  /* 1) congela el scroll: sin deslizamiento aunque html tenga scroll-behavior:smooth */
   const y = window.scrollY;
   const rootEl = document.documentElement;
   const sb = rootEl.style.scrollBehavior;
@@ -132,7 +148,8 @@ function renderGrid(){
     const img = card.querySelector(".cert-thumb img");
     img.addEventListener("load", () => img.classList.add("ld"));
     if (img.complete && img.naturalWidth) img.classList.add("ld");
-    img.addEventListener("error", () => { card.style.display = "none"; });
+    /* FIX: ante 404, placeholder visible en lugar de ocultar la tarjeta */
+    img.addEventListener("error", () => fallbackThumb(img, year));
     card.addEventListener("click", () => openModalCert(c));
     card.addEventListener("keydown", e => {
       if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openModalCert(c); }
@@ -141,8 +158,7 @@ function renderGrid(){
     grid.appendChild(card);
   });
 
-  /* 2) placeholders ocultos: la retícula siempre ocupa 8 huecos →
-     misma altura en todas las páginas → el documento no se acorta */
+  /* placeholders ocultos: misma altura en todas las páginas */
   for (let i = items.length; i < POR_PAGINA; i++) {
     const ph = document.createElement("div");
     ph.className = "cert-card";
@@ -155,7 +171,6 @@ function renderGrid(){
 
   renderPagination(filtered.length, totalPages, start, items.length);
 
-  /* 3) restaura la posición exacta, sin animación */
   window.scrollTo(0, y);
   rootEl.style.scrollBehavior = sb;
 }
@@ -177,7 +192,7 @@ function renderPagination(total, totalPages, start, shown){
       currentPage = p;
       renderGrid();
       const nb = pagination.querySelector(`[data-p="${p}"]`);
-      if (nb) nb.focus({ preventScroll: true });   /* foco sin scroll */
+      if (nb) nb.focus({ preventScroll: true });
     }
   }));
 }
