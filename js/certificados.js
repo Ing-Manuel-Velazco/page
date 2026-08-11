@@ -1,7 +1,12 @@
 /* ============================================================
-   js/certificados.js — Galería desde certificados/manifest.js
+   js/certificados.js — 05 · Acreditaciones
+   Stats + toolbar de filtros + tarjetas estilo credencial +
+   modal de vista. Datos desde certificados/manifest.js.
+   FIX: paginación SIN deslizamiento (scroll congelado), 8 por
+   página y altura de retícula estable entre páginas. Al añadir
+   certificados al manifest, las páginas se recalculan solas.
 ============================================================ */
-import { $, norm, esc, navegarA } from "./core.js";
+import { $, norm, esc, openModal } from "./core.js";
 import { t } from "./i18n.js";
 
 const CARPETA = "certificados";
@@ -31,10 +36,22 @@ const construirItem = archivo => ({ id: 0, ...parseArchivo(archivo), src: `${CAR
 
 const grid = $("#certgrid"), nores = $("#nores"), sugg = $("#sugg"),
       filters = $("#certfilters"), fyear = $("#fyear"), fiss = $("#fiss"), fsearch = $("#fsearch"),
-      pagination = $("#pagination"), pgcount = $("#pgcount");
+      fclear = $("#fclear"), pagination = $("#pagination"), pgcount = $("#pgcount"), cstats = $("#cstats");
 
 let CERTS = [], currentPage = 1;
 
+/* ---------- stats del acervo ---------- */
+function renderStats(){
+  const years = CERTS.map(c => (c.fecha || "").slice(0, 4)).filter(Boolean).map(Number);
+  const rango = years.length ? `${Math.min(...years)}–${Math.max(...years)}` : "—";
+  const insts = new Set(CERTS.map(c => c.institucion).filter(Boolean)).size;
+  cstats.innerHTML =
+    `<span class="stat"><b>${CERTS.length}</b> ${t("cert.statsCerts")}</span>` +
+    `<span class="stat"><b>${insts}</b> ${t("cert.statsInst")}</span>` +
+    `<span class="stat"><b>${rango}</b> ${t("cert.statsYears")}</span>`;
+}
+
+/* ---------- filtros ---------- */
 function buildFilters(){
   const cy = fyear.value, ci = fiss.value;
   fyear.innerHTML = `<option value="">${t("cert.allyears")}</option>`;
@@ -45,7 +62,11 @@ function buildFilters(){
   fyear.value = cy; fiss.value = ci;
   if (!isss.length) fiss.style.display = "none"; else fiss.style.display = "";
 }
+function updateClear(){
+  fclear.hidden = !(fyear.value || fiss.value || fsearch.value.trim());
+}
 
+/* ---------- búsqueda con scoring ---------- */
 const subseq = (w, t2) => { let i = 0; for (const ch of t2) { if (ch === w[i]) i++; if (i === w.length) return true; } return false; };
 function scoreCert(c, words){
   const name = norm(c.nombre), iss = norm(c.institucion), yr = (c.fecha || "").slice(0, 4), ser = norm(c.serial);
@@ -73,7 +94,14 @@ function getFiltered(){
   return list;
 }
 
+/* ---------- render con scroll congelado y altura estable ---------- */
 function renderGrid(){
+  /* 1) congela el scroll: sin deslizamiento aunque html tenga scroll-behavior:smooth */
+  const y = window.scrollY;
+  const rootEl = document.documentElement;
+  const sb = rootEl.style.scrollBehavior;
+  rootEl.style.scrollBehavior = "auto";
+
   const filtered = getFiltered();
   const totalPages = Math.max(1, Math.ceil(filtered.length / POR_PAGINA));
   if (currentPage > totalPages) currentPage = totalPages;
@@ -81,23 +109,58 @@ function renderGrid(){
   const items = filtered.slice(start, start + POR_PAGINA);
   grid.innerHTML = ""; pagination.innerHTML = ""; pgcount.textContent = "";
   nores.style.display = filtered.length ? "none" : "block";
-  if (!filtered.length) { sugg.textContent = `${t("cert.try")} ${CERTS.slice(0, 3).map(c => c.nombre.split(" ")[0]).join(", ")}`; return; }
+  if (!filtered.length) { sugg.textContent = `${t("cert.try")} ${CERTS.slice(0, 3).map(c => c.nombre.split(" ")[0]).join(", ")}`; }
   items.forEach(c => {
     const year = (c.fecha || "").slice(0, 4);
     const card = document.createElement("div");
     card.className = "cert-card reveal in";
+    card.setAttribute("role", "button");
+    card.setAttribute("tabindex", "0");
+    card.setAttribute("aria-label", c.nombre);
     card.innerHTML = `
-      <div class="cert-thumb"><img src="${esc(c.src)}" alt="${esc(c.nombre)}" loading="lazy" decoding="async" draggable="false"></div>
-      <h3>${esc(c.nombre)}</h3>${year ? `<time>${year}</time>` : ""}<div class="view">👁</div>`;
+      <div class="ct-top"><span class="ct-iss">${esc(c.institucion || "—")}</span><span class="ct-year">${year || "····"}</span></div>
+      <div class="cert-thumb">
+        <img src="${esc(c.src)}" alt="${esc(c.nombre)}" loading="lazy" decoding="async" draggable="false">
+        <span class="ct-corners" aria-hidden="true"></span>
+        <span class="ct-scan" aria-hidden="true"></span>
+      </div>
+      <h3>${esc(c.nombre)}</h3>
+      <div class="ct-foot">
+        ${c.serial ? `<span class="ct-ser">№ ${esc(c.serial)}</span>` : "<span></span>"}
+        <button class="ct-view" type="button">⊕ ${t("cert.ver")}</button>
+      </div>`;
     const img = card.querySelector(".cert-thumb img");
     img.addEventListener("load", () => img.classList.add("ld"));
     if (img.complete && img.naturalWidth) img.classList.add("ld");
     img.addEventListener("error", () => { card.style.display = "none"; });
     card.addEventListener("click", () => openModalCert(c));
+    card.addEventListener("keydown", e => {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openModalCert(c); }
+    });
+    card.querySelector(".ct-view").addEventListener("click", e => { e.stopPropagation(); openModalCert(c); });
     grid.appendChild(card);
   });
+
+  /* 2) placeholders ocultos: la retícula siempre ocupa 8 huecos →
+     misma altura en todas las páginas → el documento no se acorta */
+  for (let i = items.length; i < POR_PAGINA; i++) {
+    const ph = document.createElement("div");
+    ph.className = "cert-card";
+    ph.setAttribute("aria-hidden", "true");
+    ph.style.visibility = "hidden";
+    ph.style.pointerEvents = "none";
+    ph.style.minHeight = "320px";
+    grid.appendChild(ph);
+  }
+
   renderPagination(filtered.length, totalPages, start, items.length);
+
+  /* 3) restaura la posición exacta, sin animación */
+  window.scrollTo(0, y);
+  rootEl.style.scrollBehavior = sb;
 }
+
+/* ---------- paginación (sin desplazar; re-focus accesible) ---------- */
 function renderPagination(total, totalPages, start, shown){
   pgcount.textContent = `${t("cert.showing")} ${start + 1}–${start + shown} ${t("cert.de")} ${total}`;
   if (totalPages <= 1) return;
@@ -110,11 +173,16 @@ function renderPagination(total, totalPages, start, shown){
   pagination.innerHTML = html;
   pagination.querySelectorAll(".pg-btn").forEach(b => b.addEventListener("click", () => {
     const p = parseInt(b.dataset.p);
-    if (p >= 1 && p <= totalPages && p !== currentPage) { currentPage = p; renderGrid(); navegarA("#certificados"); }
+    if (p >= 1 && p <= totalPages && p !== currentPage) {
+      currentPage = p;
+      renderGrid();
+      const nb = pagination.querySelector(`[data-p="${p}"]`);
+      if (nb) nb.focus({ preventScroll: true });   /* foco sin scroll */
+    }
   }));
 }
 
-import { openModal } from "./core.js";
+/* ---------- modal de vista ---------- */
 function openModalCert(c){
   const year = (c.fecha || "").slice(0, 4);
   const head = `<span class="modal-badge">${t("cert.badge")}</span><h3>${esc(c.nombre)}</h3>
@@ -127,6 +195,7 @@ function openModalCert(c){
   });
 }
 
+/* ---------- init ---------- */
 export function initCerts(){
   const m = window.MANIFEST_CERTS;
   if (!Array.isArray(m) || !m.length) {
@@ -137,10 +206,14 @@ export function initCerts(){
            .sort((a, b) => (b.fecha || "").localeCompare(a.fecha || ""));
   CERTS.forEach((c, i) => c.id = i + 1);
   filters.style.display = "flex";
-  buildFilters();
-  renderGrid();
-  fyear.addEventListener("change", () => { currentPage = 1; renderGrid(); });
-  fiss.addEventListener("change", () => { currentPage = 1; renderGrid(); });
-  fsearch.addEventListener("input", () => { currentPage = 1; renderGrid(); });
-  addEventListener("jv:lang", () => { buildFilters(); renderGrid(); });
+  buildFilters(); renderStats(); renderGrid(); updateClear();
+
+  fyear.addEventListener("change", () => { currentPage = 1; renderGrid(); updateClear(); });
+  fiss.addEventListener("change", () => { currentPage = 1; renderGrid(); updateClear(); });
+  fsearch.addEventListener("input", () => { currentPage = 1; renderGrid(); updateClear(); });
+  fclear.addEventListener("click", () => {
+    fyear.value = ""; fiss.value = ""; fsearch.value = "";
+    currentPage = 1; renderGrid(); updateClear();
+  });
+  addEventListener("jv:lang", () => { buildFilters(); renderStats(); renderGrid(); });
 }
