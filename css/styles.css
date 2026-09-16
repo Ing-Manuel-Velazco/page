@@ -331,14 +331,12 @@ body.ready .hr{opacity:1;transform:none}
 .contact .lead{margin-top:1.5rem;max-width:60ch}
 .c-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(1.6rem,4vw,3rem);align-items:start;margin-top:clamp(2rem,5vw,3rem)}
 .c-form{display:flex;flex-direction:column;gap:1rem}
-.c-fhead{font:700 1rem var(--disp);letter-spacing:.06em;margin:0 0 .2rem;display:flex;align-items:baseline;gap:.8rem;flex-wrap:wrap}
-.c-fhead .note{font:500 .6rem var(--mono);color:var(--mut);letter-spacing:.14em}
+.c-fhead{font:700 1rem var(--disp);letter-spacing:.06em;margin:0 0 .2rem}
 .c-field{display:flex;flex-direction:column;gap:.4rem}
 .c-field span{font:500 .6rem var(--mono);letter-spacing:.18em;color:var(--mut)}
 .c-field input,.c-field textarea{background:var(--bg2);border:1px solid var(--ln);color:var(--bone);border-radius:8px;padding:.7rem .9rem;font:400 .9rem var(--body);outline:none;transition:border-color .3s,box-shadow .3s;resize:vertical;min-width:0}
 .c-field input:focus,.c-field textarea:focus{border-color:var(--acc);box-shadow:0 0 0 3px rgba(59,130,246,.15)}
 .c-field ::placeholder{color:var(--mut);opacity:.6}
-.c-hint{font:500 .6rem var(--mono);letter-spacing:.12em;color:var(--mut);margin:0}
 .c-channels{display:flex;flex-direction:column;gap:.9rem}
 .c-card{display:grid;grid-template-columns:auto 1fr auto;gap:1rem;align-items:center;padding:1rem 1.1rem;border:1px solid var(--ln);border-radius:12px;background:var(--pn);backdrop-filter:blur(10px);transition:border-color .3s,transform .3s,box-shadow .3s;color:inherit}
 .c-card:hover{border-color:var(--acc);transform:translateY(-3px);box-shadow:0 12px 30px rgba(59,130,246,.14)}
