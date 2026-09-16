@@ -1,18 +1,23 @@
 /* ============================================================
    js/data.js — Experiencias profesionales (fuente única)
    Campos traducibles como {es,en,pt}; canónicos planos.
+   Actualizado según CV v2 (JOSE_MANUEL_VELAZCO_OCHOA_CV_ES_2.pdf):
+   · SEDENA: fin 2025-10; logros re-redactados (tono de apoyo).
+   · CONAHCYT: 2 logros re-redactados.
+   · CRETEC: "Auxiliar de Supervisor de Obras"; empresa + S.A. de C.V.;
+     ciudad Cuauhtémoc, Colima; 2 logros re-redactados.
 ============================================================ */
 export const EXPERIENCIAS = [
-  { inicio: "2025-10", fin: "2025-11",
+  { inicio: "2025-10", fin: "2025-10",
     dur: { es: "1 mes", en: "1 month", pt: "1 mês" },
     pais: "México", estado: "Jalisco", ciudad: "Guadalajara", coords: [20.67, -103.35],
     puesto: { es: "Cadista / Dibujante CAD", en: "CAD Draftsman", pt: "Desenhista / Cadista CAD" },
     empresa: { es: "Secretaría de la Defensa Nacional", en: "National Defense Secretariat", pt: "Secretaria de Defesa Nacional" },
     sigla: "SEDENA",
     logros: {
-      es: ["Generé planos técnicos y modelos de superficie para proyectos de infraestructura.", "Realicé cálculos volumétricos y análisis de nivelación, apoyando la interpretación geométrica del terreno."],
-      en: ["Produced technical drawings and surface models for infrastructure projects.", "Performed volume calculations and leveling analysis, supporting geometric interpretation of terrain."],
-      pt: ["Elaborei desenhos técnicos e modelos de superfície para projetos de infraestrutura.", "Realizei cálculos volumétricos e análises de nivelamento, apoiando a interpretação geométrica do terreno."]
+      es: ["Apoyé en la elaboración y actualización de planos técnicos mediante herramientas CAD.", "Participé en cálculos volumétricos y análisis de nivelación como apoyo a trabajos relacionados con el terreno."],
+      en: ["Supported the preparation and updating of technical drawings using CAD tools.", "Took part in volume calculations and leveling analysis as support for terrain-related work."],
+      pt: ["Apoiei na elaboração e atualização de desenhos técnicos por meio de ferramentas CAD.", "Participei de cálculos volumétricos e análises de nivelamento como apoio a trabalhos relacionados ao terreno."]
     },
     tools: { es: ["AutoCAD Civil 3D", "Modelado de superficies", "Cálculo volumétrico"], en: ["AutoCAD Civil 3D", "Surface modeling", "Volume calculation"], pt: ["AutoCAD Civil 3D", "Modelagem de superfícies", "Cálculo volumétrico"] } },
 
@@ -23,22 +28,22 @@ export const EXPERIENCIAS = [
     empresa: { es: "Sistema Nacional de Investigadores", en: "National System of Researchers", pt: "Sistema Nacional de Pesquisadores" },
     sigla: "CONAHCYT",
     logros: {
-      es: ["Propuse y validé una metodología estatal para la ubicación óptima de estaciones de monitoreo de calidad del aire.", "Levantamiento de datos geográficos en campo.", "Desarrollé cartografía temática y bases de datos geoespaciales.", "Colaboré en análisis geoambientales e informes técnicos para el perfil epidemi-toxicológico de Colima · Proyecto Nº 321542."],
-      en: ["Proposed and validated a statewide methodology for optimal placement of air-quality monitoring stations.", "Field collection of geographic data.", "Developed thematic cartography and geospatial databases.", "Collaborated on geo-environmental analyses and technical reports for the epi-toxicological profile of Colima · Project No. 321542."],
-      pt: ["Propus e validei uma metodologia estadual para a localização ideal de estações de monitoramento da qualidade do ar.", "Levantamento de dados geográficos em campo.", "Desenvolvi cartografia temática e bancos de datos geoespaciais.", "Colaborei em análises geoambientais e relatórios técnicos para o perfil epidemi-toxicológico de Colima · Projeto Nº 321542."]
+      es: ["Desarrollé y validé una metodología para la ubicación óptima de estaciones de monitoreo de calidad del aire, mediante análisis geoespacial y datos territoriales.", "Realicé levantamientos de datos geográficos, cartografía temática y bases de datos geoespaciales para análisis geoambientales e informes técnicos del estado de Colima."],
+      en: ["Developed and validated a methodology for the optimal placement of air-quality monitoring stations through geospatial analysis and territorial data.", "Carried out geographic data surveys, thematic cartography and geospatial databases for geo-environmental analyses and technical reports of the state of Colima."],
+      pt: ["Desenvolvi e validei uma metodologia para a localização ideal de estaciones de monitoramento da qualidade do ar, por meio de análise geoespacial e dados territoriais.", "Realizei levantamentos de dados geográficos, cartografia temática e bancos de dados geoespaciais para análises geoambientais e relatórios técnicos do estado de Colima."]
     },
     tools: { es: ["ArcGIS Pro", "Cartografía temática", "Geodatabases", "Análisis espacial"], en: ["ArcGIS Pro", "Thematic cartography", "Geodatabases", "Spatial analysis"], pt: ["ArcGIS Pro", "Cartografia temática", "Geodatabases", "Análise espacial"] } },
 
   { inicio: "2023-01", fin: "2023-09",
     dur: { es: "9 meses", en: "9 months", pt: "9 meses" },
-    pais: "México", estado: "Colima", ciudad: "Colima", coords: [19.24, -103.72],
-    puesto: { es: "Supervisor de Obras", en: "Works Supervisor", pt: "Supervisor de Obras" },
-    empresa: { es: "Corporativo de Estudios Técnicos y de Ingeniería Civil", en: "Technical Studies & Civil Engineering Corporation", pt: "Corporativo de Estudos Técnicos e Engenharia Civil" },
+    pais: "México", estado: "Colima", ciudad: "Cuauhtémoc", coords: [19.25, -103.63],
+    puesto: { es: "Auxiliar de Supervisor de Obras", en: "Assistant Works Supervisor", pt: "Auxiliar de Supervisor de Obras" },
+    empresa: { es: "Corporativo de Estudios Técnicos y de Ingeniería Civil S.A. de C.V.", en: "Technical Studies & Civil Engineering Corporation, S.A. de C.V.", pt: "Corporativo de Estudos Técnicos e Engenharia Civil S.A. de C.V." },
     sigla: "CRETEC",
     logros: {
-      es: ["Supervisé movimientos de tierra y cálculo de volúmenes en proyectos de gran escala.", "Generé planos técnicos y modelos de superficie para documentación y control de obra.", "Coordiné equipos en campo en el Aeropuerto Internacional de Colima."],
-      en: ["Supervised earthworks and volume calculations on large-scale projects.", "Produced technical drawings and surface models for works documentation and control.", "Coordinated field teams at Colima International Airport."],
-      pt: ["Supervisionei movimentação de terras e cálculo de volumes em projetos de grande escala.", "Elaborei desenhos técnicos e modelos de superfície para documentação e controle de obra.", "Coordenei equipes de campo no Aeroporto Internacional de Colima."]
+      es: ["Apoyé en la supervisión y seguimiento de movimientos de tierra, incluyendo el control y cálculo de volúmenes.", "Apoyé en actividades de supervisión en campo, levantamientos topográficos y elaboración de planos y modelos de superficie para el seguimiento de obra."],
+      en: ["Supported the supervision and follow-up of earthworks, including control and volume calculation.", "Assisted in field supervision activities, topographic surveys and the preparation of drawings and surface models for works follow-up."],
+      pt: ["Apoiei na supervisão e no acompanhamento de movimentos de terra, incluindo controle e cálculo de volumes.", "Apoiei atividades de supervisão em campo, levantamentos topográficos e elaboração de desenhos e modelos de superfície para o acompanhamento da obra."]
     },
     tools: { es: ["Civil 3D", "Estación total", "GPS", "Coordinación de campo"], en: ["Civil 3D", "Total station", "GPS", "Field coordination"], pt: ["Civil 3D", "Estação total", "GPS", "Coordenação de campo"] } },
 
