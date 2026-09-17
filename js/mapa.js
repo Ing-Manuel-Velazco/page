@@ -3,9 +3,8 @@
    · Cámara orbital con drag, rueda y botones + / − / ⟲
    · Clic en estado con trabajos → modal agrupado por municipio
    · Resaltado por filtro (state.js) y hover desde la timeline
-   FIX: import de RM restaurado (ReferenceError rompía initMapa
-   y toda la cadena de init); onFiltro restaurado (resaltado y
-   vuelo de cámara al filtrar).
+   FIX: ⟲ restaura el estado inicial COMPLETO: encuadre,
+   orientación y reactiva la auto-rotación (vuelve a girar).
 ============================================================ */
 import * as THREE from "three";
 import { $, norm, esc, openModal, accordion, RM } from "./core.js";
@@ -90,18 +89,20 @@ function loop(){
     radius = camAnim.fR + (camAnim.tR - camAnim.fR) * e;
     theta  = camAnim.fTh + (camAnim.tTh - camAnim.fTh) * e;
     phi    = camAnim.fPh + (camAnim.tPh - camAnim.fPh) * e;
-    if (u >= 1) camAnim = null;
-  } else if (!dragging && !touched && !RM) theta += .0016;
+    if (u >= 1) { const cb = camAnim.onDone || null; camAnim = null; if (cb) cb(); }
+  } else if (!dragging && !touched && !RM) theta += .0016;   /* auto-rotación idle */
   cam();
   renderer.render(scene, camera);
 }
-function flyTo(t2, r2, dur = 800, th2 = null, ph2 = null){
+/* flyTo con callback opcional al completar la animación */
+function flyTo(t2, r2, dur = 800, th2 = null, ph2 = null, onDone = null){
   touched = true;
   if (RM || !target) {
     if (target) target.copy(t2);
     radius = r2;
     if (th2 != null) theta = th2;
     if (ph2 != null) phi = ph2;
+    if (onDone) onDone();
     return;
   }
   camAnim = {
@@ -109,7 +110,8 @@ function flyTo(t2, r2, dur = 800, th2 = null, ph2 = null){
     fT: target.clone(), tT: t2,
     fR: radius, tR: r2,
     fTh: theta, tTh: th2 != null ? th2 : theta,
-    fPh: phi,   tPh: ph2 != null ? ph2 : phi
+    fPh: phi,   tPh: ph2 != null ? ph2 : phi,
+    onDone
   };
 }
 export function volarAEstado(nombre){
@@ -118,7 +120,10 @@ export function volarAEstado(nombre){
 }
 export function zoomIn(){ flyTo(target.clone(), Math.max(18, radius * .78), 260); }
 export function zoomOut(){ flyTo(target.clone(), Math.min(190, radius * 1.28), 260); }
-export function resetView(){ flyTo(new THREE.Vector3(0, 0, 0), DEF.radius, 800, DEF.theta, DEF.phi); }
+/* FIX: ⟲ vuelve al encuadre inicial Y reactiva el giro al terminar */
+export function resetView(){
+  flyTo(new THREE.Vector3(0, 0, 0), DEF.radius, 800, DEF.theta, DEF.phi, () => { touched = false; });
+}
 
 function resize(){
   const w = host.clientWidth, h = host.clientHeight;
