@@ -1,14 +1,14 @@
 /* ============================================================
    js/mapa.js — Sección 02: carta 3D de México (Three.js)
-   · Cámara orbital con drag, rueda y BOTONES + / − / ⟲ conectados
+   · Cámara orbital con drag, rueda y botones + / − / ⟲
    · Clic en estado con trabajos → modal agrupado por municipio
-   · Resaltado por filtro (state.js) y por hover desde la timeline
-   FIX: botones de zoom/reset enlazados a la cámara 3D; zoom
-   animado; ⟲ restablece distancia y orientación; import de
-   accordion restaurado (acordeones del modal).
+   · Resaltado por filtro (state.js) y hover desde la timeline
+   FIX: import de RM restaurado (ReferenceError rompía initMapa
+   y toda la cadena de init); onFiltro restaurado (resaltado y
+   vuelo de cámara al filtrar).
 ============================================================ */
 import * as THREE from "three";
-import { $, norm, esc, openModal, accordion } from "./core.js";
+import { $, norm, esc, openModal, accordion, RM } from "./core.js";
 import { t, loc, fmtYM } from "./i18n.js";
 import { EXPERIENCIAS } from "./data.js";
 import { state, setFiltro, onFiltro } from "./state.js";
@@ -116,10 +116,8 @@ export function volarAEstado(nombre){
   const m = byName(nombre);
   if (m) flyTo(m.userData.center.clone(), 26);
 }
-/* FIX: zoom con botones, animado y con límites */
 export function zoomIn(){ flyTo(target.clone(), Math.max(18, radius * .78), 260); }
 export function zoomOut(){ flyTo(target.clone(), Math.min(190, radius * 1.28), 260); }
-/* FIX: ⟲ restablece distancia Y orientación */
 export function resetView(){ flyTo(new THREE.Vector3(0, 0, 0), DEF.radius, 800, DEF.theta, DEF.phi); }
 
 function resize(){
@@ -238,11 +236,18 @@ export function initMapa(){
   }, { passive: false });
   el.addEventListener("contextmenu", e => e.preventDefault());
 
-  /* FIX: botones de la cabecera conectados a la cámara 3D */
+  /* botones de la cabecera conectados a la cámara 3D */
   const bIn = $("#zin"), bOut = $("#zout"), bRes = $("#zreset");
   if (bIn)  bIn.addEventListener("click", () => zoomIn());
   if (bOut) bOut.addEventListener("click", () => zoomOut());
   if (bRes) bRes.addEventListener("click", () => resetView());
+
+  /* filtro compartido: resaltado + vuelo de cámara al estado */
+  onFiltro(() => {
+    applyFilter();
+    if (state.selEstado) { const m = byName(state.selEstado); if (m) flyTo(m.userData.center.clone(), 26); }
+    else flyTo(new THREE.Vector3(0, 0, 0), DEF.radius, 800, DEF.theta, DEF.phi);
+  });
 
   new ResizeObserver(resize).observe(host);
   addEventListener("jv:theme", applyFilter);
