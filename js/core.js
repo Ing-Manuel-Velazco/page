@@ -1,6 +1,6 @@
 /* ============================================================
    js/core.js — Shell y utilidades compartidas
-   Tema · boot 3D orquestado · reveals · nav · scroll · modal ·
+   Tema · boot SVG (sin WebGL) · reveals · nav · scroll · modal ·
    acordeones · protección
 ============================================================ */
 export const $  = s => document.querySelector(s);
@@ -8,14 +8,24 @@ export const $$ = s => [...document.querySelectorAll(s)];
 export const NS = "http://www.w3.org/2000/svg";
 export const RM = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-/* ---------- utilidades de texto ---------- */
 export const norm = s => (s || "").toLowerCase().normalize("NFD")
   .replace(/[\u0300-\u036f]/g, "").trim();
 
 export const esc = s => String(s ?? "").replace(/[&<>"']/g,
   c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
-/* ---------- scramble (decode) ---------- */
+const MESN = {
+  es: ["ENE","FEB","MAR","ABR","MAY","JUN","JUL","AGO","SEP","OCT","NOV","DIC"],
+  en: ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"],
+  pt: ["JAN","FEV","MAR","ABR","MAI","JUN","JUL","AGO","SET","OUT","NOV","DEZ"]
+};
+export const getLang = () => document.documentElement.lang || "es";
+export const fmtYM = ym => { const [y, m] = ym.split("-"); return `${MESN[getLang()][+m - 1] || MESN.es[+m - 1]} ${y}`; };
+export const fmtCoords = c => {
+  const W = getLang() === "en" ? "W" : "O";
+  return `${Math.abs(c[0]).toFixed(2)}° ${c[0] >= 0 ? "N" : "S"} · ${Math.abs(c[1]).toFixed(2)}° ${c[1] >= 0 ? "E" : W}`;
+};
+
 const CH = "▓▒░<>/#%&@01";
 export function scramble(el, dur = 850){
   if (RM) return;
@@ -30,7 +40,6 @@ export function scramble(el, dur = 850){
   f(t0);
 }
 
-/* ---------- tema ---------- */
 export function initTheme(){
   const root = document.documentElement, btn = $("#thm");
   let guardado = null;
@@ -44,62 +53,58 @@ export function initTheme(){
   });
 }
 
-/* ---------- boot: HUD 2D → 3D → dive → exit ---------- */
-import { t } from "./i18n.js";
+/* ---------- boot SVG (ligero, sin Three.js/WebGL) ---------- */
 export function initBoot(){
   const boot = $("#boot");
   if (!boot) { document.body.classList.add("ready"); return; }
   if (RM) { boot.remove(); document.body.classList.add("ready"); return; }
 
-  const name = $("#bootname"), coords = $("#bootcoords"), msg = $("#bootmsg");
-  let done = false, ctrl = null, raf = null, iv = null;
+  const msg = $("#bootmsg");
+  const dotsGroup = $("#bootdots");
+  let done = false;
   const timers = [];
 
-  const onKey = e => { if (["Enter", "Escape", " "].includes(e.key)) finish(); };
   const finish = () => {
     if (done) return; done = true;
     timers.forEach(clearTimeout);
-    if (iv) clearInterval(iv);
-    if (raf) cancelAnimationFrame(raf);
-    if (ctrl) ctrl.stop();
     removeEventListener("keydown", onKey);
     boot.removeEventListener("click", finish);
     document.body.classList.add("ready");
-    boot.classList.add("exit");
-    setTimeout(() => boot.remove(), 700);
+    boot.classList.add("dive");
+    setTimeout(() => { boot.classList.add("exit"); }, 620);
+    setTimeout(() => boot.remove(), 1300);
   };
+  const onKey = e => { if (e.key === "Enter") finish(); };
 
   boot.addEventListener("click", finish);
   addEventListener("keydown", onKey);
-  boot.classList.add("go");
-  if (name) scramble(name, 900);
 
-  const LAT = 19.2452, LON = 103.7241, t0 = performance.now(), DUR = 1250;
-  const stepC = now => {
-    const u = Math.min(1, (now - t0) / DUR), e = 1 - Math.pow(1 - u, 3), j = 1 - e;
-    coords.textContent = u >= 1
-      ? `${LAT.toFixed(4)}° N · ${LON.toFixed(4)}° W`
-      : `${(LAT + (Math.random() - .5) * 7 * j).toFixed(4)}° N · ${(LON + (Math.random() - .5) * 7 * j).toFixed(4)}° W`;
-    raf = (u < 1 && !done) ? requestAnimationFrame(stepC) : null;
-  };
-  raf = requestAnimationFrame(stepC);
+  setTimeout(() => boot.classList.add("go"), 50);
 
-  const MSGS = [t("boot.m1"), t("boot.m2"), t("boot.m3"), t("boot.m4")];
-  let mi = 0;
-  iv = setInterval(() => { mi++; if (mi < MSGS.length) msg.textContent = MSGS[mi]; else clearInterval(iv); }, 400);
+  const messages = ["INICIALIZANDO SISTEMA…", "CALIBRANDO GNSS…", "CARGANDO PERFIL…", "LISTO ✓"];
+  messages.forEach((m, i) => timers.push(setTimeout(() => { if (msg) msg.textContent = m; }, i * 1200)));
 
-  import("./boot3d.js").then(m => {
-    if (done) return;
-    ctrl = m.crearBoot3D($("#bootgl"), { onDive: () => boot.classList.add("dive") });
-    if (!ctrl) { timers.push(setTimeout(finish, 1200)); return; }
-    boot.classList.add("gl-on");
-    ctrl.play(() => { if (!done) finish(); });
-  }).catch(() => { if (!done) timers.push(setTimeout(finish, 1400)); });
+  const points = [
+    {x:28,y:38,d:1.0},{x:44,y:28,d:1.25},{x:52,y:62,d:1.5},
+    {x:100,y:58,d:1.8},{x:142,y:58,d:2.0},{x:188,y:58,d:2.2},
+    {x:200,y:14,d:2.6},{x:232,y:18,d:2.9},{x:275,y:8,d:3.15},
+    {x:320,y:8,d:3.35},{x:320,y:26,d:3.45},{x:340,y:22,d:3.7},
+    {x:402,y:16,d:4.0},{x:400,y:24,d:4.1},{x:475,y:14,d:4.35},
+    {x:500,y:34,d:4.5}
+  ];
+  if (dotsGroup) {
+    points.forEach(p => {
+      const c = document.createElementNS(NS, "circle");
+      c.setAttribute("cx", p.x); c.setAttribute("cy", p.y);
+      c.setAttribute("r", "2.8"); c.setAttribute("class", "boot-dot");
+      dotsGroup.appendChild(c);
+      timers.push(setTimeout(() => c.classList.add("on"), p.d * 1000 + 700));
+    });
+  }
 
-  timers.push(setTimeout(finish, 6500));
+  timers.push(setTimeout(finish, 5500));
 }
 
-/* ---------- reveals + scramble de títulos ---------- */
 export function initReveals(){
   const io = new IntersectionObserver(es => es.forEach(e => {
     if (!e.isIntersecting) return;
@@ -110,7 +115,6 @@ export function initReveals(){
   $$(".reveal,.panel").forEach(el => io.observe(el));
 }
 
-/* ---------- barra de progreso de scroll ---------- */
 export function initScrollProgress(){
   const bar = $("#bar"); let tick = false;
   const onScroll = () => {
@@ -124,7 +128,6 @@ export function initScrollProgress(){
   addEventListener("scroll", onScroll, { passive: true }); onScroll();
 }
 
-/* ---------- nav ---------- */
 export function navegarA(hash){
   const tEl = document.querySelector(hash); if (!tEl) return;
   const navH = $(".nav").offsetHeight; let y = 0;
@@ -150,7 +153,6 @@ export function initNav(){
   });
 }
 
-/* ---------- modal genérico ---------- */
 let modal, mhead, imgview, mfoot;
 export function initModal(){
   modal = $("#modal"); mhead = $("#mhead"); imgview = $("#imgview"); mfoot = $("#mfoot");
@@ -176,7 +178,6 @@ export function closeModal(){
   imgview.innerHTML = "";
 }
 
-/* ---------- acordeones ---------- */
 export function accordion(card, head, body){
   head.addEventListener("click", () => {
     const open = card.classList.toggle("open");
@@ -192,7 +193,6 @@ export function initAccordionResize(){
   });
 }
 
-/* ---------- protección de contenido ---------- */
 export function initProteccion(){
   const proteger = e => { if (e.target.closest("#certificados,#modal,#vmodal,#mapview")) e.preventDefault(); };
   document.addEventListener("contextmenu", proteger);
