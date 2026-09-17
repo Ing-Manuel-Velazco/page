@@ -1,10 +1,7 @@
 /* ============================================================
    js/mapa.js — Sección 02: carta 3D de México (Three.js)
-   · Cámara orbital con drag, rueda y botones + / − / ⟲
-   · Clic en estado con trabajos → modal agrupado por municipio
-   · Resaltado por filtro (state.js) y hover desde la timeline
-   FIX: ⟲ restaura el estado inicial COMPLETO: encuadre,
-   orientación y reactiva la auto-rotación (vuelve a girar).
+   PERF: el loop WebGL se PAUSA fuera del viewport y con la
+   pestaña oculta; pixelRatio capped a 1.75.
 ============================================================ */
 import * as THREE from "three";
 import { $, norm, esc, openModal, accordion, RM } from "./core.js";
@@ -19,7 +16,8 @@ let renderer, scene, camera, ray, ptr, host, tip, mapview, mapstatus, target = n
 let meshes = [], group = null, hovered = null, hl = null, camAnim = null;
 let theta = DEF.theta, phi = DEF.phi, radius = DEF.radius;
 let dragging = false, lx = 0, ly = 0, moved = 0, touched = false;
-let raf = null, built = false, GBcount = 0;
+let raf = null, running = false, inView = false, docVisible = true;
+let built = false, GBcount = 0;
 
 const cols = () => {
   const g = k => getComputedStyle(document.documentElement).getPropertyValue(k).trim();
@@ -31,7 +29,6 @@ function statusListo(){
   mapstatus.textContent = `${t("exp.autofit")} · ${GBcount} ${t("exp.geoms")} · ${t("exp.zoomhint")}`;
 }
 
-/* ---------- construcción de la escena ---------- */
 function build(){
   const jobs = new Set(EXPERIENCIAS.map(e => norm(e.estado)));
   const C = cols();
@@ -72,7 +69,6 @@ export function resaltarEstado(nombre){
   if (hl) { hl.material.emissive.set(C.acc2); hl.material.emissiveIntensity = .35; }
 }
 
-/* ---------- cámara ---------- */
 function cam(){
   camera.position.set(
     target.x + radius * Math.sin(phi) * Math.sin(theta),
@@ -81,6 +77,7 @@ function cam(){
   camera.lookAt(target);
 }
 function loop(){
+  if (!running) return;
   raf = requestAnimationFrame(loop);
   if (camAnim) {
     const u = Math.min(1, (performance.now() - camAnim.t0) / camAnim.dur);
@@ -90,11 +87,15 @@ function loop(){
     theta  = camAnim.fTh + (camAnim.tTh - camAnim.fTh) * e;
     phi    = camAnim.fPh + (camAnim.tPh - camAnim.fPh) * e;
     if (u >= 1) { const cb = camAnim.onDone || null; camAnim = null; if (cb) cb(); }
-  } else if (!dragging && !touched && !RM) theta += .0016;   /* auto-rotación idle */
+  } else if (!dragging && !touched && !RM) theta += .0016;
   cam();
   renderer.render(scene, camera);
 }
-/* flyTo con callback opcional al completar la animación */
+function updateRun(){
+  const want = inView && docVisible;
+  if (want && !running) { running = true; raf = requestAnimationFrame(loop); }
+  else if (!want && running) { running = false; if (raf) cancelAnimationFrame(raf); raf = null; }
+}
 function flyTo(t2, r2, dur = 800, th2 = null, ph2 = null, onDone = null){
   touched = true;
   if (RM || !target) {
@@ -103,6 +104,7 @@ function flyTo(t2, r2, dur = 800, th2 = null, ph2 = null, onDone = null){
     if (th2 != null) theta = th2;
     if (ph2 != null) phi = ph2;
     if (onDone) onDone();
+    if (!running) { cam(); renderer.render(scene, camera); }
     return;
   }
   camAnim = {
@@ -113,6 +115,7 @@ function flyTo(t2, r2, dur = 800, th2 = null, ph2 = null, onDone = null){
     fPh: phi,   tPh: ph2 != null ? ph2 : phi,
     onDone
   };
+  if (!running) updateRun();
 }
 export function volarAEstado(nombre){
   const m = byName(nombre);
@@ -120,19 +123,16 @@ export function volarAEstado(nombre){
 }
 export function zoomIn(){ flyTo(target.clone(), Math.max(18, radius * .78), 260); }
 export function zoomOut(){ flyTo(target.clone(), Math.min(190, radius * 1.28), 260); }
-/* FIX: ⟲ vuelve al encuadre inicial Y reactiva el giro al terminar */
-export function resetView(){
-  flyTo(new THREE.Vector3(0, 0, 0), DEF.radius, 800, DEF.theta, DEF.phi, () => { touched = false; });
-}
+export function resetView(){ flyTo(new THREE.Vector3(0, 0, 0), DEF.radius, 800, DEF.theta, DEF.phi, () => { touched = false; }); }
 
 function resize(){
   const w = host.clientWidth, h = host.clientHeight;
   if (!w || !h) return;
   renderer.setSize(w, h, false);
   camera.aspect = w / h; camera.updateProjectionMatrix();
+  if (!running) { cam(); renderer.render(scene, camera); }
 }
 
-/* ---------- interacción con mallas ---------- */
 function pick(e){
   const r = renderer.domElement.getBoundingClientRect();
   ptr.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
@@ -157,7 +157,6 @@ function showTip(e, txt){
 }
 const hideTip = () => tip.classList.remove("on");
 
-/* ---------- modal: trabajos del estado por municipio ---------- */
 function openStateModal(st){
   const nombre = String(st.n || st.name || "").trim();
   const jobs = EXPERIENCIAS.filter(e => norm(e.estado) === norm(nombre));
@@ -192,12 +191,11 @@ function openStateModal(st){
     accordion(jc, jc.querySelector(".job-h"), jc.querySelector(".job-b")));
 }
 
-/* ---------- init ---------- */
 export function initMapa(){
   host = $("#glview"); tip = $("#maptip"); mapview = $("#mapview"); mapstatus = $("#mapstatus");
   target = new THREE.Vector3(0, 0, 0);
-  renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "low-power" });
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 1.75));
   host.appendChild(renderer.domElement);
   scene = new THREE.Scene();
   camera = new THREE.PerspectiveCamera(45, 1, .1, 600);
@@ -222,6 +220,7 @@ export function initMapa(){
       phi = Math.min(1.25, Math.max(.25, phi - dy * .004));
       lx = e.clientX; ly = e.clientY;
       setHover(null);
+      if (!running) { cam(); renderer.render(scene, camera); }
     } else setHover(pick(e), e);
   });
   el.addEventListener("pointerup", e => {
@@ -238,27 +237,29 @@ export function initMapa(){
   el.addEventListener("wheel", e => {
     e.preventDefault(); touched = true; camAnim = null;
     radius = Math.min(190, Math.max(18, radius * (e.deltaY < 0 ? .9 : 1.1)));
+    if (!running) { cam(); renderer.render(scene, camera); }
   }, { passive: false });
   el.addEventListener("contextmenu", e => e.preventDefault());
 
-  /* botones de la cabecera conectados a la cámara 3D */
   const bIn = $("#zin"), bOut = $("#zout"), bRes = $("#zreset");
   if (bIn)  bIn.addEventListener("click", () => zoomIn());
   if (bOut) bOut.addEventListener("click", () => zoomOut());
   if (bRes) bRes.addEventListener("click", () => resetView());
 
-  /* filtro compartido: resaltado + vuelo de cámara al estado */
   onFiltro(() => {
     applyFilter();
     if (state.selEstado) { const m = byName(state.selEstado); if (m) flyTo(m.userData.center.clone(), 26); }
     else flyTo(new THREE.Vector3(0, 0, 0), DEF.radius, 800, DEF.theta, DEF.phi);
+    if (!running) { cam(); renderer.render(scene, camera); }
   });
 
   new ResizeObserver(resize).observe(host);
-  addEventListener("jv:theme", applyFilter);
+  new IntersectionObserver(es => { inView = es[0].isIntersecting; updateRun(); }, { threshold: 0 }).observe(mapview);
+  document.addEventListener("visibilitychange", () => { docVisible = !document.hidden; updateRun(); });
+  addEventListener("jv:theme", () => { applyFilter(); if (!running) { cam(); renderer.render(scene, camera); } });
   addEventListener("jv:lang", () => { if (built) statusListo(); });
 
   resize();
-  loop();
+  updateRun();
   statusListo();
 }
