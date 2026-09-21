@@ -5,7 +5,7 @@
 ============================================================ */
 import * as THREE from "three";
 import { $, norm, esc, accordion, RM } from "./core.js";
-import { t, loc, fmtYM } from "./i18n.js?v=geo-20260921l";
+import { t, loc, fmtYM } from "./i18n.js?v=geo-20260921p";
 import { EXPERIENCIAS } from "./data.js?v=geo-20260921g";
 import { state, setFiltro, onFiltro } from "./state.js?v=geo-20260921g";
 import { cargarEstados, construir, desdeGeoJSON, layout } from "./geo3d.js?v=geo-20260921h";
@@ -20,6 +20,7 @@ let theta = DEF.theta, phi = DEF.phi, radius = DEF.radius;
 let dragging = false, lx = 0, ly = 0, moved = 0, touched = false;
 let raf = null, running = false, inView = false, docVisible = true;
 let built = false, GBcount = 0;
+let municipalitySheetToken = 0;
 
 const cols = () => {
   const g = k => getComputedStyle(document.documentElement).getPropertyValue(k).trim();
@@ -80,6 +81,7 @@ function limpiarMunicipios(){
     scene.remove(muniGroup);
   }
   muniGroup = null; muniMeshes = []; muniState = null; muniHighlight = null;
+  cerrarFichaMunicipio();
   cerrarTrabajosLateral();
   actualizarBotonTrabajos();
 }
@@ -148,6 +150,98 @@ function cerrarPanelTrabajos(){
   window.setTimeout(() => {
     if (!panel.classList.contains("on")) { panel.hidden = true; panel.innerHTML = ""; }
   }, 340);
+}
+
+function cerrarFichaMunicipio(){
+  municipalitySheetToken += 1;
+  const sheet = $("#municipalitysheet");
+  if (!sheet) return;
+  sheet.hidden = true;
+  sheet.innerHTML = "";
+}
+
+const resumenCorto = texto => {
+  const limpio = String(texto || "").replace(/\s+/g, " ").trim();
+  if (!limpio) return "";
+  const primeraFrase = limpio.match(/^.*?[.!?](?=\s|$)/)?.[0] || limpio;
+  return primeraFrase.length > 350 ? `${primeraFrase.slice(0, 347).trimEnd()}…` : primeraFrase;
+};
+
+const resumenDeRespaldo = (nombre, estado) =>
+  t("exp.municipalityFallback").replace("{name}", nombre).replace("{state}", estado);
+
+async function cargarResenaTerritorial({ consulta, respaldo, sourceText = t("exp.moreAbout"), token }){
+  const sheet = $("#municipalitysheet");
+  const descripcion = sheet?.querySelector(".municipality-sheet-description");
+  const fuente = sheet?.querySelector(".municipality-sheet-editorial-source");
+  const mostrarRespaldo = () => {
+    if (token !== municipalitySheetToken || !descripcion || !fuente) return;
+    descripcion.textContent = respaldo;
+    fuente.hidden = true;
+  };
+  try {
+    const params = new URLSearchParams({
+      action: "query", generator: "search", gsrsearch: consulta,
+      gsrnamespace: "0", gsrlimit: "1", prop: "extracts|info", exintro: "1",
+      explaintext: "1", inprop: "url", format: "json", origin: "*"
+    });
+    const res = await fetch(`https://es.wikipedia.org/w/api.php?${params}`);
+    if (!res.ok) throw new Error("Wikipedia no disponible");
+    const data = await res.json();
+    const page = Object.values(data?.query?.pages || {})[0];
+    const texto = resumenCorto(page?.extract);
+    const url = String(page?.fullurl || "");
+    if (!texto || !url.startsWith("https://es.wikipedia.org/")) throw new Error("Sin reseña municipal");
+    if (token !== municipalitySheetToken || !descripcion || !fuente) return;
+    descripcion.textContent = texto;
+    fuente.href = url;
+    fuente.textContent = `${t("exp.sourceWikipedia")} · ${sourceText}`;
+    fuente.hidden = false;
+  } catch (_) {
+    mostrarRespaldo();
+  }
+}
+
+function cargarResenaMunicipio({ nombre, estado, token }){
+  return cargarResenaTerritorial({
+    consulta: `${nombre} municipio ${estado}`,
+    respaldo: resumenDeRespaldo(nombre, estado),
+    sourceText: t("exp.moreAbout"),
+    token
+  });
+}
+
+function abrirEstado(estado){
+  const p = estado.userData;
+  const consulta = norm(p.name) === "mexico" ? "Estado de México" : `${p.name} estado de México`;
+  const sheet = $("#municipalitysheet");
+  if (!sheet) return;
+  const token = ++municipalitySheetToken;
+  sheet.hidden = false;
+  sheet.innerHTML = `
+    <div class="municipality-sheet-head">
+      <div><span class="municipality-sheet-kicker">${esc(t("exp.stateInfo"))} · ${esc(t("exp.paisname"))}</span><h3>${esc(p.name)}</h3></div>
+      <button class="municipality-sheet-close" type="button" aria-label="${esc(t("exp.close"))}">×</button>
+    </div>
+    <div class="municipality-sheet-body">
+      <p class="municipality-sheet-key"><span>${esc(t("exp.ageeKey"))}</span><b>${esc(p.cveGeo || p.cveEnt)}</b></p>
+      <div class="municipality-sheet-codes" aria-label="${esc(t("exp.officialCodes"))}">
+        <span>${esc(t("exp.entityKey"))}<b>${esc(p.cveEnt)}</b></span>
+        <span>${esc(t("exp.territorialLevel"))}<b>AGEE</b></span>
+      </div>
+      <p class="municipality-sheet-framework">${esc(t("exp.mgEdition"))}<span>${esc(t("exp.mgCut"))}</span></p>
+      <a class="municipality-sheet-territorial-source" href="https://www.inegi.org.mx/app/ageeml/" target="_blank" rel="noopener noreferrer">${esc(t("exp.officialInegi"))}</a>
+      <p class="municipality-sheet-description">${esc(t("exp.loadingSummary"))}</p>
+      <a class="municipality-sheet-source municipality-sheet-editorial-source" href="https://es.wikipedia.org/" target="_blank" rel="noopener noreferrer" hidden></a>
+    </div>
+    <div class="municipality-sheet-foot">${esc(t("exp.stateFoot"))}</div>`;
+  sheet.querySelector(".municipality-sheet-close").addEventListener("click", cerrarFichaMunicipio);
+  cargarResenaTerritorial({
+    consulta,
+    respaldo: t("exp.stateFallback").replace("{name}", p.name),
+    sourceText: t("exp.moreAboutState"),
+    token
+  });
 }
 
 function abrirPanelTrabajos({ kicker, title, sub = "", body, foot = "" }){
@@ -333,20 +427,31 @@ function abrirTrabajosEstado(st){
 
 function abrirMunicipio(m){
   const p = m.userData;
-  const jobs = EXPERIENCIAS.filter(e => norm(e.ciudad) === norm(p.name));
-  const body = jobs.length
-    ? `<div class="jobs-list">${jobs.map(e => `
-        <div class="job-card"><div class="job-h"><div><h4>${esc(loc(e.puesto))}</h4><p>${esc(loc(e.empresa))}</p></div><span class="xchev">▾</span></div>
-        <div class="job-b"><div class="job-b-in"><p class="xloc">⌖ ${esc(e.ciudad)}, ${esc(e.estado)} · ${fmtYM(e.inicio)} — ${fmtYM(e.fin)}</p>
-        <ul>${loc(e.logros).map(l => `<li>${esc(l)}</li>`).join("")}</ul></div></div></div>`).join("")}</div>`
-    : "";
-  abrirPanelTrabajos({
-    kicker: esc(t("exp.municipality")),
-    title: esc(p.name),
-    sub: esc(p.cveGeo || p.cveMun),
-    body,
-    foot: t("exp.municipalityFoot")
-  });
+  const estado = muniState?.userData?.name || "México";
+  const sheet = $("#municipalitysheet");
+  if (!sheet) return;
+  cerrarPanelTrabajos();
+  const token = ++municipalitySheetToken;
+  sheet.hidden = false;
+  sheet.innerHTML = `
+    <div class="municipality-sheet-head">
+      <div><span class="municipality-sheet-kicker">${esc(t("exp.municipalityInfo"))} · ${esc(estado)}</span><h3>${esc(p.name)}</h3></div>
+      <button class="municipality-sheet-close" type="button" aria-label="${esc(t("exp.close"))}">×</button>
+    </div>
+    <div class="municipality-sheet-body">
+      <p class="municipality-sheet-key"><span>${esc(t("exp.agemKey"))}</span><b>${esc(p.cveGeo || p.cveMun)}</b></p>
+      <div class="municipality-sheet-codes" aria-label="${esc(t("exp.officialCodes"))}">
+        <span>${esc(t("exp.entityKey"))}<b>${esc(p.cveEnt)}</b></span>
+        <span>${esc(t("exp.municipalKey"))}<b>${esc(p.cveMun)}</b></span>
+      </div>
+      <p class="municipality-sheet-framework">${esc(t("exp.mgEdition"))}<span>${esc(t("exp.mgCut"))}</span></p>
+      <a class="municipality-sheet-territorial-source" href="https://www.inegi.org.mx/app/ageeml/" target="_blank" rel="noopener noreferrer">${esc(t("exp.officialInegi"))}</a>
+      <p class="municipality-sheet-description">${esc(t("exp.loadingSummary"))}</p>
+      <a class="municipality-sheet-source municipality-sheet-editorial-source" href="https://es.wikipedia.org/" target="_blank" rel="noopener noreferrer" hidden></a>
+    </div>
+    <div class="municipality-sheet-foot">${esc(t("exp.municipalityFoot"))}</div>`;
+  sheet.querySelector(".municipality-sheet-close").addEventListener("click", cerrarFichaMunicipio);
+  cargarResenaMunicipio({ nombre: p.name, estado, token });
 }
 
 export async function initMapa(){
@@ -393,6 +498,7 @@ export async function initMapa(){
       if (m.userData.municipio) { resaltarMunicipio(m); abrirMunicipio(m); return; }
       flyTo(m.userData.center.clone(), 36, 700);
       await mostrarMunicipios(m);
+      abrirEstado(m);
       if (m.userData.jobs) setFiltro("México", m.userData.name);
     }
   });

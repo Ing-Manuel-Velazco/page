@@ -3,11 +3,11 @@
 ============================================================ */
 import { $, RM, initTheme, initBoot, initReveals, initScrollProgress, initNav,
          initModal, initAccordionResize, initProteccion } from "./core.js";
-import { initI18n, t } from "./i18n.js?v=geo-20260921l";
-import { initMapa } from "./mapa.js?v=geo-20260921l";
-import { initTrayectoria } from "./trayectoria.js?v=geo-20260921l";
-import { initCerts } from "./certificados.js?v=geo-20260921l";
-import { initVerificacion } from "./verificacion.js?v=geo-20260921l";
+import { initI18n, t } from "./i18n.js?v=geo-20260921p";
+import { initMapa } from "./mapa.js?v=geo-20260921p";
+import { initTrayectoria } from "./trayectoria.js?v=geo-20260921m";
+import { initCerts } from "./certificados.js?v=geo-20260921m";
+import { initVerificacion } from "./verificacion.js?v=geo-20260921m";
 
 if ("scrollRestoration" in history) history.scrollRestoration = "manual";
 if (location.hash) history.replaceState(null, "", location.pathname + location.search);

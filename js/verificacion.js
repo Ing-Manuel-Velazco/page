@@ -2,7 +2,7 @@
    js/verificacion.js — Modal de verificación de titulación
 ============================================================ */
 import { $ } from "./core.js";
-import { t } from "./i18n.js?v=geo-20260921l";
+import { t } from "./i18n.js?v=geo-20260921p";
 
 const URL_TITULACION = "https://titulacion.ucol.mx/validar/186120e6-cf70-41bb-bc05-53019a2a3632";
 
