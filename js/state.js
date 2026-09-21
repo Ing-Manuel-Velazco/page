@@ -2,7 +2,7 @@
    js/state.js — Filtro compartido país/estado (mapa ↔ lista ↔ crumbs)
    ============================================================ */
 import { norm } from "./core.js";
-import { EXPERIENCIAS } from "./data.js";
+import { EXPERIENCIAS } from "./data.js?v=geo-20260921g";
 
 export const state = { selPais: null, selEstado: null, key: null };
 const subs = new Set();

@@ -3,10 +3,10 @@
    Búsqueda + crumbs + stats + timeline sincronizada con el mapa
 ============================================================ */
 import { $, norm, esc, accordion } from "./core.js";
-import { t, loc, allv, fmtYM, fmtCoords, getLang } from "./i18n.js";
-import { EXPERIENCIAS } from "./data.js";
-import { state, setFiltro, onFiltro } from "./state.js";
-import { volarAEstado, resaltarEstado } from "./mapa.js";
+import { t, loc, allv, fmtYM, fmtCoords, getLang } from "./i18n.js?v=geo-20260921l";
+import { EXPERIENCIAS } from "./data.js?v=geo-20260921g";
+import { state, setFiltro, onFiltro } from "./state.js?v=geo-20260921g";
+import { volarAMunicipio, resaltarEstado } from "./mapa.js?v=geo-20260921l";
 
 const fmtMeses = m => {
   const y = Math.floor(m / 12), r = m % 12;
@@ -17,11 +17,8 @@ const fmtMeses = m => {
 
 function renderStats(){
   const total = EXPERIENCIAS.reduce((s, e) => s + meses(e.inicio, e.fin), 0);
-  const est = new Set(EXPERIENCIAS.map(e => norm(e.estado))).size;
   $("#xstats").innerHTML =
-    `<span class="stat"><b>${EXPERIENCIAS.length}</b> ${t("exp.statExp")}</span>` +
-    `<span class="stat"><b>${est}</b> ${t("exp.statEst")}</span>` +
-    `<span class="stat"><b>${fmtMeses(total)}</b> ${t("exp.statCampo")}</span>`;
+    `<span class="stat stat-total"><span>${t("exp.totalExperience")}</span><b>${fmtMeses(total)}</b></span>`;
 }
 const meses = (a, b) => {
   const [ay, am] = a.split("-").map(Number), [by, bm] = b.split("-").map(Number);
@@ -43,13 +40,15 @@ function getFilteredX(){
 
 function renderCrumbs(){
   const c = $("#xcrumbs");
-  let html = `<button class="crumb ${!state.selPais && !state.selEstado ? "act" : ""}" data-f="all">${t("exp.all")}</button>`;
-  if (state.selPais) html += `<button class="crumb ${state.selPais && !state.selEstado ? "act" : ""}" data-f="pais">${t("exp.pais")}</button>`;
-  if (state.selEstado) html += `<button class="crumb act" data-f="estado" title="✕"> ${esc(state.selEstado)} ✕</button>`;
+  const html =
+    `<button class="crumb ${!state.selPais && !state.selEstado ? "act" : ""}" data-f="all">${t("exp.all")}</button>` +
+    `<button class="crumb ${state.selPais && !state.selEstado ? "act" : ""}" data-f="pais">${t("exp.pais")}</button>` +
+    `<button class="crumb ${state.selEstado ? "act" : ""}" data-f="estado">${t("exp.estado")}</button>`;
   c.innerHTML = html;
   c.querySelectorAll(".crumb").forEach(b => b.addEventListener("click", () => {
     const f = b.dataset.f;
     if (f === "pais") setFiltro("México", null);
+    else if (f === "estado" && state.selEstado) setFiltro("México", null);
     else setFiltro(null, null);
   }));
 }
@@ -82,7 +81,7 @@ function renderXList(){
     card.addEventListener("mouseleave", () => resaltarEstado(null));
     item.querySelector(".locbtn").addEventListener("click", ev => {
       ev.stopPropagation();
-      volarAEstado(e.estado);
+      volarAMunicipio(e.estado, e.ciudad);
       resaltarEstado(e.estado);
       setTimeout(() => resaltarEstado(null), 1600);
     });

@@ -10,7 +10,7 @@
 export const EXPERIENCIAS = [
   { inicio: "2025-10", fin: "2025-10",
     dur: { es: "1 mes", en: "1 month", pt: "1 mês" },
-    pais: "México", estado: "Jalisco", ciudad: "Guadalajara", coords: [20.67, -103.35],
+    pais: "México", estado: "Jalisco", ciudad: "Zapopan", coords: [20.721, -103.391],
     puesto: { es: "Cadista / Dibujante CAD", en: "CAD Draftsman", pt: "Desenhista / Cadista CAD" },
     empresa: { es: "Secretaría de la Defensa Nacional", en: "National Defense Secretariat", pt: "Secretaria de Defesa Nacional" },
     sigla: "SEDENA",

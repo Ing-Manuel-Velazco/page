@@ -9,7 +9,7 @@
      placeholder "SIN VISTA" y sigue visible y clicable.
 ============================================================ */
 import { $, norm, esc, openModal } from "./core.js";
-import { t } from "./i18n.js";
+import { t } from "./i18n.js?v=geo-20260921l";
 
 const CARPETA = "certificados";
 const POR_PAGINA = 8;

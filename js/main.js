@@ -3,11 +3,11 @@
 ============================================================ */
 import { $, RM, initTheme, initBoot, initReveals, initScrollProgress, initNav,
          initModal, initAccordionResize, initProteccion } from "./core.js";
-import { initI18n, t } from "./i18n.js";
-import { initMapa } from "./mapa.js";
-import { initTrayectoria } from "./trayectoria.js";
-import { initCerts } from "./certificados.js";
-import { initVerificacion } from "./verificacion.js";
+import { initI18n, t } from "./i18n.js?v=geo-20260921l";
+import { initMapa } from "./mapa.js?v=geo-20260921l";
+import { initTrayectoria } from "./trayectoria.js?v=geo-20260921l";
+import { initCerts } from "./certificados.js?v=geo-20260921l";
+import { initVerificacion } from "./verificacion.js?v=geo-20260921l";
 
 if ("scrollRestoration" in history) history.scrollRestoration = "manual";
 if (location.hash) history.replaceState(null, "", location.pathname + location.search);
@@ -17,25 +17,12 @@ addEventListener("load", () => window.scrollTo(0, 0));
 /* ---------- perfil ---------- */
 function initPerfil(){
   const cimg = $("#credimg");
+  const photo = cimg?.closest(".pf-photo");
+  ["contextmenu", "dragstart", "copy"].forEach(tipo =>
+    photo?.addEventListener(tipo, e => e.preventDefault()));
   if (cimg) cimg.addEventListener("error", function(){
     if (cimg.src.indexOf("foto.png") !== -1) cimg.src = "foto.jpg";
-    else { cimg.style.display = "none"; const m = $("#credmono"); if (m) m.style.display = "grid"; }
-  });
-
-  const card = $("#idcard"), btn = $("#flipbtn");
-  if (!card || !btn) return;
-  const flip = () => {
-    const f = card.classList.toggle("flipped");
-    btn.setAttribute("aria-pressed", String(f));
-    btn.textContent = f ? t("cred.flipback") : t("cred.flip");
-  };
-  card.addEventListener("click", flip);
-  card.addEventListener("keydown", e => {
-    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); flip(); }
-  });
-  btn.addEventListener("click", flip);
-  addEventListener("jv:lang", () => {
-    btn.textContent = card.classList.contains("flipped") ? t("cred.flipback") : t("cred.flip");
+    else cimg.alt = "Fotografía no disponible";
   });
 }
 

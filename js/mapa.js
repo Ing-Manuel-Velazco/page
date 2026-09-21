@@ -4,16 +4,18 @@
    pestaña oculta; pixelRatio capped a 1.75.
 ============================================================ */
 import * as THREE from "three";
-import { $, norm, esc, openModal, accordion, RM } from "./core.js";
-import { t, loc, fmtYM } from "./i18n.js";
-import { EXPERIENCIAS } from "./data.js";
-import { state, setFiltro, onFiltro } from "./state.js";
-import { construir } from "./geo3d.js";
+import { $, norm, esc, accordion, RM } from "./core.js";
+import { t, loc, fmtYM } from "./i18n.js?v=geo-20260921l";
+import { EXPERIENCIAS } from "./data.js?v=geo-20260921g";
+import { state, setFiltro, onFiltro } from "./state.js?v=geo-20260921g";
+import { cargarEstados, construir, desdeGeoJSON, layout } from "./geo3d.js?v=geo-20260921h";
 
-const DEF = { theta: .65, phi: .95, radius: 95 };
+const DEF = { theta: .65, phi: .75, radius: 95 };
+const MIN_RADIUS = 10;
 
-let renderer, scene, camera, ray, ptr, host, tip, mapview, mapstatus, target = null;
-let meshes = [], group = null, hovered = null, hl = null, camAnim = null;
+let renderer, scene, camera, ray, ptr, host, tip, mapview, mapnotice, target = null;
+let meshes = [], group = null, muniMeshes = [], muniGroup = null, muniState = null;
+let hovered = null, hl = [], muniHighlight = null, camAnim = null;
 let theta = DEF.theta, phi = DEF.phi, radius = DEF.radius;
 let dragging = false, lx = 0, ly = 0, moved = 0, touched = false;
 let raf = null, running = false, inView = false, docVisible = true;
@@ -21,12 +23,35 @@ let built = false, GBcount = 0;
 
 const cols = () => {
   const g = k => getComputedStyle(document.documentElement).getPropertyValue(k).trim();
-  return { base: g("--bg2"), acc: g("--acc"), acc2: g("--acc2") };
+  return {
+    base: g("--bg2"), acc: g("--acc"), acc2: g("--acc2"),
+    munFill: g("--map-mun-fill"), munEdge: g("--map-mun-edge"),
+    munHighlight: g("--map-mun-highlight"), munHighlightEdge: g("--map-mun-highlight-edge")
+  };
 };
 const byName = n => meshes.find(m => norm(m.userData.name) === norm(n));
+const mesesDeExperiencia = ({ inicio, fin }) => {
+  const [ai, mi] = inicio.split("-").map(Number);
+  const [af, mf] = fin.split("-").map(Number);
+  return (af - ai) * 12 + mf - mi + 1;
+};
+const trabajosLateralesAbiertos = () => $("#xpmapgrid")?.classList.contains("show-work");
+
+function cerrarTrabajosLateral(){
+  $("#xpmapgrid")?.classList.remove("show-work");
+}
 
 function statusListo(){
-  mapstatus.textContent = `${t("exp.autofit")} · ${GBcount} ${t("exp.geoms")} · ${t("exp.zoomhint")}`;
+  const estados = new Set(EXPERIENCIAS.map(e => norm(e.estado))).size;
+  const stateCount = $("#mapstates"), recordCount = $("#maprecords"), yearCount = $("#mapyears");
+  if (stateCount) stateCount.textContent = estados;
+  if (recordCount) recordCount.textContent = EXPERIENCIAS.length;
+  if (yearCount) yearCount.textContent = Math.floor(EXPERIENCIAS.reduce((total, trabajo) => total + mesesDeExperiencia(trabajo), 0) / 12);
+  if (muniState) {
+    if (mapnotice) mapnotice.textContent = `${t("exp.municipalities")} · ${muniState.userData.name} · ${t("exp.resetMunicipalities")}`;
+    return;
+  }
+  if (mapnotice) mapnotice.textContent = `${t("exp.inegi")} · ${estados} ${t("exp.states")} · ${EXPERIENCIAS.length} ${t("exp.records")} · ${t("exp.clickState")}`;
 }
 
 function build(){
@@ -34,7 +59,7 @@ function build(){
   const C = cols();
   const b = construir(THREE, {
     jobs,
-    depth: isJ => isJ ? 3.4 : 1.4,
+    depth: () => .9,
     mat: isJ => new THREE.MeshStandardMaterial({
       color: isJ ? C.acc : C.base, roughness: .55, metalness: .18,
       transparent: true, opacity: isJ ? .97 : .88
@@ -46,6 +71,102 @@ function build(){
   applyFilter();
 }
 
+function limpiarMunicipios(){
+  if (muniGroup) {
+    muniGroup.traverse(o => {
+      if (o.geometry) o.geometry.dispose();
+      if (o.material) o.material.dispose();
+    });
+    scene.remove(muniGroup);
+  }
+  muniGroup = null; muniMeshes = []; muniState = null; muniHighlight = null;
+  cerrarTrabajosLateral();
+  actualizarBotonTrabajos();
+}
+
+async function mostrarMunicipios(estado){
+  const clave = estado?.userData?.cveEnt;
+  if (!clave || !scene) return;
+  if (muniState?.userData?.cveEnt === clave) { muniGroup.visible = true; actualizarBotonTrabajos(estado); statusListo(); return; }
+  cerrarPanelTrabajos();
+  limpiarMunicipios();
+  if (mapnotice) mapnotice.textContent = `${t("exp.loadingMunicipalities")} · ${estado.userData.name}…`;
+  try {
+    const res = await fetch(`geo/municipios/municipio${Number(clave)}.geojson`);
+    if (!res.ok) throw new Error(`municipios ${clave}`);
+    const datos = desdeGeoJSON(await res.json());
+    const C = cols();
+    const b = construir(THREE, {
+      datos, layout: layout(), depth: () => .46, yOffset: .98,
+      mat: () => new THREE.MeshStandardMaterial({
+        color: C.munFill, emissive: C.munEdge, emissiveIntensity: .16,
+        transparent: true, opacity: .68, roughness: .62
+      }),
+      edges: true, edgeColor: C.munEdge, edgeOpacity: .98
+    });
+    muniGroup = b.group; muniMeshes = b.meshes; muniState = estado;
+    muniMeshes.forEach(m => { m.userData.municipio = true; });
+    scene.add(muniGroup); actualizarBotonTrabajos(estado); statusListo();
+  } catch (err) {
+    console.warn("[mapa] No se pudieron cargar municipios", err);
+    if (mapnotice) mapnotice.textContent = t("exp.municipalitiesUnavailable");
+  }
+}
+
+function pintarMunicipio(m){
+  const C = cols(), destacado = m === muniHighlight;
+  const fill = destacado ? C.munHighlight : C.munFill;
+  const edge = destacado ? C.munHighlightEdge : C.munEdge;
+  m.material.color.set(fill);
+  m.material.emissive?.set(edge);
+  m.material.emissiveIntensity = destacado ? .42 : .16;
+  m.material.opacity = destacado ? .86 : .68;
+  m.children.forEach(hijo => {
+    if (hijo.material?.color) hijo.material.color.set(edge);
+    if (hijo.material && "opacity" in hijo.material) hijo.material.opacity = destacado ? 1 : .98;
+  });
+}
+function actualizarEstiloMunicipios(){ muniMeshes.forEach(pintarMunicipio); }
+function resaltarMunicipio(m){
+  muniHighlight = m || null;
+  actualizarEstiloMunicipios();
+}
+
+function actualizarBotonTrabajos(estado = null){
+  const boton = $("#mapworkbtn");
+  if (!boton) return;
+  const jobs = estado ? EXPERIENCIAS.filter(e => norm(e.estado) === norm(estado.userData.name)) : [];
+  boton.hidden = !jobs.length;
+  if (!jobs.length) cerrarTrabajosLateral();
+  boton.textContent = trabajosLateralesAbiertos() ? t("exp.hideWork") : t("exp.viewWork");
+}
+
+function cerrarPanelTrabajos(){
+  const panel = $("#mapjobs");
+  if (!panel || panel.hidden) return;
+  panel.classList.remove("on");
+  window.setTimeout(() => {
+    if (!panel.classList.contains("on")) { panel.hidden = true; panel.innerHTML = ""; }
+  }, 340);
+}
+
+function abrirPanelTrabajos({ kicker, title, sub = "", body, foot = "" }){
+  const panel = $("#mapjobs");
+  if (!panel) return;
+  panel.hidden = false;
+  panel.innerHTML = `
+    <div class="map-jobs-head">
+      <div><span class="map-jobs-kicker">${kicker}</span><h3>${title}</h3>${sub ? `<p class="map-jobs-sub">${sub}</p>` : ""}</div>
+      <button class="map-jobs-close" type="button" aria-label="${esc(t("exp.close"))}">×</button>
+    </div>
+    ${body ? `<div class="map-jobs-body">${body}</div>` : ""}
+    ${foot ? `<div class="map-jobs-foot">${foot}</div>` : ""}`;
+  panel.querySelector(".map-jobs-close").addEventListener("click", cerrarPanelTrabajos);
+  panel.querySelectorAll(".job-card").forEach(jc =>
+    accordion(jc, jc.querySelector(".job-h"), jc.querySelector(".job-b")));
+  requestAnimationFrame(() => panel.classList.add("on"));
+}
+
 function applyFilter(){
   if (!built) return;
   const C = cols();
@@ -55,18 +176,18 @@ function applyFilter(){
     m.material.emissive.set(sel ? C.acc2 : 0x000000);
     m.material.emissiveIntensity = sel ? .5 : 0;
   });
-  hl = null;
+  hl = [];
 }
 export function resaltarEstado(nombre){
   if (!built) return;
   const C = cols();
-  if (hl) {
-    const sel = state.key && norm(hl.userData.name) === state.key;
-    hl.material.emissive.set(sel ? C.acc2 : 0x000000);
-    hl.material.emissiveIntensity = sel ? .5 : 0;
-  }
-  hl = nombre ? (byName(nombre) || null) : null;
-  if (hl) { hl.material.emissive.set(C.acc2); hl.material.emissiveIntensity = .35; }
+  hl.forEach(m => {
+    const sel = state.key && norm(m.userData.name) === state.key;
+    m.material.emissive.set(sel ? C.acc2 : 0x000000);
+    m.material.emissiveIntensity = sel ? .5 : 0;
+  });
+  hl = nombre ? meshes.filter(m => norm(m.userData.name) === norm(nombre)) : [];
+  hl.forEach(m => { m.material.emissive.set(C.acc2); m.material.emissiveIntensity = .35; });
 }
 
 function cam(){
@@ -117,11 +238,23 @@ function flyTo(t2, r2, dur = 800, th2 = null, ph2 = null, onDone = null){
   };
   if (!running) updateRun();
 }
-export function volarAEstado(nombre){
+export async function volarAEstado(nombre){
   const m = byName(nombre);
-  if (m) flyTo(m.userData.center.clone(), 26);
+  if (!m) return;
+  flyTo(m.userData.center.clone(), 26);
+  await mostrarMunicipios(m);
 }
-export function zoomIn(){ flyTo(target.clone(), Math.max(18, radius * .78), 260); }
+export async function volarAMunicipio(estadoNombre, municipioNombre){
+  const estado = byName(estadoNombre);
+  if (!estado) return;
+  flyTo(estado.userData.center.clone(), 26, 420);
+  await mostrarMunicipios(estado);
+  const municipio = muniMeshes.find(m => norm(m.userData.name) === norm(municipioNombre));
+  if (!municipio) return;
+  resaltarMunicipio(municipio);
+  flyTo(municipio.userData.center.clone(), 12, 820);
+}
+export function zoomIn(){ flyTo(target.clone(), Math.max(MIN_RADIUS, radius * .7), 260); }
 export function zoomOut(){ flyTo(target.clone(), Math.min(190, radius * 1.28), 260); }
 export function resetView(){ flyTo(new THREE.Vector3(0, 0, 0), DEF.radius, 800, DEF.theta, DEF.phi, () => { touched = false; }); }
 
@@ -137,16 +270,23 @@ function pick(e){
   const r = renderer.domElement.getBoundingClientRect();
   ptr.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
   ray.setFromCamera(ptr, camera);
-  const hit = ray.intersectObjects(meshes, false)[0];
+  const hit = ray.intersectObjects([...muniMeshes, ...meshes], false)[0];
   return hit ? hit.object : null;
 }
 function setHover(m, e){
   if (hovered !== m) {
-    if (hovered) { const C = cols(); hovered.material.color.set(hovered.userData.jobs ? C.acc : C.base); }
+    if (hovered) {
+      const C = cols();
+      if (hovered.userData.municipio) pintarMunicipio(hovered);
+      else hovered.material.color.set(hovered.userData.jobs ? C.acc : C.base);
+    }
     hovered = m;
-    if (m) m.material.color.set(cols().acc2);
+    if (m) {
+      const C = cols();
+      m.material.color.set(m.userData.municipio ? C.munHighlightEdge : C.acc2);
+    }
   }
-  if (m) showTip(e, m.userData.jobs ? `${m.userData.name} · ${t("exp.click")}` : m.userData.name);
+  if (m) showTip(e, m.userData.municipio ? `${m.userData.name} · ${t("exp.municipality")}` : (m.userData.jobs ? `${m.userData.name} · ${t("exp.click")}` : m.userData.name));
   else hideTip();
 }
 function showTip(e, txt){
@@ -157,15 +297,12 @@ function showTip(e, txt){
 }
 const hideTip = () => tip.classList.remove("on");
 
-function openStateModal(st){
+function abrirTrabajosEstado(st){
   const nombre = String(st.n || st.name || "").trim();
   const jobs = EXPERIENCIAS.filter(e => norm(e.estado) === norm(nombre));
   const muns = {};
   jobs.forEach(e => { (muns[e.ciudad] || (muns[e.ciudad] = [])).push(e); });
   const keys = Object.keys(muns);
-
-  const head = `<span class="modal-badge">${t("exp.estado")}</span><h3>${esc(nombre)}, ${esc(t("exp.paisname"))}</h3>
-    <span class="iss">${jobs.length} ${t("exp.jobs1")} · ${keys.length} ${t("exp.mun")}</span>`;
 
   const card = e => `
     <div class="job-card">
@@ -185,14 +322,35 @@ function openStateModal(st){
       </div>`).join("")
     : `<p class="no-results">${t("exp.nomatch")}</p>`) + `</div>`;
 
-  const foot = `${t("exp.detail")} · ${esc(nombre)}`;
-  const box = openModal(head, body, foot);
-  box.querySelectorAll(".job-card").forEach(jc =>
-    accordion(jc, jc.querySelector(".job-h"), jc.querySelector(".job-b")));
+  abrirPanelTrabajos({
+    kicker: esc(t("exp.estado")),
+    title: `${esc(nombre)}, ${esc(t("exp.paisname"))}`,
+    sub: `${jobs.length} ${t("exp.jobs1")} · ${keys.length} ${t("exp.mun")}`,
+    body,
+    foot: `${t("exp.detail")} · ${esc(nombre)}`
+  });
 }
 
-export function initMapa(){
-  host = $("#glview"); tip = $("#maptip"); mapview = $("#mapview"); mapstatus = $("#mapstatus");
+function abrirMunicipio(m){
+  const p = m.userData;
+  const jobs = EXPERIENCIAS.filter(e => norm(e.ciudad) === norm(p.name));
+  const body = jobs.length
+    ? `<div class="jobs-list">${jobs.map(e => `
+        <div class="job-card"><div class="job-h"><div><h4>${esc(loc(e.puesto))}</h4><p>${esc(loc(e.empresa))}</p></div><span class="xchev">▾</span></div>
+        <div class="job-b"><div class="job-b-in"><p class="xloc">⌖ ${esc(e.ciudad)}, ${esc(e.estado)} · ${fmtYM(e.inicio)} — ${fmtYM(e.fin)}</p>
+        <ul>${loc(e.logros).map(l => `<li>${esc(l)}</li>`).join("")}</ul></div></div></div>`).join("")}</div>`
+    : "";
+  abrirPanelTrabajos({
+    kicker: esc(t("exp.municipality")),
+    title: esc(p.name),
+    sub: esc(p.cveGeo || p.cveMun),
+    body,
+    foot: t("exp.municipalityFoot")
+  });
+}
+
+export async function initMapa(){
+  host = $("#glview"); tip = $("#maptip"); mapview = $("#mapview"); mapnotice = $("#mapnotice");
   target = new THREE.Vector3(0, 0, 0);
   renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "low-power" });
   renderer.setPixelRatio(Math.min(devicePixelRatio, 1.75));
@@ -204,6 +362,8 @@ export function initMapa(){
   dl.position.set(40, 60, 30); scene.add(dl);
   ray = new THREE.Raycaster(); ptr = new THREE.Vector2();
 
+  try { await cargarEstados(); }
+  catch (err) { console.warn("[mapa] Se usa la geometría de respaldo", err); }
   build();
 
   const el = renderer.domElement;
@@ -223,32 +383,51 @@ export function initMapa(){
       if (!running) { cam(); renderer.render(scene, camera); }
     } else setHover(pick(e), e);
   });
-  el.addEventListener("pointerup", e => {
+  el.addEventListener("pointerup", async e => {
     if (!dragging) return;
     dragging = false;
     try { el.releasePointerCapture(e.pointerId); } catch (_) {}
     if (moved < 5) {
       const m = pick(e);
-      if (m && m.userData.jobs) { setFiltro("México", m.userData.name); openStateModal(m.userData); }
+      if (!m) return;
+      if (m.userData.municipio) { resaltarMunicipio(m); abrirMunicipio(m); return; }
+      flyTo(m.userData.center.clone(), 36, 700);
+      await mostrarMunicipios(m);
+      if (m.userData.jobs) setFiltro("México", m.userData.name);
     }
   });
   el.addEventListener("pointercancel", () => { dragging = false; });
   el.addEventListener("pointerleave", () => setHover(null));
   el.addEventListener("wheel", e => {
     e.preventDefault(); touched = true; camAnim = null;
-    radius = Math.min(190, Math.max(18, radius * (e.deltaY < 0 ? .9 : 1.1)));
+    radius = Math.min(190, Math.max(MIN_RADIUS, radius * (e.deltaY < 0 ? .84 : 1.12)));
     if (!running) { cam(); renderer.render(scene, camera); }
   }, { passive: false });
   el.addEventListener("contextmenu", e => e.preventDefault());
 
-  const bIn = $("#zin"), bOut = $("#zout"), bRes = $("#zreset");
+  const bIn = $("#zin"), bOut = $("#zout"), bRes = $("#zreset"), bWork = $("#mapworkbtn");
   if (bIn)  bIn.addEventListener("click", () => zoomIn());
   if (bOut) bOut.addEventListener("click", () => zoomOut());
-  if (bRes) bRes.addEventListener("click", () => resetView());
+  if (bRes) bRes.addEventListener("click", () => { cerrarPanelTrabajos(); limpiarMunicipios(); resetView(); statusListo(); });
+  if (bWork) bWork.addEventListener("click", () => {
+    if (!muniState?.userData?.jobs) return;
+    if (trabajosLateralesAbiertos()) {
+      cerrarTrabajosLateral();
+      actualizarBotonTrabajos(muniState);
+      return;
+    }
+    cerrarPanelTrabajos();
+    $("#xpmapgrid")?.classList.add("show-work");
+    setFiltro("México", muniState.userData.name);
+    actualizarBotonTrabajos(muniState);
+  });
 
   onFiltro(() => {
     applyFilter();
-    if (state.selEstado) { const m = byName(state.selEstado); if (m) flyTo(m.userData.center.clone(), 26); }
+    if (state.selEstado) {
+      const m = byName(state.selEstado);
+      if (m) { flyTo(m.userData.center.clone(), 26); mostrarMunicipios(m); }
+    }
     else flyTo(new THREE.Vector3(0, 0, 0), DEF.radius, 800, DEF.theta, DEF.phi);
     if (!running) { cam(); renderer.render(scene, camera); }
   });
@@ -256,8 +435,8 @@ export function initMapa(){
   new ResizeObserver(resize).observe(host);
   new IntersectionObserver(es => { inView = es[0].isIntersecting; updateRun(); }, { threshold: 0 }).observe(mapview);
   document.addEventListener("visibilitychange", () => { docVisible = !document.hidden; updateRun(); });
-  addEventListener("jv:theme", () => { applyFilter(); if (!running) { cam(); renderer.render(scene, camera); } });
-  addEventListener("jv:lang", () => { if (built) statusListo(); });
+  addEventListener("jv:theme", () => { applyFilter(); actualizarEstiloMunicipios(); if (!running) { cam(); renderer.render(scene, camera); } });
+  addEventListener("jv:lang", () => { actualizarBotonTrabajos(muniState); if (built) statusListo(); });
 
   resize();
   updateRun();
