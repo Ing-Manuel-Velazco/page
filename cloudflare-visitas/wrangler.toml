@@ -1,0 +1,13 @@
+name = "jv-portfolio-visits"
+main = "worker.js"
+compatibility_date = "2026-09-21"
+
+# El Worker solo acepta el origen publicado del portafolio y las pruebas locales.
+[vars]
+ALLOWED_ORIGINS = "http://localhost:8000,http://127.0.0.1:8000,https://ing-manuel-velazco.github.io"
+
+# Cloudflare asigna el id tras crear el namespace con Wrangler o el panel.
+[[kv_namespaces]]
+binding = "VISITS"
+id = "b317acab83784aab8ebb68996d8055a9"
+
