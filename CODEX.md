@@ -118,9 +118,23 @@ El pie de la carta 3D presenta el distintivo INEGI 2025, los estados destacados,
 
 La portada se limita a la identidad principal: nombre, carrera, disponibilidad y los botones **Ver trayectoria** y **Establecer contacto**. No muestra el rótulo de portafolio, ubicación ni cédula profesional.
 
+## Visitas agregadas por país
+
+Se añadió una integración opcional de Cloudflare en `cloudflare-visitas/`. El Worker usa KV para mantener un único contador por código de país y la portada solo muestra países con al menos tres visitas. No guarda IP, cookie, nombre, navegador, página consultada ni ubicación precisa.
+
+- `cloudflare-visitas/worker.js`: API `POST /event` y `GET /summary` con validación de orígenes CORS y caché de diez minutos.
+- `cloudflare-visitas/wrangler.toml`: configuración pendiente de completar con el dominio público y el id del namespace KV.
+- `js/visitas.js`: registra una visita por sesión y dibuja una tarjeta de hasta seis países, adaptada a ES/EN/PT.
+- `index.html`: el atributo `data-visits-endpoint` se deja vacío hasta recibir la URL del Worker. Así no se realizan solicitudes ni aparece una tarjeta vacía antes de la publicación.
+
+El Worker `jv-portfolio-visits` y su namespace KV `VISITS` ya fueron creados en Cloudflare. `ALLOWED_ORIGINS` permite el portafolio público `https://ing-manuel-velazco.github.io` y `data-visits-endpoint` apunta a `https://jv-portfolio-visits.cloudflare-visitas.workers.dev`. La activación final requiere únicamente registrar el subdominio gratuito `workers.dev`; no se debe conectar la URL de GitHub Pages como dominio de Cloudflare.
+
+La guía de despliegue está en `cloudflare-visitas/README.md`.
+
 ## Próximos pasos
 
 1. Validar el mapa en `localhost:8000` y confirmar que la capa estatal de INEGI sustituye la geometría de respaldo.
 2. Ajustar el comportamiento de activación: abrir municipios por clic, por umbral de zoom, o por ambas acciones.
 4. Añadir marcadores de experiencia para Guadalajara, Colima y Cuauhtémoc.
 5. Revisar rendimiento en móvil y calibrar la simplificación de geometrías si fuera necesario.
+
