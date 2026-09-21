@@ -34,6 +34,7 @@ es: {
 "hero.tag":"PORTAFOLIO PROFESIONAL · CV 2026","hero.role":"INGENIERO TOPÓGRAFO GEOMÁTICO",
 "hero.pill1":"DISPONIBLE PARA PROYECTOS","hero.pill2":"⌖ COLIMA, MÉXICO","hero.pill3":"CÉDULA 15282631",
 "hero.cta1":"VER TRAYECTORIA ↓","hero.cta2":"ESTABLECER CONTACTO",
+"visits.kicker":"ALCANCE DEL PORTAFOLIO","visits.title":"VISITAS POR PAÍS","visits.note":"Datos agregados · sin información personal","visits.count":"visitas",
 "mq.1":"ARCGIS PRO","mq.2":"AUTOCAD CIVIL 3D","mq.3":"PYTHON","mq.4":"TELEDETECCIÓN","mq.5":"GNSS","mq.6":"FOTOGRAMETRÍA","mq.7":"CARTOGRAFÍA TEMÁTICA","mq.8":"ANÁLISIS ESPACIAL","mq.9":"GEODESIA","mq.10":"MONITOREO AMBIENTAL",
 "sec.perfil":"01 · PERFIL","perfil.h2":"QUIÉN SOY",
 "perfil.quote":"Transformo el terreno en información que genera confianza.",
@@ -99,6 +100,7 @@ en: {
 "hero.tag":"PROFESSIONAL PORTFOLIO · CV 2026","hero.role":"GEOMATICS TOPOGRAPHIC ENGINEER",
 "hero.pill1":"AVAILABLE FOR PROJECTS","hero.pill2":"⌖ COLIMA, MEXICO","hero.pill3":"LICENSE NO. 15282631",
 "hero.cta1":"VIEW CAREER ↓","hero.cta2":"GET IN TOUCH",
+"visits.kicker":"PORTFOLIO REACH","visits.title":"VISITS BY COUNTRY","visits.note":"Aggregated data · no personal information","visits.count":"visits",
 "mq.1":"ARCGIS PRO","mq.2":"AUTOCAD CIVIL 3D","mq.3":"PYTHON","mq.4":"REMOTE SENSING","mq.5":"GNSS","mq.6":"PHOTOGRAMMETRY","mq.7":"THEMATIC CARTOGRAPHY","mq.8":"SPATIAL ANALYSIS","mq.9":"GEODESY","mq.10":"ENVIRONMENTAL MONITORING",
 "sec.perfil":"01 · PROFILE","perfil.h2":"WHO I AM",
 "perfil.quote":"I turn terrain into information that builds trust.",
@@ -164,6 +166,7 @@ pt: {
 "hero.tag":"PORTFÓLIO PROFISSIONAL · CV 2026","hero.role":"ENGENHEIRO TOPÓGRAFO GEOMÁTICO",
 "hero.pill1":"DISPONÍVEL PARA PROJETOS","hero.pill2":"⌖ COLIMA, MÉXICO","hero.pill3":"CÉDULA 15282631",
 "hero.cta1":"VER TRAJETÓRIA ↓","hero.cta2":"ENTRAR EM CONTATO",
+"visits.kicker":"ALCANCE DO PORTFÓLIO","visits.title":"VISITAS POR PAÍS","visits.note":"Dados agregados · sem informações pessoais","visits.count":"visitas",
 "mq.1":"ARCGIS PRO","mq.2":"AUTOCAD CIVIL 3D","mq.3":"PYTHON","mq.4":"SENSORIAMENTO REMOTO","mq.5":"GNSS","mq.6":"FOTOGRAMETRIA","mq.7":"CARTOGRAFIA TEMÁTICA","mq.8":"ANÁLISE ESPACIAL","mq.9":"GEODÉSIA","mq.10":"MONITORAMENTO AMBIENTAL",
 "sec.perfil":"01 · PERFIL","perfil.h2":"QUEM SOU",
 "perfil.quote":"Transformo o terreno em informação que gera confiança.",
@@ -253,3 +256,4 @@ export function initI18n(){
   wrap.querySelectorAll("button").forEach(b => b.addEventListener("click", () => { setLang(b.dataset.lang); sync(); }));
   sync();
 }
+
