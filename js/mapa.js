@@ -5,7 +5,7 @@
 ============================================================ */
 import * as THREE from "three";
 import { $, norm, esc, accordion, RM } from "./core.js";
-import { t, loc, fmtYM } from "./i18n.js?v=geo-20260921p";
+import { t, loc, fmtYM, getLang } from "./i18n.js?v=geo-20260921p";
 import { EXPERIENCIAS } from "./data.js?v=geo-20260921g";
 import { state, setFiltro, onFiltro } from "./state.js?v=geo-20260921g";
 import { cargarEstados, construir, desdeGeoJSON, layout } from "./geo3d.js?v=geo-20260921h";
@@ -21,6 +21,8 @@ let dragging = false, lx = 0, ly = 0, moved = 0, touched = false;
 let raf = null, running = false, inView = false, docVisible = true;
 let built = false, GBcount = 0;
 let municipalitySheetToken = 0;
+let activeTerritorialSheet = null;
+const territorialSummaryCache = new Map();
 
 const cols = () => {
   const g = k => getComputedStyle(document.documentElement).getPropertyValue(k).trim();
@@ -72,7 +74,7 @@ function build(){
   applyFilter();
 }
 
-function limpiarMunicipios(){
+function limpiarMunicipios({ cerrarFicha = true } = {}){
   if (muniGroup) {
     muniGroup.traverse(o => {
       if (o.geometry) o.geometry.dispose();
@@ -81,17 +83,17 @@ function limpiarMunicipios(){
     scene.remove(muniGroup);
   }
   muniGroup = null; muniMeshes = []; muniState = null; muniHighlight = null;
-  cerrarFichaMunicipio();
+  if (cerrarFicha) cerrarFichaMunicipio();
   cerrarTrabajosLateral();
   actualizarBotonTrabajos();
 }
 
-async function mostrarMunicipios(estado){
+async function mostrarMunicipios(estado, { mantenerFicha = false } = {}){
   const clave = estado?.userData?.cveEnt;
   if (!clave || !scene) return;
   if (muniState?.userData?.cveEnt === clave) { muniGroup.visible = true; actualizarBotonTrabajos(estado); statusListo(); return; }
   cerrarPanelTrabajos();
-  limpiarMunicipios();
+  limpiarMunicipios({ cerrarFicha: !mantenerFicha });
   if (mapnotice) mapnotice.textContent = `${t("exp.loadingMunicipalities")} · ${estado.userData.name}…`;
   try {
     const res = await fetch(`geo/municipios/municipio${Number(clave)}.geojson`);
@@ -154,6 +156,7 @@ function cerrarPanelTrabajos(){
 
 function cerrarFichaMunicipio(){
   municipalitySheetToken += 1;
+  activeTerritorialSheet = null;
   const sheet = $("#municipalitysheet");
   if (!sheet) return;
   sheet.hidden = true;
@@ -164,13 +167,53 @@ const resumenCorto = texto => {
   const limpio = String(texto || "").replace(/\s+/g, " ").trim();
   if (!limpio) return "";
   const primeraFrase = limpio.match(/^.*?[.!?](?=\s|$)/)?.[0] || limpio;
-  return primeraFrase.length > 350 ? `${primeraFrase.slice(0, 347).trimEnd()}…` : primeraFrase;
+  return primeraFrase.length > 280 ? `${primeraFrase.slice(0, 277).trimEnd()}…` : primeraFrase;
 };
 
 const resumenDeRespaldo = (nombre, estado) =>
   t("exp.municipalityFallback").replace("{name}", nombre).replace("{state}", estado);
 
-async function cargarResenaTerritorial({ consulta, respaldo, sourceText = t("exp.moreAbout"), token }){
+const wikiTerms = {
+  es: { municipality: "municipio", state: "estado de México", mexicoState: "Estado de México" },
+  en: { municipality: "municipality Mexico", state: "state Mexico", mexicoState: "State of Mexico" },
+  pt: { municipality: "município México", state: "estado México", mexicoState: "Estado do México" }
+};
+
+function consultaTerritorial({ tipo, nombre, estado = "" }, idioma = getLang()){
+  const terms = wikiTerms[idioma] || wikiTerms.es;
+  if (tipo === "state") return norm(nombre) === "mexico" ? terms.mexicoState : `${nombre} ${terms.state}`;
+  return `${nombre} ${terms.municipality} ${estado}`;
+}
+
+function obtenerResenaTerritorial({ tipo, nombre, estado = "" }){
+  const idioma = getLang();
+  const key = `${idioma}|${tipo}|${norm(nombre)}|${norm(estado)}`;
+  if (territorialSummaryCache.has(key)) return territorialSummaryCache.get(key);
+  const request = (async () => {
+    const params = new URLSearchParams({
+      action: "query", generator: "search", gsrsearch: consultaTerritorial({ tipo, nombre, estado }, idioma),
+      gsrnamespace: "0", gsrlimit: "1", prop: "extracts|info", exintro: "1",
+      explaintext: "1", inprop: "url", format: "json", origin: "*"
+    });
+    const res = await fetch(`https://${idioma}.wikipedia.org/w/api.php?${params}`);
+    if (!res.ok) throw new Error("Wikipedia no disponible");
+    const data = await res.json();
+    const page = Object.values(data?.query?.pages || {})[0];
+    const texto = resumenCorto(page?.extract);
+    const url = String(page?.fullurl || "");
+    if (!texto || !url.startsWith(`https://${idioma}.wikipedia.org/`)) throw new Error("Sin reseña territorial");
+    return { texto, url };
+  })().catch(() => null);
+  territorialSummaryCache.set(key, request);
+  return request;
+}
+
+function precargarResenaEstado(estado){
+  if (!estado || estado.userData?.municipio) return;
+  obtenerResenaTerritorial({ tipo: "state", nombre: estado.userData.name });
+}
+
+async function cargarResenaTerritorial({ tipo, nombre, estado, respaldo, sourceKey = "exp.moreAbout", token }){
   const sheet = $("#municipalitysheet");
   const descripcion = sheet?.querySelector(".municipality-sheet-description");
   const fuente = sheet?.querySelector(".municipality-sheet-editorial-source");
@@ -180,22 +223,12 @@ async function cargarResenaTerritorial({ consulta, respaldo, sourceText = t("exp
     fuente.hidden = true;
   };
   try {
-    const params = new URLSearchParams({
-      action: "query", generator: "search", gsrsearch: consulta,
-      gsrnamespace: "0", gsrlimit: "1", prop: "extracts|info", exintro: "1",
-      explaintext: "1", inprop: "url", format: "json", origin: "*"
-    });
-    const res = await fetch(`https://es.wikipedia.org/w/api.php?${params}`);
-    if (!res.ok) throw new Error("Wikipedia no disponible");
-    const data = await res.json();
-    const page = Object.values(data?.query?.pages || {})[0];
-    const texto = resumenCorto(page?.extract);
-    const url = String(page?.fullurl || "");
-    if (!texto || !url.startsWith("https://es.wikipedia.org/")) throw new Error("Sin reseña municipal");
+    const result = await obtenerResenaTerritorial({ tipo, nombre, estado });
+    if (!result) throw new Error("Sin reseña territorial");
     if (token !== municipalitySheetToken || !descripcion || !fuente) return;
-    descripcion.textContent = texto;
-    fuente.href = url;
-    fuente.textContent = `${t("exp.sourceWikipedia")} · ${sourceText}`;
+    descripcion.textContent = result.texto;
+    fuente.href = result.url;
+    fuente.textContent = `${t("exp.sourceWikipedia")} · ${t(sourceKey)}`;
     fuente.hidden = false;
   } catch (_) {
     mostrarRespaldo();
@@ -204,18 +237,18 @@ async function cargarResenaTerritorial({ consulta, respaldo, sourceText = t("exp
 
 function cargarResenaMunicipio({ nombre, estado, token }){
   return cargarResenaTerritorial({
-    consulta: `${nombre} municipio ${estado}`,
+    tipo: "municipality", nombre, estado,
     respaldo: resumenDeRespaldo(nombre, estado),
-    sourceText: t("exp.moreAbout"),
+    sourceKey: "exp.moreAbout",
     token
   });
 }
 
 function abrirEstado(estado){
   const p = estado.userData;
-  const consulta = norm(p.name) === "mexico" ? "Estado de México" : `${p.name} estado de México`;
   const sheet = $("#municipalitysheet");
   if (!sheet) return;
+  activeTerritorialSheet = { tipo: "state", mesh: estado };
   const token = ++municipalitySheetToken;
   sheet.hidden = false;
   sheet.innerHTML = `
@@ -237,9 +270,9 @@ function abrirEstado(estado){
     <div class="municipality-sheet-foot">${esc(t("exp.stateFoot"))}</div>`;
   sheet.querySelector(".municipality-sheet-close").addEventListener("click", cerrarFichaMunicipio);
   cargarResenaTerritorial({
-    consulta,
+    tipo: "state", nombre: p.name,
     respaldo: t("exp.stateFallback").replace("{name}", p.name),
-    sourceText: t("exp.moreAboutState"),
+    sourceKey: "exp.moreAboutState",
     token
   });
 }
@@ -378,6 +411,7 @@ function setHover(m, e){
     if (m) {
       const C = cols();
       m.material.color.set(m.userData.municipio ? C.munHighlightEdge : C.acc2);
+      precargarResenaEstado(m);
     }
   }
   if (m) showTip(e, m.userData.municipio ? `${m.userData.name} · ${t("exp.municipality")}` : (m.userData.jobs ? `${m.userData.name} · ${t("exp.click")}` : m.userData.name));
@@ -431,6 +465,7 @@ function abrirMunicipio(m){
   const sheet = $("#municipalitysheet");
   if (!sheet) return;
   cerrarPanelTrabajos();
+  activeTerritorialSheet = { tipo: "municipality", mesh: m };
   const token = ++municipalitySheetToken;
   sheet.hidden = false;
   sheet.innerHTML = `
@@ -470,6 +505,12 @@ export async function initMapa(){
   try { await cargarEstados(); }
   catch (err) { console.warn("[mapa] Se usa la geometría de respaldo", err); }
   build();
+  addEventListener("jv:lang", () => {
+    const active = activeTerritorialSheet;
+    if (!active) return;
+    if (active.tipo === "state") abrirEstado(active.mesh);
+    else abrirMunicipio(active.mesh);
+  });
 
   const el = renderer.domElement;
   el.addEventListener("pointerdown", e => {
@@ -496,9 +537,9 @@ export async function initMapa(){
       const m = pick(e);
       if (!m) return;
       if (m.userData.municipio) { resaltarMunicipio(m); abrirMunicipio(m); return; }
-      flyTo(m.userData.center.clone(), 36, 700);
-      await mostrarMunicipios(m);
       abrirEstado(m);
+      flyTo(m.userData.center.clone(), 36, 700);
+      await mostrarMunicipios(m, { mantenerFicha: true });
       if (m.userData.jobs) setFiltro("México", m.userData.name);
     }
   });
