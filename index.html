@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="es" data-theme="dark">
+<html lang="es" data-theme="dark" data-visits-endpoint="https://jv-portfolio-visits.cloudflare-visitas.workers.dev">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -68,12 +68,22 @@
 <main>
 <section class="hero" id="inicio">
   <div class="wrap">
-    <h1 class="h1 hr" style="transition-delay:.1s"><span>JOSÉ MANUEL</span><span>VELAZCO OCHOA</span></h1>
-    <p class="h-role hr" style="transition-delay:.24s" data-i18n="hero.role">INGENIERO TOPÓGRAFO GEOMÁTICO</p>
-    <p class="h-availability hr" style="transition-delay:.38s"><i></i><span data-i18n="hero.pill1">DISPONIBLE PARA PROYECTOS</span></p>
-    <div class="h-cta hr" style="transition-delay:.6s">
-      <a class="btn primary" href="#experiencia" data-i18n="hero.cta1">VER TRAYECTORIA ↓</a>
-      <a class="btn ghost" href="#contacto" data-i18n="hero.cta2">ESTABLECER CONTACTO</a>
+    <div class="hero-grid" id="hero-grid">
+      <div class="hero-copy">
+        <h1 class="h1 hr" style="transition-delay:.1s"><span>JOSÉ MANUEL</span><span>VELAZCO OCHOA</span></h1>
+        <p class="h-role hr" style="transition-delay:.24s" data-i18n="hero.role">INGENIERO TOPÓGRAFO GEOMÁTICO</p>
+        <p class="h-availability hr" style="transition-delay:.38s"><i></i><span data-i18n="hero.pill1">DISPONIBLE PARA PROYECTOS</span></p>
+        <div class="h-cta hr" style="transition-delay:.6s">
+          <a class="btn primary" href="#experiencia" data-i18n="hero.cta1">VER TRAYECTORIA ↓</a>
+          <a class="btn ghost" href="#contacto" data-i18n="hero.cta2">ESTABLECER CONTACTO</a>
+        </div>
+      </div>
+      <aside class="visit-card hr" id="visitstats" style="transition-delay:.48s" hidden aria-live="polite">
+        <p class="visit-kicker" data-i18n="visits.kicker">ALCANCE DEL PORTAFOLIO</p>
+        <h2 data-i18n="visits.title">VISITAS POR PAÍS</h2>
+        <div class="visit-list" id="visitlist"></div>
+        <p class="visit-note" data-i18n="visits.note">Datos agregados · sin información personal</p>
+      </aside>
     </div>
   </div>
 </section>
@@ -334,6 +344,7 @@
 <script src="mexico-data.js"></script>
 <script src="certificados/manifest.js"></script>
 <!-- App (módulos ES) -->
-<script type="module" src="js/main.js?v=geo-20260921r"></script>
+<script type="module" src="js/main.js?v=stats-20260921a"></script>
 </body>
 </html>
+
