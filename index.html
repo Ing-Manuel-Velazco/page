@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/styles.css?v=map-layout-20260921n">
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
 <noscript><style>.hr,.reveal{opacity:1!important;transform:none!important}#boot{display:none!important}</style></noscript>
 </head>
@@ -68,14 +68,9 @@
 <main>
 <section class="hero" id="inicio">
   <div class="wrap">
-    <p class="h-tag hr" style="transition-delay:.05s" data-i18n="hero.tag">PORTAFOLIO PROFESIONAL · CV 2026</p>
-    <h1 class="h1 hr" style="transition-delay:.15s"><span>JOSÉ MANUEL</span><span>VELAZCO OCHOA</span></h1>
-    <p class="h-role hr" style="transition-delay:.3s" data-i18n="hero.role">INGENIERO TOPÓGRAFO GEOMÁTICO</p>
-    <div class="h-meta hr" style="transition-delay:.45s">
-      <span class="pill"><i></i><span data-i18n="hero.pill1">DISPONIBLE PARA PROYECTOS</span></span>
-      <span class="pill" data-i18n="hero.pill2">⌖ COLIMA, MÉXICO</span>
-      <span class="pill" data-i18n="hero.pill3">CÉDULA 15282631</span>
-    </div>
+    <h1 class="h1 hr" style="transition-delay:.1s"><span>JOSÉ MANUEL</span><span>VELAZCO OCHOA</span></h1>
+    <p class="h-role hr" style="transition-delay:.24s" data-i18n="hero.role">INGENIERO TOPÓGRAFO GEOMÁTICO</p>
+    <p class="h-availability hr" style="transition-delay:.38s"><i></i><span data-i18n="hero.pill1">DISPONIBLE PARA PROYECTOS</span></p>
     <div class="h-cta hr" style="transition-delay:.6s">
       <a class="btn primary" href="#experiencia" data-i18n="hero.cta1">VER TRAYECTORIA ↓</a>
       <a class="btn ghost" href="#contacto" data-i18n="hero.cta2">ESTABLECER CONTACTO</a>
@@ -93,64 +88,33 @@
 <section id="perfil">
   <div class="wrap">
     <div class="shead reveal"><span class="tag" data-i18n="sec.perfil">01 · PERFIL</span><span class="rule"></span></div>
-    <h2 class="h2grad reveal scr" data-i18n="perfil.h2">QUIÉN SOY</h2>
-    <p class="quote reveal" style="--d:.1s" data-i18n="perfil.quote">Transformo el terreno en información que genera confianza.</p>
     <div class="pf-grid">
-      <p class="lead pf-bio reveal" style="--d:.15s" data-i18n="perfil.bio">Soy José Manuel Velazco Ochoa, Ingeniero Topógrafo Geomático titulado por la Universidad de Colima, recién egresado y disponible para proyectos nacionales e internacionales. Me motiva ver cómo la información procesada se proyecta al terreno real: del dato preciso a la decisión en campo. Integro levantamiento con estación total, GNSS y dron RTK con procesamiento en SIG y automatización en Python para entregar información confiable en cada etapa del proyecto.</p>
-      <div class="pf-card reveal" style="--d:.25s">
-        <div class="idcard" id="idcard" role="button" tabindex="0" aria-label="Girar ficha de identificación">
-          <div class="id-face id-front">
-            <div class="id-top"><span data-i18n="cred.top">⌖ GEOMÁTICA · MX</span><span>VT-15282631</span></div>
-            <div class="id-stamp" data-i18n="cred.stamp">TITULADO ✓</div>
-            <div class="id-mid">
-              <div class="id-photo">
-                <img src="foto.png" alt="José Manuel Velazco Ochoa" id="credimg">
-                <div class="id-mono" id="credmono">JV</div>
-                <span class="id-scan" aria-hidden="true"></span>
-              </div>
-              <div>
-                <h3 class="id-name">JOSÉ MANUEL VELAZCO OCHOA</h3>
-                <p class="id-role" data-i18n="hero.role">Ingeniero Topógrafo Geomático</p>
-              </div>
-            </div>
-            <p class="id-coords">19.2452° N · 103.7241° W</p>
-            <div class="id-bar" aria-hidden="true"></div>
-          </div>
-          <div class="id-face id-back">
-            <div class="id-top"><span data-i18n="cred.back">⌖ FICHA TÉCNICA</span><span>VT-15282631</span></div>
-            <div class="id-rows">
-              <span><span data-i18n="cred.cedula">CÉDULA</span><b>15282631</b></span>
-              <span><span data-i18n="cred.nac">NAC.</span><b>23·04·2002</b></span>
-              <span><span data-i18n="cred.orig">ORIGEN</span><b>COLIMA, MX</b></span>
-            </div>
-            <div class="id-langs">
-              <div class="id-lang"><span>ES</span><span class="dots" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span><span data-i18n="cred.nativo">NATIVO</span></div>
-              <div class="id-lang"><span>EN</span><span class="dots" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i></span><span>B1</span></div>
-              <div class="id-lang"><span>PT</span><span class="dots" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i></span><span>B1</span></div>
-            </div>
-            <div class="id-bar" aria-hidden="true"></div>
-          </div>
-        </div>
-        <button class="flipbtn" id="flipbtn" type="button" aria-pressed="false" aria-controls="idcard" data-i18n="cred.flip">⇄ GIRAR FICHA</button>
-        <p class="pf-hint" data-i18n="cred.hint">CLIC O ENTER SOBRE LA FICHA PARA GIRARLA</p>
+      <figure class="pf-photo reveal" style="--d:.15s">
+        <img src="foto.png" alt="José Manuel Velazco Ochoa" id="credimg" draggable="false">
+      </figure>
+      <div class="pf-copy">
+        <h2 class="h2grad reveal scr" data-i18n="perfil.h2">QUIÉN SOY</h2>
+        <p class="quote pf-quote reveal" style="--d:.1s" data-i18n="perfil.quote">Transformo el terreno en información que genera confianza.</p>
+        <p class="lead pf-bio reveal" style="--d:.25s" data-i18n-html="perfil.bio">Soy <strong>José Manuel Velazco Ochoa</strong>, <strong>Ingeniero Topógrafo Geomático titulado</strong> por la <strong>Universidad de Colima</strong>. Estoy disponible para <strong>proyectos nacionales e internacionales</strong>. Integro levantamientos con <strong>estación total, GNSS y dron RTK</strong>, procesamiento en <strong>SIG</strong> y <strong>automatización en Python</strong> para entregar <strong>información confiable</strong> que apoye cada decisión en campo.</p>
+        <ul class="pf-list pf-list-side">
+          <li class="reveal" style="--d:.15s"><span class="pf-n">01</span><h3 data-i18n="perfil.p1t">MEDIR</h3><p data-i18n="perfil.p1">Levantamientos en campo con estación total, GNSS y dron RTK: el dato nace en el terreno, con precisión verificable.</p></li>
+          <li class="reveal" style="--d:.25s"><span class="pf-n">02</span><h3 data-i18n="perfil.p2t">ANALIZAR</h3><p data-i18n="perfil.p2">Procesamiento en SIG, cartografía temática y automatización con Python para convertir datos en información útil.</p></li>
+          <li class="reveal" style="--d:.35s"><span class="pf-n">03</span><h3 data-i18n="perfil.p3t">DECIDIR</h3><p data-i18n="perfil.p3">Una buena decisión comienza con datos precisos: entrego información clara para que cada proyecto inicie sobre una base sólida.</p></li>
+        </ul>
       </div>
     </div>
-    <ul class="pf-list">
-      <li class="reveal" style="--d:.15s"><span class="pf-n">01</span><h3 data-i18n="perfil.p1t">MEDIR</h3><p data-i18n="perfil.p1">Levantamientos en campo con estación total, GNSS y dron RTK: el dato nace en el terreno, con precisión verificable.</p></li>
-      <li class="reveal" style="--d:.25s"><span class="pf-n">02</span><h3 data-i18n="perfil.p2t">ANALIZAR</h3><p data-i18n="perfil.p2">Procesamiento en SIG, cartografía temática y automatización con Python para convertir datos en información útil.</p></li>
-      <li class="reveal" style="--d:.35s"><span class="pf-n">03</span><h3 data-i18n="perfil.p3t">DECIDIR</h3><p data-i18n="perfil.p3">Una buena decisión comienza con datos precisos: entrego información clara para que cada proyecto inicie sobre una base sólida.</p></li>
-    </ul>
   </div>
 </section>
 
 <section id="experiencia">
   <div class="wrap">
     <div class="shead reveal"><span class="tag" data-i18n="sec.exp">02 · TRAYECTORIA</span><h2 class="scr" data-i18n="exp.h2">EXPERIENCIA DE CAMPO</h2><span class="rule"></span></div>
-    <div class="xpmap-grid">
+    <div class="xpmap-grid" id="xpmapgrid">
       <div class="map-panel reveal">
         <div class="map-head">
           <span class="map-title" id="maptitle" data-i18n="exp.maptitle">⌖ CARTA 3D · MÉXICO</span>
           <div class="map-ctrl">
+            <button class="map-work-btn" id="mapworkbtn" type="button" hidden data-i18n="exp.viewWork">VER TRABAJOS</button>
             <button id="zin" aria-label="Acercar" data-i18n-aria="exp.zoomin">+</button>
             <button id="zout" aria-label="Alejar" data-i18n-aria="exp.zoomout">−</button>
             <button id="zreset" aria-label="Restablecer" data-i18n-aria="exp.reset">⟲</button>
@@ -160,12 +124,22 @@
           <div id="glview"></div>
           <div class="map-tip" id="maptip"></div>
         </div>
-        <div class="map-status" id="mapstatus" data-i18n="exp.status">CARGANDO ESCENA 3D…</div>
+        <div class="map-status" id="mapstatus">
+          <div class="map-source" aria-label="INEGI 2025">
+            <svg class="inegi-logo" viewBox="0 0 32 24" aria-hidden="true"><path d="M2 20h5V9H2v11Zm8 0h5V4h-5v16Zm8 0h5V7h-5v13Zm8 0h4V1h-4v19Z"/></svg>
+            <span>INEGI <b>2025</b></span>
+          </div>
+          <div class="map-metric"><b id="mapstates">2</b><span data-i18n="exp.states">ESTADOS DESTACADOS</span></div>
+          <div class="map-metric"><b id="maprecords">4</b><span data-i18n="exp.records">EXPERIENCIAS</span></div>
+          <div class="map-metric"><b id="mapyears">4</b><span data-i18n="exp.yearsExperience">AÑOS DE EXPERIENCIA</span></div>
+          <span class="sr-only" id="mapnotice" role="status"></span>
+        </div>
+        <aside class="map-jobs" id="mapjobs" hidden aria-live="polite"></aside>
       </div>
-      <div class="xp-side">
+      <div class="xp-side" id="xpside">
         <div class="xp-search reveal"><input id="xsearch" placeholder="🔍 Buscar puesto, empresa, herramienta o lugar..." data-i18n-ph="exp.searchph"></div>
-        <div class="xp-crumbs reveal" id="xcrumbs"></div>
         <div class="tl-stats reveal" id="xstats"></div>
+        <div class="xp-crumbs reveal" id="xcrumbs"></div>
         <div class="tl" id="xlist"></div>
       </div>
     </div>
@@ -267,7 +241,7 @@
       <span class="iss" data-i18n="v.iss">Ingeniero Topógrafo Geomático · Cédula Nº 15282631</span>
     </div>
     <div class="vtoolbar">
-      <span id="vstatus" data-i18n="v.ready">Listo para verificar</span>
+      <span id="vstatus" data-i18n="v.ready">Vista previa disponible</span>
       <a href="https://titulacion.ucol.mx/validar/186120e6-cf70-41bb-bc05-53019a2a3632" target="_blank" rel="noopener" data-i18n="v.official">Página oficial ↗</a>
     </div>
     <div class="frame-view">
@@ -278,7 +252,7 @@
           <small>CÓDIGO DE VERIFICACIÓN: 186120e6-cf70-41bb-bc05-53019a2a3632</small>
         </div>
       </div>
-      <img id="vshot" alt="Verificación oficial de titulación · Universidad de Colima">
+      <img id="vshot" alt="Captura de referencia de la verificación de titulación de la Universidad de Colima; la consulta se realiza en el portal oficial">
       <div class="frame-fallback" id="vfall" hidden>
         <div class="ff-icon">🛡️</div>
         <h4 data-i18n="v.fallH">Captura local no encontrada</h4>
@@ -359,6 +333,6 @@
 <script src="mexico-data.js"></script>
 <script src="certificados/manifest.js"></script>
 <!-- App (módulos ES) -->
-<script type="module" src="js/main.js"></script>
+<script type="module" src="js/main.js?v=geo-20260921m"></script>
 </body>
 </html>
