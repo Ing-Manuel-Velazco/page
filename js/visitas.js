@@ -21,9 +21,6 @@ const countryName = code => {
   } catch (_) { return code; }
 };
 
-const flag = code => /^[A-Z]{2}$/.test(code)
-  ? String.fromCodePoint(...[...code].map(c => 0x1F1E6 + c.charCodeAt(0) - 65)) : "◌";
-
 function render(items){
   if (!CARD || !LIST) return;
   const visible = items.filter(v => /^[A-Z]{2}$/.test(v.country) && Number(v.visits) > 0).slice(0, 6);
@@ -31,7 +28,7 @@ function render(items){
   LIST.replaceChildren(...visible.map(item => {
     const row = document.createElement("div");
     row.className = "visit-row";
-    const icon = document.createElement("span"); icon.className = "visit-flag"; icon.textContent = flag(item.country);
+    const icon = document.createElement("span"); icon.className = "visit-code"; icon.textContent = item.country;
     const name = document.createElement("span"); name.className = "visit-country"; name.textContent = countryName(item.country);
     const count = document.createElement("span"); count.className = "visit-count";
     count.textContent = `${Number(item.visits).toLocaleString()} ${t("visits.count")}`;
