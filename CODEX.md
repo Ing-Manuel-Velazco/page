@@ -129,7 +129,7 @@ Se añadió una integración opcional de Cloudflare en `cloudflare-visitas/`. El
 
 El Worker `jv-portfolio-visits` y su namespace KV `VISITS` ya fueron creados en Cloudflare. `ALLOWED_ORIGINS` permite el portafolio público `https://ing-manuel-velazco.github.io` y `data-visits-endpoint` apunta a `https://jv-portfolio-visits.cloudflare-visitas.workers.dev`. La activación final requiere únicamente registrar el subdominio gratuito `workers.dev`; no se debe conectar la URL de GitHub Pages como dominio de Cloudflare.
 
-Cuando existen estadísticas, la portada usa una composición de dos columnas solo en pantallas amplias: el nombre conserva sus dos líneas y la tarjeta de visitas se alinea al extremo inferior derecho como información secundaria. En pantallas de hasta 1120 px, la tarjeta vuelve debajo del bloque principal para no comprimir el nombre. El código de país se presenta como una etiqueta (`MX`) y no como un emoji, para que sea consistente entre navegadores.
+Cuando existen estadísticas, la portada usa una composición de dos columnas solo en pantallas amplias: el nombre conserva sus dos líneas y la tarjeta de visitas se alinea al extremo inferior derecho como información secundaria. En pantallas de hasta 1120 px, la tarjeta vuelve debajo del bloque principal para no comprimir el nombre. La tarjeta muestra solo un país por vez; si hay más de uno, alterna cada cinco segundos con una entrada desde la izquierda. La bandera se carga como imagen para que sea consistente entre navegadores y no se muestra la leyenda técnica de datos agregados.
 
 La guía de despliegue está en `cloudflare-visitas/README.md`.
 
