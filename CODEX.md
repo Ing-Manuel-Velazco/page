@@ -133,6 +133,10 @@ Cuando existen estadísticas, la portada usa una composición de dos columnas so
 
 La portada se refinó con una retícula cartográfica de bajo contraste, gradientes de profundidad y una guía horizontal inferior. La carrera queda unida visualmente al bloque de disponibilidad y acciones mediante una línea sutil; la tarjeta de visitas usa una barra lateral de acento para integrarse con la jerarquía principal sin competir con el nombre.
 
+## Animación de inicio
+
+La introducción se redujo de 5.5 a 3.6 segundos. Ahora presenta una retícula y retícula de puntería geomática, el trazado panorámico del territorio, un porcentaje de carga y estados localizados en español, inglés y portugués. El visitante puede omitirla mediante clic o Enter; quienes tienen activada la reducción de movimiento no la ven.
+
 La guía de despliegue está en `cloudflare-visitas/README.md`.
 
 ## Próximos pasos
