@@ -131,6 +131,8 @@ El Worker `jv-portfolio-visits` y su namespace KV `VISITS` ya fueron creados en 
 
 Cuando existen estadísticas, la portada usa una composición de dos columnas solo en pantallas amplias: el nombre conserva sus dos líneas y la tarjeta de visitas se alinea al extremo inferior derecho como información secundaria. En pantallas de hasta 1120 px, la tarjeta vuelve debajo del bloque principal para no comprimir el nombre. La tarjeta muestra solo un país por vez; si hay más de uno, alterna cada cinco segundos con una entrada desde la izquierda. La bandera se carga como imagen para que sea consistente entre navegadores y no se muestra la leyenda técnica de datos agregados.
 
+La portada se refinó con una retícula cartográfica de bajo contraste, gradientes de profundidad y una guía horizontal inferior. La carrera queda unida visualmente al bloque de disponibilidad y acciones mediante una línea sutil; la tarjeta de visitas usa una barra lateral de acento para integrarse con la jerarquía principal sin competir con el nombre.
+
 La guía de despliegue está en `cloudflare-visitas/README.md`.
 
 ## Próximos pasos
