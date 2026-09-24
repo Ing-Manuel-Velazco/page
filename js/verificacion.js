@@ -2,7 +2,7 @@
    js/verificacion.js — Modal de verificación de titulación
 ============================================================ */
 import { $ } from "./core.js";
-import { t } from "./i18n.js?v=map-work-focus-20260924a";
+import { t } from "./i18n.js?v=asset-shield-20260924b";
 
 const URL_TITULACION = "https://titulacion.ucol.mx/validar/186120e6-cf70-41bb-bc05-53019a2a3632";
 
@@ -19,7 +19,7 @@ function abrirV(){
   vmodal.classList.add("on"); document.body.style.overflow = "hidden";
   const seq = [t("v.connecting"), t("v.validating"), t("v.showing")];
   seq.forEach((m, i) => vTimers.push(setTimeout(() => { vmsg.textContent = m; }, i * 700)));
-  vTimers.push(setTimeout(() => { vshot.src = "verificacion.png"; }, seq.length * 700 + 200));
+  vTimers.push(setTimeout(() => { vshot.src = "5f97047e40f250b147c80d59.png"; }, seq.length * 700 + 200));
 }
 function closeV(){
   vmodal.classList.remove("on"); document.body.style.overflow = ""; vClear();
@@ -33,12 +33,9 @@ export function initVerificacion(){
     vstatus.textContent = t("v.done");
   });
   vshot.addEventListener("error", () => {
-    if ((vshot.getAttribute("src") || "") === "verificacion.png") { vshot.src = "verificacion.jpg"; }
-    else {
-      vClear(); vload.classList.add("hide");
-      vshot.style.display = "none"; vfall.hidden = false;
-      vstatus.textContent = t("v.noshot");
-    }
+    vClear(); vload.classList.add("hide");
+    vshot.style.display = "none"; vfall.hidden = false;
+    vstatus.textContent = t("v.noshot");
   });
   $("#verifybtn").addEventListener("click", abrirV);
   $("#vcopy").addEventListener("click", async e => {
