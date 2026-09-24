@@ -2,7 +2,7 @@
    js/main.js — Punto de entrada (módulo ES)
 ============================================================ */
 import { $, RM, initTheme, initBoot, initReveals, initScrollProgress, initNav,
-         initModal, initAccordionResize, initProteccion } from "./core.js?v=boot-geo-20260923a";
+         initModal, initAccordionResize, initProteccion } from "./core.js?v=boot-redesign-20260924a";
 import { initI18n, t } from "./i18n.js?v=map-work-focus-20260924a";
 import { initMapa } from "./mapa.js?v=map-work-focus-20260924a";
 import { initTrayectoria } from "./trayectoria.js?v=map-work-focus-20260924a";
