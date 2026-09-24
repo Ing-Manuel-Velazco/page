@@ -3,10 +3,10 @@
    Búsqueda + crumbs + stats + timeline sincronizada con el mapa
 ============================================================ */
 import { $, norm, esc, accordion } from "./core.js";
-import { t, loc, allv, fmtYM, fmtCoords, getLang } from "./i18n.js?v=geo-20260921p";
+import { t, loc, allv, fmtYM, fmtCoords, getLang } from "./i18n.js?v=experience-sheet-20260924a";
 import { EXPERIENCIAS } from "./data.js?v=geo-20260921g";
 import { state, setFiltro, onFiltro } from "./state.js?v=geo-20260921g";
-import { volarAMunicipio, resaltarEstado } from "./mapa.js?v=geo-20260921p";
+import { volarAMunicipio, resaltarEstado } from "./mapa.js?v=experience-sheet-20260924a";
 
 const fmtMeses = m => {
   const y = Math.floor(m / 12), r = m % 12;
@@ -95,3 +95,4 @@ export function initTrayectoria(){
   addEventListener("jv:lang", () => { renderStats(); renderCrumbs(); renderXList(); });
   renderStats(); renderCrumbs(); renderXList();
 }
+
