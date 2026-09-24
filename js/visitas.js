@@ -4,7 +4,7 @@
    La URL se completa en <html data-visits-endpoint="…"> tras
    publicar el Worker de Cloudflare.
 ============================================================ */
-import { getLang, t } from "./i18n.js?v=geo-20260921p";
+import { getLang, t } from "./i18n.js?v=experience-sheet-20260924a";
 
 const ROOT = document.documentElement;
 const CARD = document.getElementById("visitstats");
