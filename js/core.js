@@ -53,69 +53,24 @@ export function initTheme(){
   });
 }
 
-/* ---------- boot SVG (ligero, sin Three.js/WebGL) ---------- */
+/* ---------- intro automático (ligero, sin Three.js/WebGL) ---------- */
 export function initBoot(){
   const boot = $("#boot");
   if (!boot) { document.body.classList.add("ready"); return; }
   if (RM) { boot.remove(); document.body.classList.add("ready"); return; }
 
-  const msg = $("#bootmsg");
-  const pct = $("#bootpct");
-  const dotsGroup = $("#bootdots");
   let done = false;
-  const timers = [];
-  const intervals = [];
 
   const finish = () => {
     if (done) return; done = true;
-    timers.forEach(clearTimeout);
-    intervals.forEach(clearInterval);
-    removeEventListener("keydown", onKey);
-    boot.removeEventListener("click", finish);
     document.body.classList.add("ready");
     boot.classList.add("dive");
     setTimeout(() => { boot.classList.add("exit"); }, 460);
     setTimeout(() => boot.remove(), 960);
   };
-  const onKey = e => { if (e.key === "Enter") finish(); };
-
-  boot.addEventListener("click", finish);
-  addEventListener("keydown", onKey);
 
   setTimeout(() => boot.classList.add("go"), 50);
-
-  const language = document.documentElement.lang || "es";
-  const messages = {
-    es: ["SINCRONIZANDO SEÑAL…", "TRAZANDO TERRITORIO…", "PREPARANDO PERFIL…", "LISTO ✓"],
-    en: ["SYNCING SIGNAL…", "TRACING TERRITORY…", "PREPARING PROFILE…", "READY ✓"],
-    pt: ["SINCRONIZANDO SINAL…", "TRAÇANDO TERRITÓRIO…", "PREPARANDO PERFIL…", "PRONTO ✓"]
-  }[language] || [];
-  messages.forEach((m, i) => timers.push(setTimeout(() => { if (msg) msg.textContent = m; }, i * 760)));
-  let progress = 0;
-  intervals.push(setInterval(() => {
-    progress = Math.min(100, progress + 2);
-    if (pct) pct.textContent = `${String(progress).padStart(2, "0")}%`;
-  }, 62));
-
-  const points = [
-    {x:28,y:38,d:1.0},{x:44,y:28,d:1.25},{x:52,y:62,d:1.5},
-    {x:100,y:58,d:1.8},{x:142,y:58,d:2.0},{x:188,y:58,d:2.2},
-    {x:200,y:14,d:2.6},{x:232,y:18,d:2.9},{x:275,y:8,d:3.15},
-    {x:320,y:8,d:3.35},{x:320,y:26,d:3.45},{x:340,y:22,d:3.7},
-    {x:402,y:16,d:4.0},{x:400,y:24,d:4.1},{x:475,y:14,d:4.35},
-    {x:500,y:34,d:4.5}
-  ];
-  if (dotsGroup) {
-    points.forEach(p => {
-      const c = document.createElementNS(NS, "circle");
-      c.setAttribute("cx", p.x); c.setAttribute("cy", p.y);
-      c.setAttribute("r", "2.8"); c.setAttribute("class", "boot-dot");
-      dotsGroup.appendChild(c);
-      timers.push(setTimeout(() => c.classList.add("on"), p.d * 520 + 360));
-    });
-  }
-
-  timers.push(setTimeout(finish, 3600));
+  setTimeout(finish, 2500);
 }
 
 export function initReveals(){
