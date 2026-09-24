@@ -2,7 +2,7 @@
    js/verificacion.js — Modal de verificación de titulación
 ============================================================ */
 import { $ } from "./core.js";
-import { t } from "./i18n.js?v=geo-20260921p";
+import { t } from "./i18n.js?v=experience-sheet-20260924a";
 
 const URL_TITULACION = "https://titulacion.ucol.mx/validar/186120e6-cf70-41bb-bc05-53019a2a3632";
 
@@ -50,3 +50,4 @@ export function initVerificacion(){
   vmodal.addEventListener("click", e => { if (e.target === vmodal) closeV(); });
   addEventListener("keydown", e => { if (e.key === "Escape" && vmodal.classList.contains("on")) closeV(); });
 }
+
