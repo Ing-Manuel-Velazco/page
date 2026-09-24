@@ -3,12 +3,12 @@
 ============================================================ */
 import { $, RM, initTheme, initBoot, initReveals, initScrollProgress, initNav,
          initModal, initAccordionResize, initProteccion } from "./core.js?v=boot-geo-20260923a";
-import { initI18n, t } from "./i18n.js?v=experience-sheet-20260924a";
-import { initMapa } from "./mapa.js?v=experience-sheet-20260924a";
-import { initTrayectoria } from "./trayectoria.js?v=experience-sheet-20260924a";
-import { initCerts } from "./certificados.js?v=experience-sheet-20260924a";
-import { initVerificacion } from "./verificacion.js?v=experience-sheet-20260924a";
-import { initVisitas } from "./visitas.js?v=experience-sheet-20260924a";
+import { initI18n, t } from "./i18n.js?v=map-work-focus-20260924a";
+import { initMapa } from "./mapa.js?v=map-work-focus-20260924a";
+import { initTrayectoria } from "./trayectoria.js?v=map-work-focus-20260924a";
+import { initCerts } from "./certificados.js?v=map-work-focus-20260924a";
+import { initVerificacion } from "./verificacion.js?v=map-work-focus-20260924a";
+import { initVisitas } from "./visitas.js?v=map-work-focus-20260924a";
 
 if ("scrollRestoration" in history) history.scrollRestoration = "manual";
 if (location.hash) history.replaceState(null, "", location.pathname + location.search);
