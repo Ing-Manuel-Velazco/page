@@ -5,7 +5,7 @@
 ============================================================ */
 import * as THREE from "three";
 import { $, norm, esc, accordion, RM } from "./core.js";
-import { t, loc, fmtYM, getLang } from "./i18n.js?v=geo-20260921p";
+import { t, loc, fmtYM, getLang } from "./i18n.js?v=experience-sheet-20260924a";
 import { EXPERIENCIAS } from "./data.js?v=geo-20260921g";
 import { state, setFiltro, onFiltro } from "./state.js?v=geo-20260921g";
 import { cargarEstados, construir, desdeGeoJSON, layout } from "./geo3d.js?v=geo-20260921h";
@@ -244,13 +244,51 @@ function cargarResenaMunicipio({ nombre, estado, token }){
   });
 }
 
+const trabajosDeEstado = nombre => EXPERIENCIAS.filter(e => norm(e.estado) === norm(nombre));
+const trabajosDeMunicipio = (estado, municipio) => EXPERIENCIAS.filter(e =>
+  norm(e.estado) === norm(estado) && norm(e.ciudad) === norm(municipio));
+
+function etiquetaExperiencias(total){
+  return `${t("exp.viewExperience")} ${total} ${total === 1 ? t("exp.experience") : t("exp.experiences")} →`;
+}
+
+function resumenExperienciaEnFicha(jobs, { tipo, estado }){
+  const visibles = jobs.slice(0, 2);
+  const restantes = jobs.length - visibles.length;
+  return `
+    <div class="sheet-experience-summary">
+      <span>${esc(tipo)}</span><b>${jobs.length} ${esc(jobs.length === 1 ? t("exp.experience") : t("exp.experiences"))}</b>
+    </div>
+    <div class="sheet-experience-list">
+      ${visibles.map(e => `<div class="sheet-experience-item"><b>${esc(loc(e.puesto))}</b><span>${esc(loc(e.empresa))}${e.sigla ? ` · ${esc(e.sigla)}` : ""}</span><small>⌖ ${esc(e.ciudad)} · ${esc(loc(e.dur))}</small></div>`).join("")}
+      ${restantes > 0 ? `<p class="sheet-experience-more">+${restantes} ${esc(t("exp.moreExperiences"))}</p>` : ""}
+    </div>
+    <button class="sheet-experience-cta" type="button">${esc(etiquetaExperiencias(jobs.length))}</button>
+    <a class="municipality-sheet-territorial-source sheet-territorial-link" href="https://www.inegi.org.mx/app/ageeml/" target="_blank" rel="noopener noreferrer">${esc(t("exp.territorialLink"))}</a>`;
+}
+
 function abrirEstado(estado){
   const p = estado.userData;
   const sheet = $("#municipalitysheet");
   if (!sheet) return;
+  const jobs = trabajosDeEstado(p.name);
   activeTerritorialSheet = { tipo: "state", mesh: estado };
   const token = ++municipalitySheetToken;
   sheet.hidden = false;
+  if (jobs.length) {
+    sheet.innerHTML = `
+      <div class="municipality-sheet-head sheet-experience-head">
+        <div><span class="municipality-sheet-kicker">${esc(t("exp.workState"))}</span><h3>${esc(p.name)}</h3></div>
+        <button class="municipality-sheet-close" type="button" aria-label="${esc(t("exp.close"))}">×</button>
+      </div>
+      <div class="municipality-sheet-body sheet-experience-body">
+        ${resumenExperienciaEnFicha(jobs, { tipo: t("exp.estado"), estado: p.name })}
+      </div>
+      <div class="municipality-sheet-foot">${esc(t("exp.inegi"))} · ${esc(t("exp.mgEdition"))}</div>`;
+    sheet.querySelector(".municipality-sheet-close").addEventListener("click", cerrarFichaMunicipio);
+    sheet.querySelector(".sheet-experience-cta").addEventListener("click", () => abrirTrabajosEstado({ name: p.name }));
+    return;
+  }
   sheet.innerHTML = `
     <div class="municipality-sheet-head">
       <div><span class="municipality-sheet-kicker">${esc(t("exp.stateInfo"))} · ${esc(t("exp.paisname"))}</span><h3>${esc(p.name)}</h3></div>
@@ -425,9 +463,7 @@ function showTip(e, txt){
 }
 const hideTip = () => tip.classList.remove("on");
 
-function abrirTrabajosEstado(st){
-  const nombre = String(st.n || st.name || "").trim();
-  const jobs = EXPERIENCIAS.filter(e => norm(e.estado) === norm(nombre));
+function abrirTrabajosExperiencia({ nombre, jobs, kicker, sub, foot }){
   const muns = {};
   jobs.forEach(e => { (muns[e.ciudad] || (muns[e.ciudad] = [])).push(e); });
   const keys = Object.keys(muns);
@@ -451,11 +487,35 @@ function abrirTrabajosEstado(st){
     : `<p class="no-results">${t("exp.nomatch")}</p>`) + `</div>`;
 
   abrirPanelTrabajos({
-    kicker: esc(t("exp.estado")),
-    title: `${esc(nombre)}, ${esc(t("exp.paisname"))}`,
-    sub: `${jobs.length} ${t("exp.jobs1")} · ${keys.length} ${t("exp.mun")}`,
+    kicker: esc(kicker),
+    title: esc(nombre),
+    sub,
     body,
-    foot: `${t("exp.detail")} · ${esc(nombre)}`
+    foot
+  });
+}
+
+function abrirTrabajosEstado(st){
+  const nombre = String(st.n || st.name || "").trim();
+  const jobs = trabajosDeEstado(nombre);
+  const municipios = new Set(jobs.map(e => norm(e.ciudad))).size;
+  abrirTrabajosExperiencia({
+    nombre: `${nombre}, ${t("exp.paisname")}`,
+    jobs,
+    kicker: t("exp.workState"),
+    sub: `${jobs.length} ${t("exp.jobs1")} · ${municipios} ${t("exp.mun")}`,
+    foot: `${t("exp.detail")} · ${nombre}`
+  });
+}
+
+function abrirTrabajosMunicipio(estado, municipio){
+  const jobs = trabajosDeMunicipio(estado, municipio);
+  abrirTrabajosExperiencia({
+    nombre: `${municipio}, ${estado}`,
+    jobs,
+    kicker: t("exp.workMunicipality"),
+    sub: `${jobs.length} ${t("exp.jobs1")}`,
+    foot: `${t("exp.detail")} · ${municipio}`
   });
 }
 
@@ -464,10 +524,25 @@ function abrirMunicipio(m){
   const estado = muniState?.userData?.name || "México";
   const sheet = $("#municipalitysheet");
   if (!sheet) return;
+  const jobs = trabajosDeMunicipio(estado, p.name);
   cerrarPanelTrabajos();
   activeTerritorialSheet = { tipo: "municipality", mesh: m };
   const token = ++municipalitySheetToken;
   sheet.hidden = false;
+  if (jobs.length) {
+    sheet.innerHTML = `
+      <div class="municipality-sheet-head sheet-experience-head">
+        <div><span class="municipality-sheet-kicker">${esc(t("exp.workMunicipality"))} · ${esc(estado)}</span><h3>${esc(p.name)}</h3></div>
+        <button class="municipality-sheet-close" type="button" aria-label="${esc(t("exp.close"))}">×</button>
+      </div>
+      <div class="municipality-sheet-body sheet-experience-body">
+        ${resumenExperienciaEnFicha(jobs, { tipo: t("exp.municipality"), estado })}
+      </div>
+      <div class="municipality-sheet-foot">${esc(t("exp.inegi"))} · ${esc(t("exp.mgEdition"))}</div>`;
+    sheet.querySelector(".municipality-sheet-close").addEventListener("click", cerrarFichaMunicipio);
+    sheet.querySelector(".sheet-experience-cta").addEventListener("click", () => abrirTrabajosMunicipio(estado, p.name));
+    return;
+  }
   sheet.innerHTML = `
     <div class="municipality-sheet-head">
       <div><span class="municipality-sheet-kicker">${esc(t("exp.municipalityInfo"))} · ${esc(estado)}</span><h3>${esc(p.name)}</h3></div>
@@ -589,3 +664,4 @@ export async function initMapa(){
   updateRun();
   statusListo();
 }
+
