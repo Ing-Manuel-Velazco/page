@@ -137,6 +137,10 @@ La portada se refinó con una retícula cartográfica de bajo contraste, gradien
 
 La introducción se redujo de 5.5 a 3.6 segundos. Ahora presenta una retícula y retícula de puntería geomática, el trazado panorámico del territorio, un porcentaje de carga y estados localizados en español, inglés y portugués. El visitante puede omitirla mediante clic o Enter; quienes tienen activada la reducción de movimiento no la ven.
 
+## Ficha de experiencia territorial
+
+Al seleccionar un estado o municipio que tiene registros profesionales, la ficha translúcida ya no consulta ni presenta una reseña editorial del territorio. Prioriza el contexto útil para reclutamiento: muestra hasta dos puestos relacionados, empresa, ubicación y duración, más un botón de alto contraste **Ver N experiencias →** que abre el panel de detalle completo. La ficha mantiene un enlace secundario al catálogo territorial de INEGI. Los territorios sin experiencia conservan la ficha territorial con sus claves y reseña.
+
 La guía de despliegue está en `cloudflare-visitas/README.md`.
 
 ## Próximos pasos
