@@ -2,13 +2,13 @@
    js/main.js — Punto de entrada (módulo ES)
 ============================================================ */
 import { $, RM, initTheme, initBoot, initReveals, initScrollProgress, initNav,
-         initModal, initAccordionResize, initProteccion } from "./core.js?v=boot-redesign-20260924a";
-import { initI18n, t } from "./i18n.js?v=map-work-focus-20260924a";
-import { initMapa } from "./mapa.js?v=map-work-focus-20260924a";
-import { initTrayectoria } from "./trayectoria.js?v=map-work-focus-20260924a";
-import { initCerts } from "./certificados.js?v=map-work-focus-20260924a";
-import { initVerificacion } from "./verificacion.js?v=map-work-focus-20260924a";
-import { initVisitas } from "./visitas.js?v=map-work-focus-20260924a";
+         initModal, initAccordionResize, initProteccion } from "./core.js?v=asset-shield-20260924b";
+import { initI18n, t } from "./i18n.js?v=asset-shield-20260924b";
+import { initMapa } from "./mapa.js?v=asset-shield-20260924b";
+import { initTrayectoria } from "./trayectoria.js?v=asset-shield-20260924b";
+import { initCerts } from "./certificados.js?v=asset-shield-20260924b";
+import { initVerificacion } from "./verificacion.js?v=asset-shield-20260924b";
+import { initVisitas } from "./visitas.js?v=asset-shield-20260924b";
 
 if ("scrollRestoration" in history) history.scrollRestoration = "manual";
 if (location.hash) history.replaceState(null, "", location.pathname + location.search);
@@ -22,8 +22,7 @@ function initPerfil(){
   ["contextmenu", "dragstart", "copy"].forEach(tipo =>
     photo?.addEventListener(tipo, e => e.preventDefault()));
   if (cimg) cimg.addEventListener("error", function(){
-    if (cimg.src.indexOf("foto.png") !== -1) cimg.src = "foto.jpg";
-    else cimg.alt = "Fotografía no disponible";
+    cimg.alt = "Fotografía no disponible";
   });
 }
 
