@@ -5,7 +5,7 @@
 ============================================================ */
 import * as THREE from "three";
 import { $, norm, esc, accordion, RM } from "./core.js";
-import { t, loc, fmtYM, getLang } from "./i18n.js?v=experience-sheet-20260924a";
+import { t, loc, fmtYM, getLang } from "./i18n.js?v=map-work-focus-20260924a";
 import { EXPERIENCIAS } from "./data.js?v=geo-20260921g";
 import { state, setFiltro, onFiltro } from "./state.js?v=geo-20260921g";
 import { cargarEstados, construir, desdeGeoJSON, layout } from "./geo3d.js?v=geo-20260921h";
@@ -42,6 +42,34 @@ const trabajosLateralesAbiertos = () => $("#xpmapgrid")?.classList.contains("sho
 
 function cerrarTrabajosLateral(){
   $("#xpmapgrid")?.classList.remove("show-work");
+}
+
+function enfocarDetalleExperiencia(estado, municipio = ""){
+  const grid = $("#xpmapgrid"), side = $("#xpside"), estadoMesh = byName(estado);
+  if (!grid || !estadoMesh) return;
+
+  cerrarPanelTrabajos();
+  grid.classList.add("show-work");
+  setFiltro("México", estadoMesh.userData.name);
+  actualizarBotonTrabajos(estadoMesh);
+
+  const municipioMesh = municipio
+    ? muniMeshes.find(m => norm(m.userData.name) === norm(municipio))
+    : null;
+  if (municipioMesh) {
+    resaltarMunicipio(municipioMesh);
+    flyTo(municipioMesh.userData.center.clone(), 12, 760);
+  } else {
+    flyTo(estadoMesh.userData.center.clone(), 26, 700);
+  }
+
+  window.setTimeout(() => {
+    if (!side) return;
+    side.classList.remove("work-focus");
+    void side.offsetWidth;
+    side.classList.add("work-focus");
+    side.scrollIntoView({ behavior: RM ? "auto" : "smooth", block: "nearest" });
+  }, RM ? 0 : 390);
 }
 
 function statusListo(){
@@ -286,7 +314,7 @@ function abrirEstado(estado){
       </div>
       <div class="municipality-sheet-foot">${esc(t("exp.inegi"))} · ${esc(t("exp.mgEdition"))}</div>`;
     sheet.querySelector(".municipality-sheet-close").addEventListener("click", cerrarFichaMunicipio);
-    sheet.querySelector(".sheet-experience-cta").addEventListener("click", () => abrirTrabajosEstado({ name: p.name }));
+    sheet.querySelector(".sheet-experience-cta").addEventListener("click", () => enfocarDetalleExperiencia(p.name));
     return;
   }
   sheet.innerHTML = `
@@ -540,7 +568,7 @@ function abrirMunicipio(m){
       </div>
       <div class="municipality-sheet-foot">${esc(t("exp.inegi"))} · ${esc(t("exp.mgEdition"))}</div>`;
     sheet.querySelector(".municipality-sheet-close").addEventListener("click", cerrarFichaMunicipio);
-    sheet.querySelector(".sheet-experience-cta").addEventListener("click", () => abrirTrabajosMunicipio(estado, p.name));
+    sheet.querySelector(".sheet-experience-cta").addEventListener("click", () => enfocarDetalleExperiencia(estado, p.name));
     return;
   }
   sheet.innerHTML = `
@@ -638,10 +666,7 @@ export async function initMapa(){
       actualizarBotonTrabajos(muniState);
       return;
     }
-    cerrarPanelTrabajos();
-    $("#xpmapgrid")?.classList.add("show-work");
-    setFiltro("México", muniState.userData.name);
-    actualizarBotonTrabajos(muniState);
+    enfocarDetalleExperiencia(muniState.userData.name);
   });
 
   onFiltro(() => {
