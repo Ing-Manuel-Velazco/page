@@ -9,7 +9,7 @@
      placeholder "SIN VISTA" y sigue visible y clicable.
 ============================================================ */
 import { $, norm, esc, openModal } from "./core.js";
-import { t } from "./i18n.js?v=map-work-focus-20260924a";
+import { t } from "./i18n.js?v=asset-shield-20260924b";
 
 const CARPETA = "certificados";
 const POR_PAGINA = 8;
@@ -34,7 +34,11 @@ function parseArchivo(f){
   const { codigo, texto } = parseFecha(datePart);
   return { institucion: inst.trim(), nombre: name.trim(), fecha: codigo, fechaTexto: texto, serial: serial.trim() };
 }
-const construirItem = archivo => ({ id: 0, ...parseArchivo(archivo), src: `${CARPETA}/${archivo}` });
+const construirItem = item => {
+  if (typeof item === "string") return { id: 0, ...parseArchivo(item), src: `${CARPETA}/${item}` };
+  const { archivo, ...datos } = item;
+  return { id: 0, ...datos, src: `${CARPETA}/${archivo}` };
+};
 
 const grid = $("#certgrid"), nores = $("#nores"), sugg = $("#sugg"),
       filters = $("#certfilters"), fyear = $("#fyear"), fiss = $("#fiss"), fsearch = $("#fsearch"),
@@ -217,7 +221,7 @@ export function initCerts(){
     console.warn("[certificados] manifest.js ausente o vacío: galería no inicializada.");
     return;
   }
-  CERTS = m.filter(x => x && x.archivo).map(x => construirItem(x.archivo))
+  CERTS = m.filter(x => x && x.archivo).map(construirItem)
            .sort((a, b) => (b.fecha || "").localeCompare(a.fecha || ""));
   CERTS.forEach((c, i) => c.id = i + 1);
   filters.style.display = "flex";
