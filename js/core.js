@@ -162,12 +162,12 @@ export function initAccordionResize(){
 }
 
 export function initProteccion(){
-  const proteger = e => { if (e.target.closest("#certificados,#modal,#vmodal,#mapview")) e.preventDefault(); };
+  const proteger = e => { if (e.target.closest("#certificados,#modal,#vmodal,#mapview,#perfil .pf-photo,.id-photo")) e.preventDefault(); };
   document.addEventListener("contextmenu", proteger);
   document.addEventListener("dragstart", proteger);
   document.addEventListener("copy", proteger);
   addEventListener("keydown", e => {
-    const protegido = $("#modal").classList.contains("on") || $("#vmodal").classList.contains("on");
+    const protegido = $("#modal").classList.contains("on") || $("#vmodal").classList.contains("on") || document.activeElement?.closest?.("#perfil .pf-photo,.id-photo");
     if (protegido && (e.ctrlKey || e.metaKey)) {
       const k = e.key.toLowerCase();
       if (["s","p","c","x","u","a"].includes(k) || (e.shiftKey && ["i","j","c","s"].includes(k))) e.preventDefault();
