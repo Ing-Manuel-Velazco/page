@@ -109,7 +109,7 @@ body.ready .hr{opacity:1;transform:none}
 .pf-grid{display:grid;grid-template-columns:.72fr 1.28fr;gap:clamp(2.2rem,5.5vw,4rem);align-items:center}
 .pf-photo{width:min(390px,100%);margin:0 auto;position:relative;z-index:0;padding:3px;border-radius:20px;background:conic-gradient(from 0deg,var(--acc),var(--acc2),var(--acc3),var(--acc),var(--acc2));box-shadow:0 0 0 1px color-mix(in srgb,var(--acc) 55%,transparent),0 20px 55px rgba(0,0,0,.28)}
 .pf-photo::before{content:'';position:absolute;z-index:-1;inset:-8px;border-radius:24px;background:conic-gradient(from 0deg,var(--acc),var(--acc2),var(--acc3),var(--acc),var(--acc2));filter:blur(14px);opacity:.72;animation:photo-spectrum 6s linear infinite}
-.pf-photo img{display:block;width:100%;aspect-ratio:4/5;object-fit:cover;object-position:center top;border-radius:17px;background:var(--bg2);pointer-events:none;user-select:none;-webkit-user-select:none;-webkit-user-drag:none}
+.pf-photo img{display:block;width:100%;aspect-ratio:4/5;object-fit:cover;object-position:center top;border-radius:17px;background:var(--bg2);pointer-events:none;user-select:none;-webkit-user-select:none;-webkit-user-drag:none;-webkit-touch-callout:none}
 @keyframes photo-spectrum{to{transform:rotate(1turn)}}
 .pf-copy{min-width:0;display:flex;flex-direction:column;align-items:stretch}
 .pf-copy .h2grad{margin:0 0 .7rem}
