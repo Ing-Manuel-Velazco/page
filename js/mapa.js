@@ -5,7 +5,7 @@
 ============================================================ */
 import * as THREE from "three";
 import { $, norm, esc, accordion, RM } from "./core.js";
-import { t, loc, fmtYM, getLang } from "./i18n.js?v=asset-shield-20260924b";
+import { t, loc, fmtYM, getLang } from "./i18n.js?v=asset-obscure-20260924a";
 import { EXPERIENCIAS } from "./data.js?v=geo-20260921g";
 import { state, setFiltro, onFiltro } from "./state.js?v=geo-20260921g";
 import { cargarEstados, construir, desdeGeoJSON, layout } from "./geo3d.js?v=geo-20260921h";
