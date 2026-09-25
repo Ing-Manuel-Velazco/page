@@ -8,7 +8,8 @@
      distinto en GitHub), la tarjeta NO se oculta: muestra un
      placeholder "SIN VISTA" y sigue visible y clicable.
 ============================================================ */
-import { $, norm, esc, openModal } from "./core.js";
+// Debe compartir la misma instancia de core que main.js: ahí se inicializa el modal.
+import { $, norm, esc, openModal } from "./core.js?v=asset-obscure-20260924a";
 import { t } from "./i18n.js?v=asset-obscure-20260924a";
 import { cargarMedia, liberarMedia } from "./media.js?v=asset-obscure-20260924a";
 
