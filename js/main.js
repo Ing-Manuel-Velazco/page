@@ -6,7 +6,7 @@ import { $, RM, initTheme, initBoot, initReveals, initScrollProgress, initNav,
 import { initI18n, t } from "./i18n.js?v=asset-obscure-20260924a";
 import { initMapa } from "./mapa.js?v=asset-obscure-20260924a";
 import { initTrayectoria } from "./trayectoria.js?v=asset-obscure-20260924a";
-import { initCerts } from "./certificados.js?v=asset-obscure-20260924a";
+import { initCerts } from "./certificados.js?v=asset-obscure-20260924b";
 import { initVerificacion } from "./verificacion.js?v=asset-obscure-20260924a";
 import { initVisitas } from "./visitas.js?v=asset-obscure-20260924a";
 import { cargarMedia } from "./media.js?v=asset-obscure-20260924a";
