@@ -2,13 +2,14 @@
    js/main.js — Punto de entrada (módulo ES)
 ============================================================ */
 import { $, RM, initTheme, initBoot, initReveals, initScrollProgress, initNav,
-         initModal, initAccordionResize, initProteccion } from "./core.js?v=asset-shield-20260924b";
-import { initI18n, t } from "./i18n.js?v=asset-shield-20260924b";
-import { initMapa } from "./mapa.js?v=asset-shield-20260924b";
-import { initTrayectoria } from "./trayectoria.js?v=asset-shield-20260924b";
-import { initCerts } from "./certificados.js?v=asset-shield-20260924b";
-import { initVerificacion } from "./verificacion.js?v=asset-shield-20260924b";
-import { initVisitas } from "./visitas.js?v=asset-shield-20260924b";
+         initModal, initAccordionResize, initProteccion } from "./core.js?v=asset-obscure-20260924a";
+import { initI18n, t } from "./i18n.js?v=asset-obscure-20260924a";
+import { initMapa } from "./mapa.js?v=asset-obscure-20260924a";
+import { initTrayectoria } from "./trayectoria.js?v=asset-obscure-20260924a";
+import { initCerts } from "./certificados.js?v=asset-obscure-20260924a";
+import { initVerificacion } from "./verificacion.js?v=asset-obscure-20260924a";
+import { initVisitas } from "./visitas.js?v=asset-obscure-20260924a";
+import { cargarMedia } from "./media.js?v=asset-obscure-20260924a";
 
 if ("scrollRestoration" in history) history.scrollRestoration = "manual";
 if (location.hash) history.replaceState(null, "", location.pathname + location.search);
@@ -24,6 +25,7 @@ function initPerfil(){
   if (cimg) cimg.addEventListener("error", function(){
     cimg.alt = "Fotografía no disponible";
   });
+  cargarMedia(cimg, "p").catch(() => { if (cimg) cimg.alt = "Fotografía no disponible"; });
 }
 
 /* ---------- contacto ---------- */
