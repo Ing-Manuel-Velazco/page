@@ -2,7 +2,8 @@
    js/verificacion.js — Modal de verificación de titulación
 ============================================================ */
 import { $ } from "./core.js";
-import { t } from "./i18n.js?v=asset-shield-20260924b";
+import { t } from "./i18n.js?v=asset-obscure-20260924a";
+import { cargarMedia, liberarMedia } from "./media.js?v=asset-obscure-20260924a";
 
 const URL_TITULACION = "https://titulacion.ucol.mx/validar/186120e6-cf70-41bb-bc05-53019a2a3632";
 
@@ -13,17 +14,22 @@ const vClear = () => { vTimers.forEach(clearTimeout); vTimers = []; };
 
 function abrirV(){
   vClear(); vfall.hidden = true;
-  vshot.style.display = "none"; vshot.removeAttribute("src");
+  vshot.style.display = "none"; liberarMedia(vshot);
   vload.classList.remove("hide");
   vstatus.textContent = t("v.validating");
   vmodal.classList.add("on"); document.body.style.overflow = "hidden";
   const seq = [t("v.connecting"), t("v.validating"), t("v.showing")];
   seq.forEach((m, i) => vTimers.push(setTimeout(() => { vmsg.textContent = m; }, i * 700)));
-  vTimers.push(setTimeout(() => { vshot.src = "5f97047e40f250b147c80d59.png"; }, seq.length * 700 + 200));
+  vTimers.push(setTimeout(() => { cargarMedia(vshot, "v").catch(mostrarFallo); }, seq.length * 700 + 200));
+}
+function mostrarFallo(){
+  vClear(); vload.classList.add("hide");
+  vshot.style.display = "none"; vfall.hidden = false;
+  vstatus.textContent = t("v.noshot");
 }
 function closeV(){
   vmodal.classList.remove("on"); document.body.style.overflow = ""; vClear();
-  setTimeout(() => { vshot.style.display = "none"; vshot.removeAttribute("src"); }, 300);
+  setTimeout(() => { vshot.style.display = "none"; liberarMedia(vshot); }, 300);
 }
 
 export function initVerificacion(){
@@ -33,9 +39,7 @@ export function initVerificacion(){
     vstatus.textContent = t("v.done");
   });
   vshot.addEventListener("error", () => {
-    vClear(); vload.classList.add("hide");
-    vshot.style.display = "none"; vfall.hidden = false;
-    vstatus.textContent = t("v.noshot");
+    mostrarFallo();
   });
   $("#verifybtn").addEventListener("click", abrirV);
   $("#vcopy").addEventListener("click", async e => {
