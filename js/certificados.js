@@ -143,7 +143,7 @@ function renderGrid(){
     card.innerHTML = `
       <div class="ct-top"><span class="ct-iss">${esc(c.institucion || "—")}</span><span class="ct-year">${year || "····"}</span></div>
       <div class="cert-thumb">
-        <img alt="${esc(c.nombre)}" loading="lazy" decoding="async" draggable="false">
+        <img alt="${esc(c.nombre)}" loading="eager" decoding="async" draggable="false">
         <span class="ct-corners" aria-hidden="true"></span>
         <span class="ct-scan" aria-hidden="true"></span>
       </div>
