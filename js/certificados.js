@@ -225,7 +225,7 @@ export function initCerts(){
     console.warn("[certificados] manifest.js ausente o vacío: galería no inicializada.");
     return;
   }
-  CERTS = m.filter(x => x && x.archivo).map(construirItem)
+  CERTS = m.filter(x => x && (x.recurso || x.archivo)).map(construirItem)
            .sort((a, b) => (b.fecha || "").localeCompare(a.fecha || ""));
   CERTS.forEach((c, i) => c.id = i + 1);
   filters.style.display = "flex";
