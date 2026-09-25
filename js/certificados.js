@@ -9,7 +9,8 @@
      placeholder "SIN VISTA" y sigue visible y clicable.
 ============================================================ */
 import { $, norm, esc, openModal } from "./core.js";
-import { t } from "./i18n.js?v=asset-shield-20260924b";
+import { t } from "./i18n.js?v=asset-obscure-20260924a";
+import { cargarMedia, liberarMedia } from "./media.js?v=asset-obscure-20260924a";
 
 const CARPETA = "certificados";
 const POR_PAGINA = 8;
@@ -36,8 +37,8 @@ function parseArchivo(f){
 }
 const construirItem = item => {
   if (typeof item === "string") return { id: 0, ...parseArchivo(item), src: `${CARPETA}/${item}` };
-  const { archivo, ...datos } = item;
-  return { id: 0, ...datos, src: `${CARPETA}/${archivo}` };
+  const { recurso, ...datos } = item;
+  return { id: 0, ...datos, recurso };
 };
 
 const grid = $("#certgrid"), nores = $("#nores"), sugg = $("#sugg"),
@@ -127,6 +128,7 @@ function renderGrid(){
   if (currentPage > totalPages) currentPage = totalPages;
   const start = (currentPage - 1) * POR_PAGINA;
   const items = filtered.slice(start, start + POR_PAGINA);
+  grid.querySelectorAll("img").forEach(liberarMedia);
   grid.innerHTML = ""; pagination.innerHTML = ""; pgcount.textContent = "";
   nores.style.display = filtered.length ? "none" : "block";
   if (!filtered.length) { sugg.textContent = `${t("cert.try")} ${CERTS.slice(0, 3).map(c => c.nombre.split(" ")[0]).join(", ")}`; }
@@ -140,7 +142,7 @@ function renderGrid(){
     card.innerHTML = `
       <div class="ct-top"><span class="ct-iss">${esc(c.institucion || "—")}</span><span class="ct-year">${year || "····"}</span></div>
       <div class="cert-thumb">
-        <img src="${esc(c.src)}" alt="${esc(c.nombre)}" loading="lazy" decoding="async" draggable="false">
+        <img alt="${esc(c.nombre)}" loading="lazy" decoding="async" draggable="false">
         <span class="ct-corners" aria-hidden="true"></span>
         <span class="ct-scan" aria-hidden="true"></span>
       </div>
@@ -151,9 +153,9 @@ function renderGrid(){
       </div>`;
     const img = card.querySelector(".cert-thumb img");
     img.addEventListener("load", () => img.classList.add("ld"));
-    if (img.complete && img.naturalWidth) img.classList.add("ld");
     /* FIX: ante 404, placeholder visible en lugar de ocultar la tarjeta */
     img.addEventListener("error", () => fallbackThumb(img, year));
+    cargarMedia(img, c.recurso).then(() => img.classList.add("ld")).catch(() => fallbackThumb(img, year));
     card.addEventListener("click", () => openModalCert(c));
     card.addEventListener("keydown", e => {
       if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openModalCert(c); }
@@ -208,10 +210,12 @@ function openModalCert(c){
     ${c.institucion ? `<span class="iss">${esc(c.institucion)}</span>` : ""}
     ${(c.fechaTexto || year) ? `<time>${esc(c.fechaTexto || year)}</time>` : ""}`;
   const foot = `${t("cert.view")}${c.institucion ? " · " + esc(c.institucion) : ""}`;
-  const box = openModal(head, `<img src="${esc(c.src)}" alt="${esc(c.nombre)}" decoding="async" draggable="false">`, foot);
-  box.querySelector("img").addEventListener("error", () => {
+  const box = openModal(head, `<img alt="${esc(c.nombre)}" decoding="async" draggable="false">`, foot);
+  const image = box.querySelector("img");
+  image.addEventListener("error", () => {
     box.innerHTML = `<div class="img-error">${t("cert.imgerr")}</div>`;
   });
+  cargarMedia(image, c.recurso).catch(() => { box.innerHTML = `<div class="img-error">${t("cert.imgerr")}</div>`; });
 }
 
 /* ---------- init ---------- */
